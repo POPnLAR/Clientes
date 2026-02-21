@@ -47,7 +47,7 @@ def generar_pdf_diagnostico(nombre_clinica):
         pdf.set_font("Arial", 'B', 13)
         pdf.cell(0, 10, f"DIAGNOSTICO: {nombre_clean.upper()}", ln=True)
         
-        # Riesgos y Soluciones (Resumen de tus servicios)
+        # Riesgos y Soluciones
         pdf.set_fill_color(255, 240, 240)
         pdf.set_font("Arial", 'B', 10); pdf.set_text_color(180, 0, 0)
         pdf.cell(0, 7, "  PUNTOS CRITICOS DETECTADOS", ln=True, fill=True)
@@ -85,14 +85,12 @@ def enviar_mensaje_completo(numero, mensaje, path_pdf=None):
     base_url = EVO_URL.strip().rstrip('/')
     headers = {"Content-Type": "application/json", "apikey": EVO_TOKEN}
     
-    # Enviar Texto
     text_url = f"{base_url}/message/sendText/{EVO_INSTANCE}"
     text_payload = {"number": numero, "options": {"delay": 1200}, "textMessage": {"text": mensaje}}
     
     try:
         res_text = requests.post(text_url, json=text_payload, headers=headers, timeout=20)
         if res_text.status_code in [200, 201] and path_pdf:
-            # Enviar PDF si el texto fue exitoso
             pdf_url = f"{base_url}/message/sendMedia/{EVO_INSTANCE}"
             with open(path_pdf, "rb") as f:
                 b64 = base64.b64encode(f.read()).decode('utf-8')
@@ -114,20 +112,34 @@ def obtener_mensaje_secuencia(nombre, dia):
     elif dia == 2:
         return f"Hola de nuevo! 👋 Sabia que clinicas como *{nombre}* reducen el No-Show en un 40% con nuestro bot? Tambien eliminamos el papel con Firma Digital. ¿Hablamos 5 min?"
     elif dia == 3:
-        return f"Buen dia! 🏥 Tenemos 2 cupos con modulo de *Ecommerce* bonificado en su zona. ¿Le interesa que *{nombre}* aproveche este beneficio? Saludos!"
+        return f"Buen dia! 🏥 Tenemos 2 cupos con modulo de *Ecommerce* bonificado en su zona esta semana. ¿Le interesa que *{nombre}* aproveche este beneficio? Saludos!"
     return ""
 
 # --- CICLO PRINCIPAL ---
 def ejecutar_ciclo():
     ahora = datetime.now()
-    if ahora.weekday() > 5 or not (9 <= ahora.hour <= 19): return # Sabado es 5, Domingo es 6
+    hoy_str = ahora.strftime("%d/%m/%Y") # Formato dd/mm/yyyy
+
+    # Validación de Horario (Lunes a Sábado, 09:00 a 19:00)
+    if ahora.weekday() > 5 or not (9 <= ahora.hour <= 19): 
+        print(f"Fuera de horario o día no permitido: {ahora}")
+        return 
 
     if not os.path.exists(ARCHIVO_LEADS): return
     df = pd.read_csv(ARCHIVO_LEADS)
     
+    # Aseguramos que la columna de fecha sea string para buscar
+    df['Fecha_Contacto'] = df['Fecha_Contacto'].astype(str)
+    
+    # --- ESCUDO ANTIDUPLICADOS ---
+    # Filtramos prospectos que NO tengan la fecha de hoy ya marcada
+    no_contactados_hoy = ~df['Fecha_Contacto'].str.contains(hoy_str, na=False)
+    
     # 1. Prioridad: Seguimientos (Día 2 o 3)
-    # Buscamos uno que NO haya sido contactado hoy y le toque el siguiente paso
-    pendientes = df[(df["Estado"] == "Contactado") & (df["Dia_Secuencia"] < 3)].head(1)
+    # Que no hayan sido contactados hoy para evitar repetir el mismo día
+    pendientes = df[(df["Estado"] == "Contactado") & 
+                    (df["Dia_Secuencia"] < 3) & 
+                    (no_contactados_hoy)].head(1)
     
     if not pendientes.empty:
         idx = pendientes.index[0]
@@ -140,24 +152,25 @@ def ejecutar_ciclo():
             df.at[idx, "Dia_Secuencia"] = proximo_dia
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
             df.to_csv(ARCHIVO_LEADS, index=False)
-            print(f"Seguimiento Dia {proximo_dia} enviado a {pendientes.at[idx, 'Evento']}")
-    else:
-        # 2. Si no hay seguimientos, procesamos 1 nuevo lead (Día 1)
-        nuevos = df[df["Estado"] == "Nuevo"].head(1)
-        if not nuevos.empty:
-            idx = nuevos.index[0]
-            msg = obtener_mensaje_secuencia(nuevos.at[idx, "Evento"], 1)
-            pdf_path = generar_pdf_diagnostico(nuevos.at[idx, "Evento"])
-            tel = "".join(filter(str.isdigit, str(nuevos.at[idx, "Telefono"])))
-            if len(tel) == 9: tel = "56" + tel
+            print(f"✅ Seguimiento Dia {proximo_dia} enviado a {pendientes.at[idx, 'Evento']}")
+            return # Terminamos el ciclo para no saturar
 
-            if enviar_mensaje_completo(tel, msg, pdf_path):
-                df.at[idx, "Estado"] = "Contactado"
-                df.at[idx, "Dia_Secuencia"] = 1
-                df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
-                df.to_csv(ARCHIVO_LEADS, index=False)
-                if pdf_path: os.remove(pdf_path)
-                print(f"Día 1 + PDF enviado a {nuevos.at[idx, 'Evento']}")
+    # 2. Si no hubo seguimientos, procesamos 1 nuevo lead (Día 1)
+    nuevos = df[(df["Estado"] == "Nuevo") & (no_contactados_hoy)].head(1)
+    if not nuevos.empty:
+        idx = nuevos.index[0]
+        msg = obtener_mensaje_secuencia(nuevos.at[idx, "Evento"], 1)
+        pdf_path = generar_pdf_diagnostico(nuevos.at[idx, "Evento"])
+        tel = "".join(filter(str.isdigit, str(nuevos.at[idx, "Telefono"])))
+        if len(tel) == 9: tel = "56" + tel
+
+        if enviar_mensaje_completo(tel, msg, pdf_path):
+            df.at[idx, "Estado"] = "Contactado"
+            df.at[idx, "Dia_Secuencia"] = 1
+            df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
+            df.to_csv(ARCHIVO_LEADS, index=False)
+            if pdf_path and os.path.exists(pdf_path): os.remove(pdf_path)
+            print(f"✅ Día 1 + PDF enviado a {nuevos.at[idx, 'Evento']}")
 
 if __name__ == "__main__":
     ejecutar_ciclo()

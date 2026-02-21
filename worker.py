@@ -20,42 +20,82 @@ def limpiar_acentos(text):
     if not isinstance(text, str): return str(text)
     return "".join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
+# --- NUEVA FUNCIÓN: BÚSQUEDA AUTOMÁTICA ---
+def buscar_y_agregar_nuevos(df_actual):
+    print("🔍 No hay envíos pendientes. Buscando nuevos prospectos en Google Maps...")
+    
+    # Parámetros de búsqueda (puedes ajustar 'q' según necesites)
+    params = {
+        "engine": "google_maps",
+        "q": "Clinica Dental Santiago Chile",
+        "type": "search",
+        "api_key": SERP_KEY
+    }
+    
+    try:
+        response = requests.get("https://serpapi.com/search", params=params, timeout=30)
+        results = response.json().get("local_results", [])
+        
+        nuevos_leads = []
+        # Lista de teléfonos existentes para no duplicar
+        tels_en_base = set(df_actual['Telefono'].astype(str).str[-9:].tolist())
+        
+        ultimo_id = df_actual['Id'].max() if not df_actual.empty else 0
+
+        for place in results:
+            raw_tel = place.get("phone", "").replace(" ", "").replace("-", "")
+            if not raw_tel: continue
+            
+            # Validar si ya existe (comparando últimos 9 dígitos)
+            if raw_tel[-9:] not in tels_en_base:
+                ultimo_id += 1
+                nuevo = {
+                    "Id": ultimo_id,
+                    "Fecha": datetime.now().strftime("%d/%m/%Y"),
+                    "Hora": datetime.now().strftime("%H:%M"),
+                    "Hora fin": "",
+                    "Evento": place.get("title", "Clinica"),
+                    "Ministerio": "Prospeccion Automatica",
+                    "Ubicacion": place.get("address", "Santiago"),
+                    "Estado": "Nuevo",
+                    "Telefono": raw_tel,
+                    "Dia_Secuencia": 0,
+                    "Fecha_Contacto": ""
+                }
+                nuevos_leads.append(nuevo)
+        
+        if nuevos_leads:
+            print(f"✨ Se encontraron {len(nuevos_leads)} nuevos leads.")
+            return pd.concat([df_actual, pd.DataFrame(nuevos_leads)], ignore_index=True)
+        else:
+            print("⚠️ Búsqueda completada, pero todos los resultados ya están en el CSV.")
+            return df_actual
+            
+    except Exception as e:
+        print(f"❌ Error en búsqueda: {e}")
+        return df_actual
+
 # --- GENERADOR DE PDF ---
 def generar_pdf_diagnostico(nombre_clinica):
     try:
         pdf = FPDF()
         pdf.set_auto_page_break(auto=True, margin=15)
         pdf.add_page()
-        
         pdf.set_fill_color(255, 255, 255)
         pdf.rect(0, 0, 210, 40, 'F')
         pdf.set_fill_color(0, 102, 204)
         pdf.rect(0, 0, 210, 3, 'F')
-        
         if os.path.exists("Logo 1.png"):
             pdf.image("Logo 1.png", x=10, y=8, h=22)
-        
         pdf.set_text_color(0, 102, 204)
         pdf.set_font("Arial", 'B', 16)
         pdf.set_xy(85, 12)
         pdf.cell(0, 8, "AUDITORIA DE EFICIENCIA", ln=True)
-        
         nombre_clean = limpiar_acentos(nombre_clinica)
         pdf.set_y(45)
         pdf.set_text_color(0, 0, 0)
         pdf.set_font("Arial", 'B', 13)
         pdf.cell(0, 10, f"DIAGNOSTICO: {nombre_clean.upper()}", ln=True)
-        
-        pdf.set_fill_color(255, 240, 240)
-        pdf.set_font("Arial", 'B', 10); pdf.set_text_color(180, 0, 0)
-        pdf.cell(0, 7, "  PUNTOS CRITICOS DETECTADOS", ln=True, fill=True)
-        pdf.set_font("Arial", '', 9); pdf.set_text_color(0, 0, 0)
-        pdf.cell(0, 5, "    - Gestion manual, Riesgo Legal, No-Show alto e Inventario ciego.", ln=True)
-        
-        pdf.ln(5)
-        pdf.set_fill_color(230, 245, 255)
-        pdf.set_font("Arial", 'B', 10); pdf.set_text_color(0, 102, 204)
-        pdf.cell(0, 7, "  SOLUCION: ECOSISTEMA GESTIONVITAL PRO", ln=True, fill=True)
         
         modulos = [
             ("Fichas y Firma Digital", "Historias y consentimientos 100% legales."),
@@ -66,10 +106,6 @@ def generar_pdf_diagnostico(nombre_clinica):
         for tit, desc in modulos:
             pdf.set_font("Arial", 'B', 9); pdf.cell(50, 5, f"  {tit}:", 0)
             pdf.set_font("Arial", '', 9); pdf.cell(0, 5, desc, ln=True)
-
-        pdf.set_y(-20)
-        pdf.set_font("Arial", 'I', 8); pdf.set_text_color(150, 150, 150)
-        pdf.cell(0, 5, "GestionVital Pro - Transformacion Digital Medica", align='C')
         
         path = f"auditoria_{nombre_clean[:15].replace(' ', '_')}.pdf"
         pdf.output(path)
@@ -84,7 +120,6 @@ def enviar_mensaje_completo(numero, mensaje, path_pdf=None):
     headers = {"Content-Type": "application/json", "apikey": EVO_TOKEN}
     text_url = f"{base_url}/message/sendText/{EVO_INSTANCE}"
     text_payload = {"number": numero, "options": {"delay": 1200}, "textMessage": {"text": mensaje}}
-    
     try:
         res_text = requests.post(text_url, json=text_payload, headers=headers, timeout=20)
         if res_text.status_code in [200, 201] and path_pdf:
@@ -119,75 +154,69 @@ def ejecutar_ciclo():
     LIMITE_POR_SESION = 5 
     envios_realizados = 0
 
-    # Lunes a Sábado, 09:00 a 19:00
     if ahora.weekday() > 5 or not (9 <= ahora.hour <= 19): 
         print(f"Fuera de horario: {ahora.strftime('%A')}")
         return 
 
     if not os.path.exists(ARCHIVO_LEADS):
-        print("Error: No existe el archivo CSV.")
-        return
+        df = pd.DataFrame(columns=["Id", "Fecha", "Hora", "Hora fin", "Evento", "Ministerio", "Ubicacion", "Estado", "Telefono", "Dia_Secuencia", "Fecha_Contacto"])
+    else:
+        df = pd.read_csv(ARCHIVO_LEADS)
 
-    df = pd.read_csv(ARCHIVO_LEADS)
     df['Fecha_Contacto'] = df['Fecha_Contacto'].fillna("").astype(str)
     df['Estado'] = df['Estado'].fillna("Nuevo").astype(str).str.strip()
     df['Dia_Secuencia'] = pd.to_numeric(df['Dia_Secuencia'], errors='coerce').fillna(0)
 
+    # --- 1. IDENTIFICAR CANDIDATOS EXISTENTES ---
     candidatos = []
-
-    # 1. BUSCAR SEGUIMIENTOS (Prioridad)
     for idx, row in df.iterrows():
+        if hoy_str in row['Fecha_Contacto']: continue
+        
         if row["Estado"].lower() == "contactado" and 1 <= row["Dia_Secuencia"] < 3:
-            if hoy_str in row['Fecha_Contacto']: continue
             try:
-                fecha_str = row['Fecha_Contacto'].split()[0]
-                fecha_ultimo = datetime.strptime(fecha_str, "%d/%m/%Y")
+                fecha_ultimo = datetime.strptime(row['Fecha_Contacto'].split()[0], "%d/%m/%Y")
                 if (ahora - fecha_ultimo).days >= 1:
                     candidatos.append({'idx': idx, 'tipo': 'seguimiento', 'dia': int(row["Dia_Secuencia"]) + 1})
             except: continue
+        elif row["Estado"].lower() == "nuevo":
+            candidatos.append({'idx': idx, 'tipo': 'nuevo', 'dia': 1})
 
-    # 2. COMPLETAR CON NUEVOS (Si queda cupo en el lote)
-    if len(candidatos) < LIMITE_POR_SESION:
-        libres = LIMITE_POR_SESION - len(candidatos)
-        nuevos_df = df[df["Estado"].str.lower() == "nuevo"].head(libres * 2) # Buscamos un poco más por si hay filtros
-        
-        for idx, row in nuevos_df.iterrows():
-            if len(candidatos) >= LIMITE_POR_SESION: break
-            # Un "Nuevo" se procesa si no tiene fecha o si la fecha no es de hoy
-            if row['Fecha_Contacto'] == "" or hoy_str not in row['Fecha_Contacto']:
+    # --- 2. SI NO HAY CANDIDATOS, BUSCAR NUEVOS CLIENTES ---
+    if not candidatos:
+        df = buscar_y_agregar_nuevos(df)
+        # Recargar candidatos tras la búsqueda
+        for idx, row in df.iterrows():
+            if row["Estado"] == "Nuevo" and len(candidatos) < LIMITE_POR_SESION:
                 candidatos.append({'idx': idx, 'tipo': 'nuevo', 'dia': 1})
 
     if not candidatos:
-        print("Nada pendiente por enviar en esta hora.")
+        print("Sin leads pendientes y no se encontraron nuevos en la búsqueda.")
+        df.to_csv(ARCHIVO_LEADS, index=False)
         return
 
-    print(f"Procesando lote mixto de {len(candidatos)} envios...")
-
-    for item in candidatos:
-        idx, tipo, dia_objetivo = item['idx'], item['tipo'], item['dia']
+    # --- 3. PROCESAR ENVÍOS ---
+    lote = candidatos[:LIMITE_POR_SESION]
+    for item in lote:
+        idx, tipo, dia_obj = item['idx'], item['tipo'], item['dia']
         row = df.loc[idx]
         
         tel = "".join(filter(str.isdigit, str(row["Telefono"])))
         if len(tel) == 9: tel = "56" + tel
         
-        msg = obtener_mensaje_secuencia(row["Evento"], dia_objetivo)
-        pdf = generar_pdf_diagnostico(row["Evento"]) if dia_objetivo == 1 else None
+        msg = obtener_mensaje_secuencia(row["Evento"], dia_obj)
+        pdf = generar_pdf_diagnostico(row["Evento"]) if dia_obj == 1 else None
         
         if enviar_mensaje_completo(tel, msg, pdf):
             df.at[idx, "Estado"] = "Contactado"
-            df.at[idx, "Dia_Secuencia"] = dia_objetivo
+            df.at[idx, "Dia_Secuencia"] = dia_obj
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
             envios_realizados += 1
-            print(f"✅ {tipo.upper()} (Día {dia_objetivo}) enviado a {row['Evento']}")
+            print(f"✅ {tipo.upper()} (Día {dia_obj}) enviado a {row['Evento']}")
             if pdf and os.path.exists(pdf): os.remove(pdf)
-            
-            if envios_realizados < len(candidatos):
-                espera = random.randint(45, 90)
-                time.sleep(espera)
+            if envios_realizados < len(lote): time.sleep(random.randint(45, 90))
 
-    if envios_realizados > 0:
+    if envios_realizados > 0 or len(df) > 0:
         df.to_csv(ARCHIVO_LEADS, index=False)
-        print(f"Ciclo terminado. {envios_realizados} envios realizados.")
 
 if __name__ == "__main__":
     ejecutar_ciclo()

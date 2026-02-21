@@ -20,7 +20,7 @@ def limpiar_acentos(text):
     if not isinstance(text, str): return str(text)
     return "".join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
-# --- GENERADOR DE PDF (Diseño 1 Sola Hoja) ---
+# --- GENERADOR DE PDF ---
 def generar_pdf_diagnostico(nombre_clinica):
     try:
         pdf = FPDF()
@@ -120,12 +120,12 @@ def ejecutar_ciclo():
     ahora = datetime.now()
     hoy_str = ahora.strftime("%d/%m/%Y")
     
-    # Configuracion de Lote
     LIMITE_POR_SESION = 5 
     envios_realizados = 0
 
+    # Lunes a Sábado, 09:00 a 19:00
     if ahora.weekday() > 5 or not (9 <= ahora.hour <= 19): 
-        print(f"Fuera de horario: {ahora}")
+        print(f"Fuera de horario o dia no permitido: {ahora.strftime('%A')}")
         return 
 
     if not os.path.exists(ARCHIVO_LEADS):
@@ -133,41 +133,41 @@ def ejecutar_ciclo():
         return
 
     df = pd.read_csv(ARCHIVO_LEADS)
-    df['Fecha_Contacto'] = df['Fecha_Contacto'].fillna("")
-    df['Estado'] = df['Estado'].fillna("Nuevo")
+    
+    # Limpieza de datos proactiva
+    df['Fecha_Contacto'] = df['Fecha_Contacto'].fillna("").astype(str)
+    df['Estado'] = df['Estado'].fillna("Nuevo").astype(str).str.strip()
     df['Dia_Secuencia'] = pd.to_numeric(df['Dia_Secuencia'], errors='coerce').fillna(0)
 
     # --- 1. IDENTIFICAR CANDIDATOS ---
     candidatos = []
 
     for idx, row in df.iterrows():
-        # Regla de Oro: Nadie que ya recibio mensaje HOY
-        if hoy_str in str(row['Fecha_Contacto']):
+        # Escudo Antiduplicados: No procesar si ya se habló HOY
+        if hoy_str in row['Fecha_Contacto']:
             continue
 
-        # Caso A: Seguimientos (>24h)
-        if row["Estado"] == "Contactado" and row["Dia_Secuencia"] < 3:
+        # Caso A: Seguimientos (Contactado + < 3 mensajes + > 24 horas)
+        if row["Estado"].lower() == "contactado" and row["Dia_Secuencia"] < 3:
             try:
-                # Limpiamos la fecha para extraer solo la parte dd/mm/yyyy
-                fecha_str = str(row['Fecha_Contacto']).split()[0]
+                fecha_str = row['Fecha_Contacto'].split()[0]
                 fecha_ultimo = datetime.strptime(fecha_str, "%d/%m/%Y")
                 if (ahora - fecha_ultimo).days >= 1:
                     candidatos.append({'idx': idx, 'tipo': 'seguimiento'})
             except:
-                # Si la fecha esta mal formateada, la ignoramos para no trabar el proceso
                 continue
         
-        # Caso B: Nuevos (Prioridad si no hay seguimientos)
-        elif row["Estado"] == "Nuevo":
+        # Caso B: Nuevos
+        elif row["Estado"].lower() == "nuevo":
             candidatos.append({'idx': idx, 'tipo': 'nuevo'})
 
     # --- 2. PROCESAR LOTE ---
     if not candidatos:
-        print("No hay nada pendiente para enviar hoy.")
+        print("Nada pendiente por enviar (reglas de 24h o duplicados aplicadas).")
         return
 
-    # Tomamos los primeros N candidatos (puedes barajarlos con random.shuffle(candidatos) si quieres)
     lote = candidatos[:LIMITE_POR_SESION]
+    print(f"Iniciando lote de {len(lote)} envios...")
 
     for item in lote:
         idx = item['idx']
@@ -197,18 +197,18 @@ def ejecutar_ciclo():
         if exito:
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
             envios_realizados += 1
-            print(f"✅ {tipo.upper()} enviado a {row['Evento']} ({tel})")
+            print(f"✅ {tipo.upper()} enviado a {row['Evento']}")
             
-            # Delay entre mensajes del mismo lote para evitar baneo
+            # Delay humano entre mensajes del mismo lote
             if envios_realizados < len(lote):
-                espera = random.randint(35, 75)
-                print(f"Esperando {espera}s...")
+                espera = random.randint(45, 95)
+                print(f"Esperando {espera}s para el siguiente...")
                 time.sleep(espera)
 
     # --- 3. GUARDAR CAMBIOS ---
     if envios_realizados > 0:
         df.to_csv(ARCHIVO_LEADS, index=False)
-        print(f"Ciclo terminado. {envios_realizados} envios guardados en CSV.")
+        print(f"Ciclo completado. {envios_realizados} cambios guardados.")
 
 if __name__ == "__main__":
     ejecutar_ciclo()

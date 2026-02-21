@@ -119,76 +119,80 @@ def obtener_mensaje_secuencia(nombre, dia):
 def ejecutar_ciclo():
     ahora = datetime.now()
     hoy_str = ahora.strftime("%d/%m/%Y")
+    
+    # Límite de envíos por cada vez que despierta el Worker (Ajustable)
+    LIMITE_POR_SESION = 5 
+    envios_realizados = 0
 
-    # Validación de Horario (Lunes a Sábado, 09:00 a 19:00)
     if ahora.weekday() > 5 or not (9 <= ahora.hour <= 19): 
-        print(f"Fuera de horario o día no permitido.")
+        print("Fuera de horario.")
         return 
 
     if not os.path.exists(ARCHIVO_LEADS): return
     df = pd.read_csv(ARCHIVO_LEADS)
-    
-    # Aseguramos formato de fecha y rellenamos nulos para evitar errores en el cálculo
     df['Fecha_Contacto'] = df['Fecha_Contacto'].fillna("")
-    
-    # --- LÓGICA DE SELECCIÓN ---
-    idx_a_procesar = None
-    tipo_envio = None # Para saber si es seguimiento o nuevo
 
+    # --- INICIO DEL BUCLE DE PROCESAMIENTO ---
+    # Buscamos múltiples candidatos que cumplan las reglas
     for idx, row in df.iterrows():
-        # 1. Saltamos si ya se contactó HOY (Escudo antiduplicados diario)
+        if envios_realizados >= LIMITE_POR_SESION:
+            break # Ya cumplimos la cuota de esta hora
+
+        # Saltamos si ya se contactó HOY
         if hoy_str in str(row['Fecha_Contacto']):
             continue
 
-        # 2. LÓGICA PARA SEGUIMIENTOS (Día 2 o 3)
+        procesar = False
+        tipo = ""
+
+        # Lógica Seguimiento (>24h)
         if row["Estado"] == "Contactado" and row["Dia_Secuencia"] < 3:
             try:
-                # Extraemos solo la fecha (dd/mm/yyyy) del campo Fecha_Contacto
-                fecha_ultimo_contacto = datetime.strptime(str(row['Fecha_Contacto']).split()[0], "%d/%m/%Y")
-                dias_transcurridos = (ahora - fecha_ultimo_contacto).days
+                fecha_ultimo = datetime.strptime(str(row['Fecha_Contacto']).split()[0], "%d/%m/%Y")
+                if (ahora - fecha_ultimo).days >= 1:
+                    procesar, tipo = True, "seguimiento"
+            except: continue
+        
+        # Lógica Nuevo
+        elif row["Estado"] == "Nuevo":
+            procesar, tipo = True, "nuevo"
+
+        if procesar:
+            tel = "".join(filter(str.isdigit, str(row["Telefono"])))
+            if len(tel) == 9: tel = "56" + tel
+            
+            # --- ENVÍO ---
+            exito = False
+            if tipo == "seguimiento":
+                proximo_dia = int(row["Dia_Secuencia"]) + 1
+                msg = obtener_mensaje_secuencia(row["Evento"], proximo_dia)
+                if enviar_mensaje_completo(tel, msg):
+                    df.at[idx, "Dia_Secuencia"] = proximo_dia
+                    exito = True
+            else:
+                msg = obtener_mensaje_secuencia(row["Evento"], 1)
+                pdf_path = generar_pdf_diagnostico(row["Evento"])
+                if enviar_mensaje_completo(tel, msg, pdf_path):
+                    df.at[idx, "Estado"] = "Contactado"
+                    df.at[idx, "Dia_Secuencia"] = 1
+                    if pdf_path and os.path.exists(pdf_path): os.remove(pdf_path)
+                    exito = True
+
+            if exito:
+                df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
+                envios_realizados += 1
+                print(f"✅ [{tipo.upper()}] enviado a {row['Evento']}")
                 
-                # VALIDACIÓN CRUCIAL: Solo si ha pasado al menos 1 día completo
-                if dias_transcurridos >= 1:
-                    idx_a_procesar = idx
-                    tipo_envio = "seguimiento"
-                    break # Prioridad máxima a seguimientos
-            except Exception as e:
-                print(f"Error procesando fecha para {row['Evento']}: {e}")
-                continue
+                # ESPERA HUMANA: Entre 30 y 90 segundos entre cada mensaje del lote
+                if envios_realizados < LIMITE_POR_SESION:
+                    espera = random.randint(30, 90)
+                    print(f"Esperando {espera}s para el siguiente...")
+                    time.sleep(espera)
 
-        # 3. LÓGICA PARA NUEVOS (Si no hay seguimientos pendientes que cumplan las 24h)
-        if idx_a_procesar is None and row["Estado"] == "Nuevo":
-            idx_a_procesar = idx
-            tipo_envio = "nuevo"
-            # No hacemos break aquí por si aparece un seguimiento más abajo en el loop
-
-    # --- EJECUCIÓN DEL ENVÍO ---
-    if idx_a_procesar is not None:
-        row = df.loc[idx_a_procesar]
-        tel = "".join(filter(str.isdigit, str(row["Telefono"])))
-        if len(tel) == 9: tel = "56" + tel
-
-        if tipo_envio == "seguimiento":
-            proximo_dia = int(row["Dia_Secuencia"]) + 1
-            msg = obtener_mensaje_secuencia(row["Evento"], proximo_dia)
-            if enviar_mensaje_completo(tel, msg):
-                df.at[idx_a_procesar, "Dia_Secuencia"] = proximo_dia
-                df.at[idx_a_procesar, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
-                print(f"✅ Seguimiento Día {proximo_dia} enviado a {row['Evento']}")
-
-        elif tipo_envio == "nuevo":
-            msg = obtener_mensaje_secuencia(row["Evento"], 1)
-            pdf_path = generar_pdf_diagnostico(row["Evento"])
-            if enviar_mensaje_completo(tel, msg, pdf_path):
-                df.at[idx_a_procesar, "Estado"] = "Contactado"
-                df.at[idx_a_procesar, "Dia_Secuencia"] = 1
-                df.at[idx_a_procesar, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
-                if pdf_path and os.path.exists(pdf_path): os.remove(pdf_path)
-                print(f"✅ Día 1 + PDF enviado a {row['Evento']}")
-
+    if envios_realizados > 0:
         df.to_csv(ARCHIVO_LEADS, index=False)
     else:
-        print("No hay tareas pendientes que cumplan las reglas de tiempo.")
+        print("Nada pendiente por enviar en este ciclo.")
 
 if __name__ == "__main__":
     ejecutar_ciclo()

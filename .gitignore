@@ -1,0 +1,4 @@
+# Ignorar todos los PDFs generados
+auditoria_*.pdf
+__pycache__/
+*.csv.bak

@@ -24,7 +24,6 @@ def limpiar_acentos(text):
 def buscar_y_agregar_nuevos(df_actual):
     print("🔍 No hay envíos pendientes. Buscando nuevos prospectos en Google Maps...")
     
-    # Parámetros de búsqueda (puedes ajustar 'q' según necesites)
     params = {
         "engine": "google_maps",
         "q": "Clinica Dental Santiago Chile",
@@ -37,20 +36,24 @@ def buscar_y_agregar_nuevos(df_actual):
         results = response.json().get("local_results", [])
         
         nuevos_leads = []
-        # Lista de teléfonos existentes para no duplicar
-        tels_en_base = set(df_actual['Telefono'].astype(str).str[-9:].tolist())
+        # Normalizamos teléfonos existentes para comparar
+        tels_en_base = set(df_actual['Telefono'].astype(str).str.replace(".0", "", regex=False).str[-9:].tolist())
         
-        ultimo_id = df_actual['Id'].max() if not df_actual.empty else 0
+        # Aseguramos que el ID sea entero
+        try:
+            ultimo_id = int(df_actual['Id'].max()) if not df_actual.empty else 0
+        except:
+            ultimo_id = 0
 
         for place in results:
-            raw_tel = place.get("phone", "").replace(" ", "").replace("-", "")
-            if not raw_tel: continue
+            raw_tel = str(place.get("phone", "")).replace(" ", "").replace("-", "")
+            if not raw_tel or len(raw_tel) < 8: continue
             
-            # Validar si ya existe (comparando últimos 9 dígitos)
+            # Validar si ya existe
             if raw_tel[-9:] not in tels_en_base:
                 ultimo_id += 1
                 nuevo = {
-                    "Id": ultimo_id,
+                    "Id": int(ultimo_id),
                     "Fecha": datetime.now().strftime("%d/%m/%Y"),
                     "Hora": datetime.now().strftime("%H:%M"),
                     "Hora fin": "",
@@ -63,16 +66,19 @@ def buscar_y_agregar_nuevos(df_actual):
                     "Fecha_Contacto": ""
                 }
                 nuevos_leads.append(nuevo)
+                # Evitar duplicados dentro del mismo ciclo de búsqueda
+                tels_en_base.add(raw_tel[-9:])
         
         if nuevos_leads:
             print(f"✨ Se encontraron {len(nuevos_leads)} nuevos leads.")
             return pd.concat([df_actual, pd.DataFrame(nuevos_leads)], ignore_index=True)
         else:
-            print("⚠️ Búsqueda completada, pero todos los resultados ya están en el CSV.")
+            print("⚠️ Búsqueda completada, pero no hay resultados nuevos.")
             return df_actual
             
     except Exception as e:
-        print(f"❌ Error en búsqueda: {e}")
+        # Error corregido: Convertimos e a string explícitamente
+        print("❌ Error en búsqueda: " + str(e))
         return df_actual
 
 # --- GENERADOR DE PDF ---

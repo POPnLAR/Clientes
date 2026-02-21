@@ -1,0 +1,37 @@
+name: GestionVital Pro Cron
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Se ejecuta cada hora en punto
+  workflow_dispatch:      # Permite ejecutarlo manualmente desde GitHub
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Instalar dependencias
+        run: pip install pandas requests fpdf
+
+      - name: Ejecutar Prospeccion
+        env:
+          EVO_URL: ${{ secrets.EVO_URL }}
+          EVO_TOKEN: ${{ secrets.EVO_TOKEN }}
+          EVO_INSTANCE: ${{ secrets.EVO_INSTANCE }}
+          SERP_KEY: ${{ secrets.SERP_KEY }}
+        run: python worker.py
+
+      - name: Guardar cambios en CSV
+        run: |
+          git config --global user.name 'GestionVital Bot'
+          git config --global user.email 'bot@gestionvitalpro.cl'
+          git add prospeccion_gestionvital_pro.csv
+          git commit -m "Actualizacion automatica de leads [Skip CI]" || echo "No hay cambios"
+          git push

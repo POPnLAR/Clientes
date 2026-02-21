@@ -26,7 +26,7 @@ def buscar_y_agregar_nuevos(df_actual):
     
     params = {
         "engine": "google_maps",
-        "q": "Clinica Dental Santiago Chile",
+        "q": "Clinica Estetica Santiago Chile",
         "type": "search",
         "api_key": SERP_KEY
     }

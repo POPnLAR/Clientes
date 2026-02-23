@@ -18,7 +18,8 @@ jobs:
           python-version: '3.9'
 
       - name: Instalar dependencias
-        run: pip install pandas requests fpdf
+        # Se agregaron beautifulsoup4 y lxml para el scraping de correos
+        run: pip install pandas requests fpdf beautifulsoup4 lxml
 
       - name: Ejecutar Prospeccion
         env:

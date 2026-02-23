@@ -81,45 +81,6 @@ def buscar_y_agregar_nuevos(df_actual):
         print("❌ Error en búsqueda: " + str(e))
         return df_actual
 
-# --- GENERADOR DE PDF ---
-def generar_pdf_diagnostico(nombre_clinica):
-    try:
-        pdf = FPDF()
-        pdf.set_auto_page_break(auto=True, margin=15)
-        pdf.add_page()
-        pdf.set_fill_color(255, 255, 255)
-        pdf.rect(0, 0, 210, 40, 'F')
-        pdf.set_fill_color(0, 102, 204)
-        pdf.rect(0, 0, 210, 3, 'F')
-        if os.path.exists("Logo 1.png"):
-            pdf.image("Logo 1.png", x=10, y=8, h=22)
-        pdf.set_text_color(0, 102, 204)
-        pdf.set_font("Arial", 'B', 16)
-        pdf.set_xy(85, 12)
-        pdf.cell(0, 8, "AUDITORIA DE EFICIENCIA", ln=True)
-        nombre_clean = limpiar_acentos(nombre_clinica)
-        pdf.set_y(45)
-        pdf.set_text_color(0, 0, 0)
-        pdf.set_font("Arial", 'B', 13)
-        pdf.cell(0, 10, f"DIAGNOSTICO: {nombre_clean.upper()}", ln=True)
-        
-        modulos = [
-            ("Fichas y Firma Digital", "Historias y consentimientos 100% legales."),
-            ("WhatsApp Business", "Automatizacion de citas y recordatorios."),
-            ("Inventario y Ecommerce", "Control de stock y venta online directa."),
-            ("Gestion 360", "Control total de la atencion al paciente.")
-        ]
-        for tit, desc in modulos:
-            pdf.set_font("Arial", 'B', 9); pdf.cell(50, 5, f"  {tit}:", 0)
-            pdf.set_font("Arial", '', 9); pdf.cell(0, 5, desc, ln=True)
-        
-        path = f"auditoria_{nombre_clean[:15].replace(' ', '_')}.pdf"
-        pdf.output(path)
-        return path
-    except Exception as e:
-        print(f"Error PDF: {e}")
-        return None
-
 # --- COMUNICACIONES ---
 def enviar_mensaje_completo(numero, mensaje, path_pdf=None):
     base_url = EVO_URL.strip().rstrip('/')
@@ -143,15 +104,83 @@ def enviar_mensaje_completo(numero, mensaje, path_pdf=None):
         return res_text.status_code in [200, 201]
     except: return False
 
+# --- NUEVOS MENSAJES DE ALTO IMPACTO (PUNTO 1) ---
 def obtener_mensaje_secuencia(nombre, dia):
     nombre = limpiar_acentos(nombre)
     if dia == 1:
-        return f"Hola! 👋 Vi el perfil de *{nombre}* y note potencial para automatizar su gestion. Le prepare una *Auditoria de Eficiencia* de cortesia (adjunta). ¿Le gustaria revisarla?"
+        return (f"Hola! 👋 Noté que en *{nombre}* tienen una fuga importante de ingresos por citas no confirmadas. "
+                "Les preparé una *Auditoría de Eficiencia Digital* de cortesía (la adjunto aquí abajo). "
+                "¿Le gustaría que revisemos cómo recuperar ese 30% de tiempo perdido?")
+    
     elif dia == 2:
-        return f"Hola de nuevo! 👋 Sabia que clinicas como *{nombre}* reducen el No-Show en un 40% con nuestro bot? Tambien eliminamos el papel con Firma Digital. ¿Hablamos 5 min?"
+        return (f"Hola de nuevo! 👋 Sabía que las clínicas que usan nuestra tecnología reducen el 'No-Show' en un 45% desde el primer mes? "
+                f"Mientras *{nombre}* sigue confirmando manual, su competencia ya automatizó. ¿Conversamos 5 minutos hoy?")
+    
     elif dia == 3:
-        return f"Buen dia! 🏥 Tenemos 2 cupos con modulo de *Ecommerce* bonificado en su zona esta semana. ¿Le interesa que *{nombre}* aproveche este beneficio? Saludos!"
+        return (f"Buen día! 🏥 Solo liberamos 2 cupos para integración de *Firma Digital y Ecommerce* en su zona esta semana. "
+                f"Me gustaría que *{nombre}* aprovechara los beneficios de lanzamiento. ¿Agendamos una breve llamada?")
     return ""
+
+# --- NUEVO DISEÑO DE PDF VISUAL (PUNTO 3) ---
+def generar_pdf_diagnostico(nombre_clinica):
+    try:
+        pdf = FPDF()
+        pdf.add_page()
+        
+        # Header Estilo Moderno
+        pdf.set_fill_color(15, 23, 42) # Azul Slate 900
+        pdf.rect(0, 0, 210, 50, 'F')
+        
+        pdf.set_text_color(255, 255, 255)
+        pdf.set_font("Arial", 'B', 22)
+        pdf.set_xy(10, 15)
+        pdf.cell(0, 10, "AUDITORÍA DE EFICIENCIA DIGITAL", ln=True)
+        
+        pdf.set_font("Arial", '', 12)
+        pdf.cell(0, 10, f"Preparado exclusivamente para: {limpiar_acentos(nombre_clinica).upper()}", ln=True)
+        
+        # Cuerpo del PDF
+        pdf.set_y(60)
+        pdf.set_text_color(15, 23, 42)
+        pdf.set_font("Arial", 'B', 14)
+        pdf.cell(0, 10, "DIAGNÓSTICO DE IMPACTO OPERATIVO", ln=True)
+        pdf.ln(5)
+        
+        # Bloque de puntos clave con iconos simulados
+        puntos = [
+            ("Pérdida por Citas", "Se estima un 30% de inasistencia por falta de recordatorios auto."),
+            ("Fuga de Tiempo", "2 horas diarias perdidas en gestión manual de WhatsApp."),
+            ("Riesgo Legal", "Necesidad urgente de Fichas Clínicas con Firma Digital legal."),
+            ("Venta Directa", "Ausencia de Ecommerce para venta de tratamientos 24/7.")
+        ]
+        
+        for titulo, desc in puntos:
+            pdf.set_font("Arial", 'B', 11)
+            pdf.set_text_color(59, 130, 246) # Azul Eléctrico
+            pdf.cell(0, 7, f"> {titulo}", ln=True)
+            pdf.set_text_color(71, 85, 105) # Gris Slate
+            pdf.set_font("Arial", '', 10)
+            pdf.multi_cell(0, 6, desc)
+            pdf.ln(3)
+            
+        # Footer / Llamado a la acción
+        pdf.set_y(-40)
+        pdf.set_fill_color(248, 250, 252)
+        pdf.rect(0, 250, 210, 47, 'F')
+        pdf.set_text_color(15, 23, 42)
+        pdf.set_font("Arial", 'I', 10)
+        pdf.set_y(-30)
+        pdf.cell(0, 10, "Este reporte es una estimación basada en estándares de la industria estetica 2026.", align='C', ln=True)
+        pdf.set_font("Arial", 'B', 12)
+        pdf.cell(0, 10, "GestionVital Pro - Optimizando el futuro de su clínica.", align='C', ln=True)
+        
+        nombre_clean = limpiar_acentos(nombre_clinica)
+        path = f"auditoria_{nombre_clean[:15].replace(' ', '_')}.pdf"
+        pdf.output(path)
+        return path
+    except Exception as e:
+        print(f"Error generando PDF: {e}")
+        return None
 
 # --- CICLO PRINCIPAL ---
 def ejecutar_ciclo():

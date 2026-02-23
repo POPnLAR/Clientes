@@ -4,21 +4,32 @@ import os
 import time
 import requests
 import base64
+import unicodedata
 from datetime import datetime
+from fpdf import FPDF
 
 # --- CONFIGURACIÓN ---
 ARCHIVO_LEADS = "prospeccion_gestionvital_pro.csv"
 COLUMNAS_REQUERIDAS = ["Id", "Fecha", "Hora", "Evento", "Ministerio", "Ubicacion", "Estado", "Telefono", "Fecha_Contacto", "Dia_Secuencia"]
-NUMERO_PRUEBA = "56971394997" # Número de prueba configurado
+NUMERO_PRUEBA = "56971394997"
 
-# Variables de entorno para Evolution API (Asegúrate de tenerlas en tu entorno/Secrets)
-EVO_URL = os.getenv("EVO_URL", "")
-EVO_TOKEN = os.getenv("EVO_TOKEN", "")
-EVO_INSTANCE = os.getenv("EVO_INSTANCE", "")
+# Conexión Segura a Secrets
+try:
+    EVO_URL = st.secrets["EVO_URL"]
+    EVO_TOKEN = st.secrets["EVO_TOKEN"]
+    EVO_INSTANCE = st.secrets["EVO_INSTANCE"]
+except Exception:
+    st.error("⚠️ Error: No se encontraron las credenciales en Secrets.")
+    EVO_URL = EVO_TOKEN = EVO_INSTANCE = None
 
 st.set_page_config(page_title="GestiónVital Pro", layout="wide", page_icon="🏥")
 
-# --- DISEÑO MINIMALISTA Y PROFESIONAL ---
+# --- UTILIDADES ---
+def limpiar_acentos(text):
+    if not isinstance(text, str): return str(text)
+    return "".join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
+
+# --- DISEÑO CSS MINIMALISTA ---
 st.markdown("""
     <style>
     .stApp { background-color: #F8FAFC !important; }
@@ -28,145 +39,119 @@ st.markdown("""
         border: 1px solid #334155 !important;
         padding: 15px !important;
         border-radius: 12px !important;
-        margin-bottom: 12px !important;
     }
-    [data-testid="stSidebar"] [data-testid="stMetricLabel"] div p { color: #94A3B8 !important; font-size: 0.85rem !important; text-transform: uppercase; }
-    [data-testid="stSidebar"] [data-testid="stMetricValue"] div { color: #F8FAFC !important; font-size: 1.8rem !important; font-weight: 600 !important; }
-    .stTabs [data-baseweb="tab-list"] { background-color: transparent; gap: 15px; }
-    .stTabs [data-baseweb="tab"] { color: #64748B !important; font-weight: 500; }
-    .stTabs [data-baseweb="tab--active"] { color: #0F172A !important; border-bottom: 2px solid #3B82F6 !important; }
-    .stButton>button { background-color: #0F172A !important; color: white !important; border-radius: 8px !important; width: 100%; }
-    /* Botón de prueba especial */
+    [data-testid="stSidebar"] [data-testid="stMetricLabel"] div p { color: #94A3B8 !important; font-size: 0.8rem !important; text-transform: uppercase; }
+    [data-testid="stSidebar"] [data-testid="stMetricValue"] div { color: #F8FAFC !important; font-size: 1.6rem !important; }
+    
+    /* Botón de Prueba Azul Vibrante */
     .test-btn > div > button {
         background-color: #3B82F6 !important;
-        border: 1px solid #60A5FA !important;
+        color: white !important;
+        font-weight: bold !important;
+        border: none !important;
+        height: 45px !important;
+        border-radius: 10px !important;
     }
-    h1, h2, h3 { color: #0F172A !important; font-weight: 700 !important; }
+    
+    .stTabs [data-baseweb="tab-list"] { background-color: transparent; gap: 15px; }
+    .stTabs [data-baseweb="tab--active"] { border-bottom: 2px solid #3B82F6 !important; }
+    h1, h2, h3 { color: #0F172A !important; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- FUNCIONES DE PRUEBA Y COMUNICACIÓN ---
-def enviar_mensaje_prueba(numero, dia):
-    """Función simplificada para enviar pruebas vía Evolution API"""
-    if not EVO_URL or not EVO_TOKEN:
-        st.error("Faltan credenciales de Evolution API")
-        return False
-    
-    mensajes = {
-        1: "🧪 *PRUEBA DÍA 1:* Hola! Noté una fuga de ingresos en su clínica. Adjunto auditoría...",
-        2: "🧪 *PRUEBA DÍA 2:* Sabía que las clínicas reducen el No-Show en un 45%?",
-        3: "🧪 *PRUEBA DÍA 3:* Últimos 2 cupos para integración de Ecommerce..."
-    }
-    
-    url = f"{EVO_URL.strip().rstrip('/')}/message/sendText/{EVO_INSTANCE}"
-    headers = {"Content-Type": "application/json", "apikey": EVO_TOKEN}
-    payload = {"number": numero, "textMessage": {"text": mensajes[dia]}}
-    
+# --- GENERADOR DE PDF MODERNO ---
+def generar_pdf_auditoria(nombre_clinica):
     try:
-        res = requests.post(url, json=payload, headers=headers, timeout=10)
-        return res.status_code in [200, 201]
-    except:
-        return False
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_fill_color(15, 23, 42)
+        pdf.rect(0, 0, 210, 45, 'F')
+        pdf.set_text_color(255, 255, 255)
+        pdf.set_font("Arial", 'B', 20)
+        pdf.set_xy(10, 15)
+        pdf.cell(0, 10, "AUDITORÍA DE EFICIENCIA DIGITAL", ln=True)
+        pdf.set_font("Arial", '', 12)
+        pdf.cell(0, 10, f"Para: {limpiar_acentos(nombre_clinica).upper()}", ln=True)
+        
+        pdf.set_y(55)
+        pdf.set_text_color(15, 23, 42)
+        pdf.set_font("Arial", 'B', 14)
+        pdf.cell(0, 10, "DIAGNÓSTICO DE PÉRDIDAS ESTIMADAS", ln=True)
+        
+        puntos = [
+            ("No-Show", "30% de inasistencia por falta de recordatorios."),
+            ("Gestión", "2 horas/día perdidas en confirmación manual."),
+            ("Digital", "Riesgo legal por falta de firma electrónica.")
+        ]
+        for tit, desc in puntos:
+            pdf.set_font("Arial", 'B', 11); pdf.set_text_color(59, 130, 246)
+            pdf.cell(0, 8, f"> {tit}", ln=True)
+            pdf.set_font("Arial", '', 10); pdf.set_text_color(71, 85, 105)
+            pdf.multi_cell(0, 5, desc); pdf.ln(2)
+            
+        path = "auditoria_test.pdf"
+        pdf.output(path)
+        return path
+    except: return None
+
+# --- LÓGICA DE PRUEBA ---
+def enviar_secuencia_test():
+    if not EVO_URL: return
+    
+    headers = {"Content-Type": "application/json", "apikey": EVO_TOKEN}
+    base_url = EVO_URL.strip().rstrip('/')
+    
+    # DÍA 1 + PDF
+    path_pdf = generar_pdf_auditoria("Clínica de Prueba")
+    msg1 = "🧪 *TEST DÍA 1:* Hola! Noté una fuga de ingresos en su clínica. Adjunto auditoría..."
+    requests.post(f"{base_url}/message/sendText/{EVO_INSTANCE}", json={"number": NUMERO_PRUEBA, "textMessage": {"text": msg1}}, headers=headers)
+    
+    if path_pdf and os.path.exists(path_pdf):
+        with open(path_pdf, "rb") as f:
+            b64 = base64.b64encode(f.read()).decode('utf-8')
+        requests.post(f"{base_url}/message/sendMedia/{EVO_INSTANCE}", 
+                      json={"number": NUMERO_PRUEBA, "mediaMessage": {"mediatype": "document", "fileName": "Auditoria.pdf", "media": b64}}, headers=headers)
+        os.remove(path_pdf)
+    
+    # DÍA 2
+    time.sleep(2)
+    msg2 = "🧪 *TEST DÍA 2:* Sabía que las clínicas automatizadas reducen el No-Show un 45%?"
+    requests.post(f"{base_url}/message/sendText/{EVO_INSTANCE}", json={"number": NUMERO_PRUEBA, "textMessage": {"text": msg2}}, headers=headers)
+    
+    st.sidebar.success("✅ Test enviado a WhatsApp")
 
 # --- CARGA DE DATOS ---
 @st.cache_data(ttl=2)
-def cargar_base_segura():
+def cargar_datos():
     if os.path.exists(ARCHIVO_LEADS):
-        try:
-            df = pd.read_csv(ARCHIVO_LEADS)
-            for col in COLUMNAS_REQUERIDAS:
-                if col not in df.columns:
-                    df[col] = 0 if col == "Dia_Secuencia" else "Sin datos"
-            return df[COLUMNAS_REQUERIDAS]
-        except:
-            return pd.DataFrame(columns=COLUMNAS_REQUERIDAS)
+        return pd.read_csv(ARCHIVO_LEADS)
     return pd.DataFrame(columns=COLUMNAS_REQUERIDAS)
 
-def guardar_cambios_manuales(df_edit):
-    with st.status("Sincronizando...", expanded=False) as status:
-        df_edit.to_csv(ARCHIVO_LEADS, index=False)
-        time.sleep(1)
-        status.update(label="Cambios guardados", state="complete")
-    st.toast("Base de datos actualizada")
-    time.sleep(0.5)
-    st.rerun()
-
 # --- SIDEBAR ---
-df_actual = cargar_base_segura()
+df_actual = cargar_datos()
 
 with st.sidebar:
     st.markdown("<br><h2 style='color: white;'>GestiónVital</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #94A3B8;'>Panel de Prospección</p>", unsafe_allow_html=True)
-    
-    st.metric(label="Total Prospectos", value=len(df_actual))
-    st.metric(label="Contactados", value=len(df_actual[df_actual["Estado"] == "Contactado"]))
-    st.metric(label="Pendientes", value=len(df_actual[df_actual["Estado"] == "Nuevo"]))
+    st.metric("Prospectos", len(df_actual))
+    st.metric("Contactados", len(df_actual[df_actual["Estado"] == "Contactado"]))
     
     st.markdown("---")
-    st.markdown("<p style='color: white; font-size: 0.8rem;'>🛠️ HERRAMIENTAS DE PRUEBA</p>", unsafe_allow_html=True)
-    
-    # Botón de Pruebas
+    st.markdown("<p style='color: white; font-size: 0.8rem;'>LABORATORIO DE PRUEBAS</p>", unsafe_allow_html=True)
     st.markdown('<div class="test-btn">', unsafe_allow_html=True)
-    if st.button(f"🚀 Enviar Test a {NUMERO_PRUEBA}"):
-        with st.spinner("Enviando secuencia de prueba..."):
-            success = True
-            for d in range(1, 4):
-                if not enviar_mensaje_prueba(NUMERO_PRUEBA, d):
-                    success = False
-                time.sleep(1)
-            if success:
-                st.success("Secuencia de prueba enviada")
-            else:
-                st.error("Error en el envío")
+    if st.button(f"🚀 ENVIAR TEST A {NUMERO_PRUEBA[-4:]}"):
+        enviar_secuencia_test()
     st.markdown('</div>', unsafe_allow_html=True)
+    st.caption(f"v2.9 | {datetime.now().strftime('%d/%m/%Y')}")
 
-    st.markdown("<br>" * 2, unsafe_allow_html=True)
-    st.caption(f"v2.8 | {datetime.now().strftime('%d/%m/%Y')}")
+# --- CUERPO ---
+st.title("Panel de Prospección")
+t1, t2 = st.tabs(["Dashboard", "Editor"])
 
-# --- CUERPO PRINCIPAL ---
-st.title("Prospección Automática")
+with t1:
+    st.dataframe(df_actual, use_container_width=True, hide_index=True)
 
-tabs = st.tabs(["Dashboard", "Editor de Base", "Auditoría"])
-
-with tabs[0]:
-    search = st.text_input("Filtrar por clínica...", placeholder="Buscar...", label_visibility="collapsed")
-    df_f = df_actual
-    if search:
-        df_f = df_actual[df_actual['Evento'].str.contains(search, case=False, na=False)]
-
-    st.dataframe(
-        df_f.sort_values(by="Id", ascending=False),
-        use_container_width=True,
-        hide_index=True,
-        column_config={
-            "Dia_Secuencia": st.column_config.ProgressColumn("Progreso", min_value=0, max_value=3, format="%d/3"),
-            "Telefono": "WhatsApp",
-            "Evento": "Clínica"
-        }
-    )
-
-with tabs[1]:
-    st.markdown("### 📝 Editor Maestro")
-    df_editado = st.data_editor(
-        df_actual,
-        column_config={
-            "Id": st.column_config.NumberColumn("ID", disabled=True),
-            "Estado": st.column_config.SelectboxColumn("Estado", options=["Nuevo", "Contactado", "Rechazado", "Cita Agendada"]),
-            "Dia_Secuencia": st.column_config.NumberColumn("Día (0-3)", min_value=0, max_value=3),
-        },
-        num_rows="dynamic",
-        use_container_width=True,
-        hide_index=True,
-        key="editor_minimal_v8"
-    )
-    if st.button("GUARDAR CAMBIOS"):
-        guardar_cambios_manuales(df_editado)
-
-with tabs[2]:
-    if not df_actual.empty:
-        clinica = st.selectbox("Seleccionar clínica:", options=df_actual["Evento"].unique())
-        detalle = df_actual[df_actual["Evento"] == clinica].iloc[0]
-        st.table(detalle)
-
-st.divider()
-st.caption("GestionVital Pro - Sistema de automatización clínica.")
+with t2:
+    df_edit = st.data_editor(df_actual, num_rows="dynamic", use_container_width=True, hide_index=True)
+    if st.button("GUARDAR"):
+        df_edit.to_csv(ARCHIVO_LEADS, index=False)
+        st.rerun()

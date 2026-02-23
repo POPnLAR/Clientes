@@ -108,17 +108,16 @@ def enviar_mensaje_completo(numero, mensaje, path_pdf=None):
 def obtener_mensaje_secuencia(nombre, dia):
     nombre = limpiar_acentos(nombre)
     if dia == 1:
-        return (f"Hola! 👋 Noté que en *{nombre}* tienen una fuga importante de ingresos por citas no confirmadas. "
-                "Les preparé una *Auditoría de Eficiencia Digital* de cortesía (la adjunto aquí abajo). "
-                "¿Le gustaría que revisemos cómo recuperar ese 30% de tiempo perdido?")
+        return (f"Hola! 👋 Vi el perfil de *{nombre}* y detecté 3 puntos donde están perdiendo pacientes por falta de respuesta inmediata. 📉\n\n"
+                "Le preparé un breve análisis de cuánto están dejando de percibir mensualmente. ¿Se lo comparto por aquí?")
     
     elif dia == 2:
-        return (f"Hola de nuevo! 👋 Sabía que las clínicas que usan nuestra tecnología reducen el 'No-Show' en un 45% desde el primer mes? "
-                f"Mientras *{nombre}* sigue confirmando manual, su competencia ya automatizó. ¿Conversamos 5 minutos hoy?")
+        return (f"Hola de nuevo! 👋 Sabía que el 70% de los pacientes de estética eligen la clínica que les responde en menos de 5 minutos?\n\n"
+                f"En *{nombre}* podríamos automatizar eso hoy mismo. ¿Le interesaría ver una demo de 2 minutos?")
     
     elif dia == 3:
-        return (f"Buen día! 🏥 Solo liberamos 2 cupos para integración de *Firma Digital y Ecommerce* en su zona esta semana. "
-                f"Me gustaría que *{nombre}* aprovechara los beneficios de lanzamiento. ¿Agendamos una breve llamada?")
+        return (f"Buen día! 🏥 Solo me quedan 2 cupos para activar el sistema de *Agendamiento Automático* esta semana en su zona.\n\n"
+                f"No quiero que *{nombre}* pierda la oportunidad de bonificar la implementación. ¿Conversamos brevemente?")
     return ""
 
 # --- NUEVO DISEÑO DE PDF VISUAL (PUNTO 3) ---

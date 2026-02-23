@@ -18,7 +18,6 @@ jobs:
           python-version: '3.9'
 
       - name: Instalar dependencias
-        # Se agregaron beautifulsoup4 y lxml para el scraping de correos
         run: pip install pandas requests fpdf beautifulsoup4 lxml
 
       - name: Ejecutar Prospeccion
@@ -29,17 +28,17 @@ jobs:
           SERP_KEY: ${{ secrets.SERP_KEY }}
         run: python worker.py
 
-     - name: Guardar cambios en CSV
+      - name: Guardar cambios en CSV
         run: |
           git config --global user.name 'GestionVital Bot'
           git config --global user.email 'bot@gestionvitalpro.cl'
           
-          # 1. Traer lo que hay en la nube antes de cualquier cosa
+          # 1. Traer lo que hay en la nube antes de cualquier cosa para evitar el 'rejected'
           git pull origin main --rebase
           
           # 2. Agregar cambios
           git add prospeccion_gestionvital_pro.csv
           
-          # 3. Commit y Push con reintento
+          # 3. Commit y Push con reintento si falla
           git commit -m "Actualizacion de leads y envios [Skip CI]" || echo "No hay cambios"
           git push origin main || (git pull origin main --rebase && git push origin main)

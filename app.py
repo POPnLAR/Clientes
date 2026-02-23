@@ -3,11 +3,8 @@ import pandas as pd
 import os
 import time
 import requests
-import base64
 import unicodedata
 from datetime import datetime
-from fpdf import FPDF
-from worker import obtener_mensaje_secuencia
 
 # --- CONFIGURACIÓN ---
 ARCHIVO_LEADS = "prospeccion_gestionvital_pro.csv"
@@ -30,119 +27,124 @@ def limpiar_acentos(text):
     if not isinstance(text, str): return str(text)
     return "".join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
-# --- DISEÑO CSS MINIMALISTA ---
+# --- DISEÑO CSS DARK PRO ---
 st.markdown("""
     <style>
-    .stApp { background-color: #F8FAFC !important; }
-    [data-testid="stSidebar"] { background-color: #0F172A !important; border-right: 1px solid #E2E8F0; }
-    [data-testid="stSidebar"] [data-testid="stMetric"] {
-        background-color: #1E293B !important;
-        border: 1px solid #334155 !important;
-        padding: 15px !important;
-        border-radius: 12px !important;
+    .stApp { background-color: #0F172A !important; color: #F8FAFC !important; }
+    [data-testid="stSidebar"] { background-color: #0F172A !important; border-right: 1px solid #1E293B; }
+    [data-testid="stMetric"] { 
+        background-color: #1E293B !important; 
+        border: 1px solid #334155 !important; 
+        padding: 15px !important; 
+        border-radius: 12px !important; 
     }
-    [data-testid="stSidebar"] [data-testid="stMetricLabel"] div p { color: #94A3B8 !important; font-size: 0.8rem !important; text-transform: uppercase; }
-    [data-testid="stSidebar"] [data-testid="stMetricValue"] div { color: #F8FAFC !important; font-size: 1.6rem !important; }
-    
-    /* Botón de Prueba Azul Vibrante */
-    .test-btn > div > button {
+    .stButton>button {
         background-color: #3B82F6 !important;
         color: white !important;
-        font-weight: bold !important;
-        border: none !important;
-        height: 45px !important;
-        border-radius: 10px !important;
+        border-radius: 8px !important;
+        width: 100%;
+        font-weight: 600 !important;
     }
-    
-    .stTabs [data-baseweb="tab-list"] { background-color: transparent; gap: 15px; }
-    .stTabs [data-baseweb="tab--active"] { border-bottom: 2px solid #3B82F6 !important; }
-    h1, h2, h3 { color: #0F172A !important; }
+    .test-btn > div > button { background-color: #10B981 !important; }
+    [data-testid="stDataFrame"] td { color: #F8FAFC !important; }
     </style>
     """, unsafe_allow_html=True)
-
-# --- GENERADOR DE PDF MODERNO ---
-def generar_pdf_auditoria(nombre_clinica):
-    try:
-        pdf = FPDF()
-        pdf.add_page()
-        pdf.set_fill_color(15, 23, 42)
-        pdf.rect(0, 0, 210, 45, 'F')
-        pdf.set_text_color(255, 255, 255)
-        pdf.set_font("Arial", 'B', 20)
-        pdf.set_xy(10, 15)
-        pdf.cell(0, 10, "AUDITORÍA DE EFICIENCIA DIGITAL", ln=True)
-        pdf.set_font("Arial", '', 12)
-        pdf.cell(0, 10, f"Para: {limpiar_acentos(nombre_clinica).upper()}", ln=True)
-        
-        pdf.set_y(55)
-        pdf.set_text_color(15, 23, 42)
-        pdf.set_font("Arial", 'B', 14)
-        pdf.cell(0, 10, "DIAGNÓSTICO DE PÉRDIDAS ESTIMADAS", ln=True)
-        
-        puntos = [
-            ("No-Show", "30% de inasistencia por falta de recordatorios."),
-            ("Gestión", "2 horas/día perdidas en confirmación manual."),
-            ("Digital", "Riesgo legal por falta de firma electrónica.")
-        ]
-        for tit, desc in puntos:
-            pdf.set_font("Arial", 'B', 11); pdf.set_text_color(59, 130, 246)
-            pdf.cell(0, 8, f"> {tit}", ln=True)
-            pdf.set_font("Arial", '', 10); pdf.set_text_color(71, 85, 105)
-            pdf.multi_cell(0, 5, desc); pdf.ln(2)
-            
-        path = "auditoria_test.pdf"
-        pdf.output(path)
-        return path
-    except: return None
 
 # --- LÓGICA DE PRUEBA ---
 def enviar_secuencia_test():
     if not EVO_URL: return
-    
     headers = {"Content-Type": "application/json", "apikey": EVO_TOKEN}
     base_url = EVO_URL.strip().rstrip('/')
     
-    # DÍA 1 + PDF
-    path_pdf = generar_pdf_auditoria("Clínica de Prueba")
-    msg1 = obtener_mensaje_secuencia("Prueba",1)
-                
-    requests.post(f"{base_url}/message/sendText/{EVO_INSTANCE}", json={"number": NUMERO_PRUEBA, "textMessage": {"text": msg1}}, headers=headers)
-    
-    
-    st.sidebar.success("✅ Test enviado a WhatsApp")
+    try:
+        from worker import obtener_mensaje_secuencia
+        msg1 = obtener_mensaje_secuencia("Clinica de Prueba", "Santiago", 1)
+        requests.post(f"{base_url}/chat/sendPresence/{EVO_INSTANCE}", 
+                      json={"number": NUMERO_PRUEBA, "presence": "composing"}, headers=headers)
+        time.sleep(2)
+        requests.post(f"{base_url}/message/sendText/{EVO_INSTANCE}", 
+                      json={"number": NUMERO_PRUEBA, "textMessage": {"text": msg1}}, 
+                      headers=headers, timeout=10)
+        st.sidebar.success("✅ Test enviado")
+    except:
+        st.sidebar.error("❌ Fallo en la conexión")
 
 # --- CARGA DE DATOS ---
 @st.cache_data(ttl=2)
 def cargar_datos():
     if os.path.exists(ARCHIVO_LEADS):
-        return pd.read_csv(ARCHIVO_LEADS)
+        df = pd.read_csv(ARCHIVO_LEADS)
+        for col in COLUMNAS_REQUERIDAS:
+            if col not in df.columns: df[col] = 0 if col == "Dia_Secuencia" else ""
+        return df
     return pd.DataFrame(columns=COLUMNAS_REQUERIDAS)
 
-# --- SIDEBAR ---
+# --- APP PRINCIPAL ---
 df_actual = cargar_datos()
 
 with st.sidebar:
     st.markdown("<br><h2 style='color: white;'>GestiónVital</h2>", unsafe_allow_html=True)
     st.metric("Prospectos", len(df_actual))
     st.metric("Contactados", len(df_actual[df_actual["Estado"] == "Contactado"]))
-    
     st.markdown("---")
-    st.markdown("<p style='color: white; font-size: 0.8rem;'>LABORATORIO DE PRUEBAS</p>", unsafe_allow_html=True)
-    st.markdown('<div class="test-btn">', unsafe_allow_html=True)
-    if st.button(f"🚀 ENVIAR TEST A {NUMERO_PRUEBA[-4:]}"):
+    if st.button(f"🚀 ENVIAR MSJ PRUEBA"):
         enviar_secuencia_test()
-    st.markdown('</div>', unsafe_allow_html=True)
-    st.caption(f"v2.9 | {datetime.now().strftime('%d/%m/%Y')}")
+    st.caption(f"v3.4 | {datetime.now().strftime('%d/%m/%Y')}")
 
-# --- CUERPO ---
-st.title("Panel de Prospección")
-t1, t2 = st.tabs(["Dashboard", "Editor"])
+st.title("Panel de Prospección Integral")
+
+t1, t2 = st.tabs(["📊 Dashboard", "⚙️ Editor"])
 
 with t1:
-    st.dataframe(df_actual, use_container_width=True, hide_index=True)
+    col_a, col_b, col_c, col_d = st.columns(4)
+    total = len(df_actual)
+    contactados = len(df_actual[df_actual["Estado"] == "Contactado"])
+    
+    with col_a: st.metric("Cartera Total", total)
+    with col_b: st.metric("Engagement", f"{(contactados/total*100) if total > 0 else 0:.1f}%")
+    with col_c: st.metric("En Secuencia", len(df_actual[df_actual["Dia_Secuencia"] > 0]))
+    with col_d: st.metric("Por Auditar", len(df_actual[df_actual["Estado"] == "Nuevo"]))
+
+    busqueda = st.text_input("🔍 Buscar Clínica...", placeholder="Ej: Las Condes...", label_visibility="collapsed")
+    
+    df_f = df_actual.copy()
+    if busqueda:
+        df_f = df_f[df_f['Evento'].str.contains(busqueda, case=False, na=False) | 
+                    df_f['Ubicacion'].str.contains(busqueda, case=False, na=False)]
+
+    df_display = df_f.copy()
+    def format_whatsapp_link(tel):
+        num = "".join(filter(str.isdigit, str(tel)))
+        if not num: return None
+        if len(num) == 9: num = "56" + num
+        return f"https://wa.me/{num}"
+
+    df_display["WhatsApp"] = df_display["Telefono"].apply(format_whatsapp_link)
+
+    st.dataframe(
+        df_display.sort_values(by="Dia_Secuencia", ascending=False),
+        use_container_width=True,
+        hide_index=True,
+        column_config={
+            "Id": None,
+            "Evento": st.column_config.TextColumn("Clínica / Lead", width="medium"),
+            "Ubicacion": "📍 Ubicación",
+            "Estado": st.column_config.SelectboxColumn("Estatus", options=["Nuevo", "Contactado", "Cita Agendada", "Finalizado"]),
+            "Dia_Secuencia": st.column_config.ProgressColumn("Madurez", min_value=0, max_value=4, format="%d/4"),
+            "WhatsApp": st.column_config.LinkColumn("Chat WhatsApp", display_text="Enviar Mensaje"),
+            "Telefono": None,
+            "Fecha_Contacto": "Último Contacto",
+            "Ministerio": None, "Hora": None, "Fecha": None
+        }
+    )
 
 with t2:
+    st.info("Edición directa de la base de datos.")
     df_edit = st.data_editor(df_actual, num_rows="dynamic", use_container_width=True, hide_index=True)
-    if st.button("GUARDAR"):
+    if st.button("💾 GUARDAR CAMBIOS"):
         df_edit.to_csv(ARCHIVO_LEADS, index=False)
+        st.success("Cambios guardados.")
         st.rerun()
+
+st.markdown("---")
+st.caption("GestionVital Pro - Sistema de Alta Dirección Clínica.")

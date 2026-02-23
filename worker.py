@@ -107,19 +107,27 @@ def enviar_mensaje_completo(numero, mensaje, path_pdf=None):
 # --- NUEVOS MENSAJES DE ALTO IMPACTO (PUNTO 1) ---
 def obtener_mensaje_secuencia(nombre, dia):
     nombre = limpiar_acentos(nombre)
+    
     if dia == 1:
-        return (f"Hola! 👋 Vi el perfil de *{nombre}* y detecté 3 puntos donde están perdiendo pacientes por falta de respuesta inmediata. 📉\n\n"
-                "Le preparé un breve análisis de cuánto están dejando de percibir mensualmente. ¿Se lo comparto por aquí?")
+        # ESTRATEGIA: Presentación Corporativa + Auditoría Externa
+        return (f"Estimados, un gusto saludarles. 👋 Mi nombre es Rodrigo y soy parte del equipo de **GestiónVital**, firma consultora especializada en la profesionalización y transformación digital de centros médicos estéticos.\n\n"
+                f"Hemos realizado una auditoría externa preventiva sobre el ecosistema operativo de *{nombre}* y detectamos tres brechas críticas que están comprometiendo su escalabilidad:\n\n"
+                f"1️⃣ **Fuga por Latencia Operativa:** Pérdida de pacientes en el embudo de conversión por falta de procesos automatizados de respuesta.\n"
+                f"2️⃣ **Vulnerabilidad Normativa:** Ausencia de una infraestructura digital robusta para el manejo de Fichas Clínicas y Consentimientos Legales.\n"
+                f"3️⃣ **Ineficiencia en el Control de Activos:** Mermas no contabilizadas en insumos críticos debido a una gestión de inventario manual.\n\n"
+                "Nuestra metodología permite integrar toda la operación en una arquitectura 360. ¿Podríamos coordinar una breve sesión diagnóstica?")
     
     elif dia == 2:
-        return (f"Hola de nuevo! 👋 Sabía que el 70% de los pacientes de estética eligen la clínica que les responde en menos de 5 minutos?\n\n"
-                f"En *{nombre}* podríamos automatizar eso hoy mismo. ¿Le interesaría ver una demo de 2 minutos?")
+        # ESTRATEGIA: Visión de Negocio y Rentabilidad
+        return (f"Hola de nuevo. 👋 En **GestiónVital** no solo implementamos tecnología; estandarizamos negocios. Una clínica profesionalizada permite al dueño recuperar el control total sin depender de la presencia física constante.\n\n"
+                f"¿Sabía que la digitalización integral de *{nombre}* puede incrementar su margen neto operativo en un 20% al eliminar procesos redundantes? ¿Le gustaría conocer nuestro modelo de implementación?")
     
     elif dia == 3:
-        return (f"Buen día! 🏥 Solo me quedan 2 cupos para activar el sistema de *Agendamiento Automático* esta semana en su zona.\n\n"
-                f"No quiero que *{nombre}* pierda la oportunidad de bonificar la implementación. ¿Conversamos brevemente?")
+        # ESTRATEGIA: Selección de Casos de Éxito
+        return (f"Buen día. 🏥 Actualmente estamos seleccionando a la clínica referente de su zona para liderar nuestro programa de **Transformación Digital 2026**.\n\n"
+                f"Buscamos un perfil como el de *{nombre}* para establecer un estándar de alta dirección en la región. ¿Conversamos hoy para evaluar si su visión se alinea con este nivel de gestión profesional?")
+    
     return ""
-
 # --- NUEVO DISEÑO DE PDF VISUAL (PUNTO 3) ---
 def generar_pdf_diagnostico(nombre_clinica):
     try:

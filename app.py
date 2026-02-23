@@ -7,6 +7,7 @@ import base64
 import unicodedata
 from datetime import datetime
 from fpdf import FPDF
+from worker import obtener_mensaje_secuencia
 
 # --- CONFIGURACIÓN ---
 ARCHIVO_LEADS = "prospeccion_gestionvital_pro.csv"
@@ -103,20 +104,10 @@ def enviar_secuencia_test():
     
     # DÍA 1 + PDF
     path_pdf = generar_pdf_auditoria("Clínica de Prueba")
-    msg1 = "🧪 *TEST DÍA 1:* Hola! Noté una fuga de ingresos en su clínica. Adjunto auditoría..."
+    msg1 = obtener_mensaje_secuencia("Prueba",1)
+                
     requests.post(f"{base_url}/message/sendText/{EVO_INSTANCE}", json={"number": NUMERO_PRUEBA, "textMessage": {"text": msg1}}, headers=headers)
     
-    if path_pdf and os.path.exists(path_pdf):
-        with open(path_pdf, "rb") as f:
-            b64 = base64.b64encode(f.read()).decode('utf-8')
-        requests.post(f"{base_url}/message/sendMedia/{EVO_INSTANCE}", 
-                      json={"number": NUMERO_PRUEBA, "mediaMessage": {"mediatype": "document", "fileName": "Auditoria.pdf", "media": b64}}, headers=headers)
-        os.remove(path_pdf)
-    
-    # DÍA 2
-    time.sleep(2)
-    msg2 = "🧪 *TEST DÍA 2:* Sabía que las clínicas automatizadas reducen el No-Show un 45%?"
-    requests.post(f"{base_url}/message/sendText/{EVO_INSTANCE}", json={"number": NUMERO_PRUEBA, "textMessage": {"text": msg2}}, headers=headers)
     
     st.sidebar.success("✅ Test enviado a WhatsApp")
 

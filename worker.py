@@ -6,7 +6,7 @@ import time
 import unicodedata
 import re
 from bs4 import BeautifulSoup
-from datetime import datetime, timedelta
+from datetime import datetime
 
 # --- CONFIGURACIÓN ---
 EVO_URL = os.getenv("EVO_URL")
@@ -20,7 +20,7 @@ def limpiar_acentos(text):
     if not isinstance(text, str): return str(text)
     return "".join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
-# --- EXTRACTOR DE CORREOS (SCRAPING) ---
+# --- EXTRACTOR DE CORREOS ---
 def buscar_email_en_web(url):
     if not url or not url.startswith("http"):
         return ""
@@ -66,40 +66,26 @@ def buscar_y_agregar_nuevos(df_actual):
     except Exception as e: print(f"❌ Error búsqueda: {e}")
     return df_actual
 
-# --- COMUNICACIONES (CON LOG DE ERROR DETALLADO) ---
+# --- COMUNICACIONES ---
 def enviar_mensaje_texto(numero, mensaje):
     if not EVO_URL or not EVO_TOKEN:
-        print("❌ Error: Faltan credenciales de Evolution en Variables de Entorno.")
+        print("❌ Error: Faltan credenciales.")
         return False
-    
     base_url = EVO_URL.strip().rstrip('/')
     headers = {"Content-Type": "application/json", "apikey": EVO_TOKEN}
-    
     try:
-        # 1. Simular presencia
         requests.post(f"{base_url}/chat/sendPresence/{EVO_INSTANCE}", 
                      json={"number": numero, "presence": "composing"}, 
                      headers=headers, timeout=10)
-        
         time.sleep(random.randint(5, 10))
-
-        # 2. Enviar mensaje
         payload = {
             "number": numero, 
             "options": {"delay": 1200, "presence": "composing"}, 
             "textMessage": {"text": mensaje}
         }
-        res = requests.post(f"{base_url}/message/sendText/{EVO_INSTANCE}", 
-                           json=payload, headers=headers, timeout=20)
-        
-        if res.status_code in [200, 201]:
-            return True
-        else:
-            print(f"⚠️ Error API Evolution ({res.status_code}): {res.text}")
-            return False
-    except Exception as e: 
-        print(f"❌ Error de red: {e}")
-        return False
+        res = requests.post(f"{base_url}/message/sendText/{EVO_INSTANCE}", json=payload, headers=headers, timeout=20)
+        return res.status_code in [200, 201]
+    except: return False
 
 def obtener_mensaje_secuencia(nombre, ubicacion, dia):
     nombre = limpiar_acentos(nombre)
@@ -112,25 +98,21 @@ def obtener_mensaje_secuencia(nombre, ubicacion, dia):
                 f"📋 Digitalizar las fichas para mayor tranquilidad de todos.\n"
                 f"📦 Optimizar el control de insumos de forma simple.\n\n"
                 f"¿Tendrán 5 minutitos esta semana para conversar de forma relajada? Me encantaría conocerles.")
-    
     elif dia == 2:
         return (f"Hola de nuevo. 👋 Solo pasaba a saludar y dejarles un dato: en **GestiónVital** hemos visto que pequeños ajustes en la organización pueden liberar mucho tiempo para los dueños de centros en {zona}.\n\n"
                 f"En *{nombre}* tienen un potencial tremendo. ¿Les parecería si coordinamos una breve llamada para presentarnos?")
-    
     elif dia == 3:
         return (f"¡Hola! 🏥 ¿Cómo va la semana en *{nombre}*?\n\n"
                 f"Les escribía porque estamos invitando a algunos centros referentes de {zona} a una charla sobre las nuevas tendencias de gestión para este 2026. Me gustaría mucho que ustedes formaran parte. ¿Les interesa que les cuente más?")
-    
     elif dia == 4:
         return (f"Estimados en *{nombre}*, imagino que deben estar con muchas cositas, así que no les quito más tiempo. 👋\n\n"
                 f"Solo quería agradecerles por el espacio. Les dejo mi contacto por aquí; si alguna vez sienten que necesitan un apoyo para organizar procesos o crecer, cuenten conmigo. ¡Que tengan mucho éxito!")
-    
     return ""
 
-# --- CICLO PRINCIPAL SEGURO (GUARDADO INSTANTÁNEO) ---
+# --- CICLO PRINCIPAL ---
 def ejecutar_ciclo():
     ahora = datetime.now()
-    # Restricción: Lunes-Sábado 9:00 a 19:00
+    # Restricción Lunes-Sábado 9:00 a 19:00
     if ahora.weekday() > 5 or not (9 <= ahora.hour <= 19): 
         print("🕒 Fuera de horario de envío.")
         return 
@@ -143,16 +125,12 @@ def ejecutar_ciclo():
     df["Dia_Secuencia"] = pd.to_numeric(df["Dia_Secuencia"], errors='coerce').fillna(0).astype(int)
     hoy_str = ahora.strftime("%d/%m/%Y")
     
-    # 1. Identificar todos los candidatos posibles
     candidatos = []
     for idx, row in df.iterrows():
-        # Saltamos si ya se le escribió hoy, si es error o está finalizado
         if hoy_str in str(row.get('Fecha_Contacto', '')): continue
         if row["Estado"] in ["Finalizado", "Rechazado", "Cita Agendada", "Error"]: continue
 
         dia_act = int(row.get("Dia_Secuencia", 0))
-        
-        # Validación de 23.5 horas para seguimientos
         if row["Estado"] == "Contactado":
             try:
                 ultima_fecha = datetime.strptime(str(row['Fecha_Contacto']), "%d/%m/%Y %H:%M")
@@ -165,55 +143,40 @@ def ejecutar_ciclo():
         elif row["Estado"] == "Nuevo":
             candidatos.append({'idx': idx, 'dia': 1})
 
-    # 2. Si no hay candidatos, buscar nuevos leads
     if not candidatos:
         print("📭 Nada pendiente. Buscando nuevos leads...")
         df = buscar_y_agregar_nuevos(df)
-        df.to_csv(ARCHIVO_LEADS, index=False) # Guardamos los nuevos hallazgos
-        # Recargamos la lista de candidatos tras la búsqueda
+        df.to_csv(ARCHIVO_LEADS, index=False)
         for idx, row in df.iterrows():
             if row["Estado"] == "Nuevo" and not str(row.get('Fecha_Contacto', '')):
-                if len(candidatos) < 10: # Límite pequeño por seguridad
+                if len(candidatos) < 10:
                     candidatos.append({'idx': idx, 'dia': 1})
 
     if not candidatos:
         print("😴 No hay tareas por realizar.")
         return
 
-    # 3. PROCESAMIENTO UNO POR UNO CON VALIDACIÓN DE PREFIJO
     print(f"🚀 Procesando {len(candidatos)} envíos programados...")
     
     for i, item in enumerate(candidatos):
-        idx = item['idx']
-        dia_obj = item['dia']
+        idx, dia_obj = item['idx'], item['dia']
         row = df.loc[idx]
         
-        # --- LIMPIEZA Y VALIDACIÓN DE NÚMERO ---
+        # Validación estricta 569
         raw_tel = "".join(filter(str.isdigit, str(row["Telefono"])))
-        
-        # Ajuste para que siempre empiece por 569
-        if len(raw_tel) == 9 and raw_tel.startswith("9"):
-            tel_final = "56" + raw_tel
-        else:
-            tel_final = raw_tel
+        tel_final = "56" + raw_tel if (len(raw_tel) == 9 and raw_tel.startswith("9")) else raw_tel
 
-        # REGLA ESTRICTA: Debe empezar por 569 y tener el largo correcto (11 dígitos)
         if not tel_final.startswith("569") or len(tel_final) != 11:
-            print(f"   ⚠️ Número inválido detectado: {tel_final} ({row['Evento']}). Saltando...")
+            print(f"   ⚠️ Número inválido: {tel_final}. Saltando...")
             df.at[idx, "Estado"] = "Error"
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
-            # Guardamos el error y pasamos al siguiente inmediatamente
             df.to_csv(ARCHIVO_LEADS, index=False)
             continue
 
-        # --- SI EL NÚMERO ES VÁLIDO (569...), PROCEDE AL ENVÍO ---
         msg = obtener_mensaje_secuencia(row["Evento"], row["Ubicacion"], dia_obj)
-        
         print(f"[{i+1}/{len(candidatos)}] Enviando a: {row['Evento']} ({tel_final})...")
         
-        exito = enviar_mensaje_texto(tel_final, msg)
-        
-        if exito:
+        if enviar_mensaje_texto(tel_final, msg):
             df.at[idx, "Estado"] = "Contactado" if dia_obj < 4 else "Finalizado"
             df.at[idx, "Dia_Secuencia"] = dia_obj
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
@@ -223,19 +186,15 @@ def ejecutar_ciclo():
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
             print(f"   ❌ Falló el envío técnico.")
 
-        # Guardado post-acción
         df.to_csv(ARCHIVO_LEADS, index=False)
 
-        # Espera de seguridad
+        # Espera de seguridad (Corregido el NameError)
         if i < len(candidatos) - 1:
-            time.sleep(random.randint(150, 250))
+            espera = random.randint(150, 250)
             print(f"   ⏳ Esperando {espera} segundos para el siguiente...")
             time.sleep(espera)
 
-    print("🏁 Ciclo de trabajo completado.")
-
-if __name__ == "__main__":
-    ejecutar_ciclo()
+    print("🏁 Ciclo completado.")
 
 if __name__ == "__main__":
     ejecutar_ciclo()

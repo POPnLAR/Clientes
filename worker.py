@@ -180,7 +180,7 @@ def ejecutar_ciclo():
         print("😴 No hay tareas por realizar.")
         return
 
-    # 3. PROCESAMIENTO UNO POR UNO CON GUARDADO INMEDIATO
+    # 3. PROCESAMIENTO UNO POR UNO CON VALIDACIÓN DE PREFIJO
     print(f"🚀 Procesando {len(candidatos)} envíos programados...")
     
     for i, item in enumerate(candidatos):
@@ -188,35 +188,47 @@ def ejecutar_ciclo():
         dia_obj = item['dia']
         row = df.loc[idx]
         
-        # Preparar número
-        tel = "".join(filter(str.isdigit, str(row["Telefono"])))
-        if len(tel) == 9: tel = "56" + tel
+        # --- LIMPIEZA Y VALIDACIÓN DE NÚMERO ---
+        raw_tel = "".join(filter(str.isdigit, str(row["Telefono"])))
         
+        # Ajuste para que siempre empiece por 569
+        if len(raw_tel) == 9 and raw_tel.startswith("9"):
+            tel_final = "56" + raw_tel
+        else:
+            tel_final = raw_tel
+
+        # REGLA ESTRICTA: Debe empezar por 569 y tener el largo correcto (11 dígitos)
+        if not tel_final.startswith("569") or len(tel_final) != 11:
+            print(f"   ⚠️ Número inválido detectado: {tel_final} ({row['Evento']}). Saltando...")
+            df.at[idx, "Estado"] = "Error"
+            df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
+            # Guardamos el error y pasamos al siguiente inmediatamente
+            df.to_csv(ARCHIVO_LEADS, index=False)
+            continue
+
+        # --- SI EL NÚMERO ES VÁLIDO (569...), PROCEDE AL ENVÍO ---
         msg = obtener_mensaje_secuencia(row["Evento"], row["Ubicacion"], dia_obj)
         
-        print(f"[{i+1}/{len(candidatos)}] Enviando a: {row['Evento']}...")
+        print(f"[{i+1}/{len(candidatos)}] Enviando a: {row['Evento']} ({tel_final})...")
         
-        # INTENTO DE ENVÍO
-        exito = enviar_mensaje_texto(tel, msg)
+        exito = enviar_mensaje_texto(tel_final, msg)
         
-        # ACTUALIZACIÓN DE ESTADO
         if exito:
             df.at[idx, "Estado"] = "Contactado" if dia_obj < 4 else "Finalizado"
             df.at[idx, "Dia_Secuencia"] = dia_obj
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
-            print(f"   ✅ Día {dia_obj} enviado con éxito.")
+            print(f"   ✅ Día {dia_obj} enviado.")
         else:
             df.at[idx, "Estado"] = "Error"
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
-            print(f"   ❌ Falló el envío. Marcado como Error.")
+            print(f"   ❌ Falló el envío técnico.")
 
-        # --- GUARDADO INMEDIATO POST-ACCIÓN ---
+        # Guardado post-acción
         df.to_csv(ARCHIVO_LEADS, index=False)
-        print(f"   💾 CSV actualizado.")
 
-        # ESPERA DE SEGURIDAD (Solo si faltan más por enviar)
+        # Espera de seguridad
         if i < len(candidatos) - 1:
-            espera = random.randint(150, 250)
+            time.sleep(random.randint(150, 250))
             print(f"   ⏳ Esperando {espera} segundos para el siguiente...")
             time.sleep(espera)
 

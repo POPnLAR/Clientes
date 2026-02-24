@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repositorio
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # Trae todo el historial para evitar errores de rebase
+          fetch-depth: 0 # Vital para que el rebase funcione
 
       - name: Configurar Python
         uses: actions/setup-python@v4
@@ -22,11 +22,16 @@ jobs:
       - name: Instalar dependencias
         run: pip install pandas requests fpdf beautifulsoup4 lxml
 
-      - name: Sincronizar con Streamlit (Antes de ejecutar)
+      - name: Configurar Git
         run: |
           git config --global user.name 'GestionVital Bot'
           git config --global user.email 'bot@gestionvitalpro.cl'
-          git pull origin main --rebase
+          # Configura Git para que el rebase sea la opción por defecto en caso de conflicto
+          git config --global pull.rebase true
+
+      - name: Sincronizar con Streamlit (Antes de ejecutar)
+        run: |
+          git pull origin main
 
       - name: Ejecutar Prospeccion
         env:
@@ -36,8 +41,19 @@ jobs:
           SERP_KEY: ${{ secrets.SERP_KEY }}
         run: python worker.py
 
-      - name: Guardar cambios en GitHub
+      - name: Guardar y Sincronizar cambios (Post-Ejecución)
         run: |
+          # 1. Agregamos los cambios generados por el worker
           git add prospeccion_gestionvital_pro.csv
-          # Solo hace commit si el worker realmente hizo cambios
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Actualizacion leads [Skip CI]" && git push origin main)
+          
+          # 2. Verificamos si hay cambios reales para commitear
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "Actualizacion leads [Skip CI]"
+            
+            # 3. Intentamos subir. Si falló por cambios nuevos en Streamlit, 
+            # hacemos pull rebase otra vez y reintento de push.
+            git pull origin main --rebase
+            git push origin main
+          else
+            echo "No hay cambios para actualizar."
+          fi

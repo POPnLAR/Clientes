@@ -52,27 +52,33 @@ st.markdown("""
     """, unsafe_allow_html=True)
 #Guardar a Git
 def push_to_github(filename, content):
-    # Configuración de GitHub desde secrets
-    token = st.secrets["GITHUB_TOKEN"]
-    repo = "tu_usuario/tu_repositorio" # CAMBIA ESTO
-    url = f"https://api.github.com/repos/{repo}/contents/{filename}"
-    
-    headers = {"Authorization": f"token {token}"}
-    
-    # 1. Obtener el SHA del archivo actual (necesario para actualizarlo)
-    res = requests.get(url, headers=headers)
-    sha = res.json().get("sha") if res.status_code == 200 else None
-    
-    # 2. Preparar el envío
-    data = {
-        "message": f"Update {filename} from App dashboard",
-        "content": base64.b64encode(content.encode()).decode(),
-    }
-    if sha:
-        data["sha"] = sha
+    try:
+        token = st.secrets["GITHUB_TOKEN"]
+        repo = st.secrets["GITHUB_REPO"]  # Ej: "tu-usuario/Clientes"
+        url = f"https://api.github.com/repos/{repo}/contents/{filename}"
         
-    res = requests.put(url, json=data, headers=headers)
-    return res.status_code in [200, 201]
+        headers = {
+            "Authorization": f"token {token}",
+            "Accept": "application/vnd.github.v3+json"
+        }
+        
+        # 1. Obtener el SHA del archivo actual
+        res = requests.get(url, headers=headers)
+        sha = res.json().get("sha") if res.status_code == 200 else None
+        
+        # 2. Preparar el envío
+        data = {
+            "message": f"Sincronización desde Panel App {datetime.now().strftime('%d/%m/%Y %H:%M')}",
+            "content": base64.b64encode(content.encode('utf-8')).decode('utf-8'),
+        }
+        if sha:
+            data["sha"] = sha
+            
+        res = requests.put(url, json=data, headers=headers)
+        return res.status_code in [200, 201]
+    except Exception as e:
+        st.error(f"Error de conexión: {str(e)}")
+        return False
     
 # --- LÓGICA DE PRUEBA ---
 def enviar_secuencia_test():

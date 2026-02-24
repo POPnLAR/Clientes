@@ -104,9 +104,16 @@ def enviar_mensaje_texto(numero, mensaje):
 def obtener_mensaje_secuencia(nombre, ubicacion, dia):
     nombre = limpiar_acentos(nombre)
     zona = ubicacion if ubicacion else "su zona"
-    if dia == 1: return f"Estimados {nombre}. 👋 Soy Rodrigo de **GestiónVital**. Notamos brechas críticas en su clínica de {zona}. ¿Tienen 5 min para optimizar su rentabilidad?"
-    if dia == 2: return f"Hola de nuevo {nombre}. 👋 Digitalizar su operación en {zona} puede subir su rentabilidad un 20%. ¿Conversamos?"
-    if dia == 3: return f"Buen día {nombre}. 🏥 Los seleccionamos para el programa **Transformación Digital 2026** en {zona}. ¿Le interesa liderar el sector?"
+    if dia == 1:
+        return (f"Estimados, un gusto saludarles. 👋 Mi nombre es Rodrigo y represento a *GestiónVital*, "
+                f"consultora especializada en la profesionalización de centros estéticos.\n\n"
+                f"Hemos realizado un análisis preventivo sobre la presencia operativa de *{nombre}* y podemos ayudar en estas tres brechas críticas:\n\n"
+                f"1️⃣ *Fuga por Latencia:* Pacientes que no concretan por demora en respuesta.\n"
+                f"2️⃣ *Vulnerabilidad Legal:* Gestión manual de fichas y consentimientos.\n"
+                f"3️⃣ *Mermas en Insumos:* Falta de control de stock digital.\n\n"
+                f"¿Podríamos coordinar una sesión breve de 5 minutos para explicarles cómo optimizar estos puntos?")
+    if dia == 2: return f"Hola de nuevo {nombre}. 👋 Digitalizar su operación puede subir su rentabilidad un 20%. ¿Conversamos?"
+    if dia == 3: return f"Buen día {nombre}. 🏥 Los seleccionamos para el programa **Transformación Digital 2026**. ¿Le interesa liderar el sector?"
     if dia == 4: return f"Estimados {nombre}, entiendo el ajetreo. 👋 Les dejo mi contacto por si deciden profesionalizar su clínica a futuro. ¡Éxito!"
     return ""
 

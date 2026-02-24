@@ -6,7 +6,7 @@ import time
 import unicodedata
 import re
 from bs4 import BeautifulSoup
-from datetime import datetime, timedelta  # IMPORTANTE: Esto corrige tu error
+from datetime import datetime, timedelta
 
 # --- CONFIGURACIÓN ---
 EVO_URL = os.getenv("EVO_URL")
@@ -25,164 +25,103 @@ def buscar_email_en_web(url):
     if not url or not url.startswith("http"):
         return ""
     try:
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
+        headers = {'User-Agent': 'Mozilla/5.0'}
         response = requests.get(url, headers=headers, timeout=12)
-        if response.status_code != 200:
-            return ""
-
+        if response.status_code != 200: return ""
         emails = re.findall(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', response.text)
         filtrados = [e for e in emails if not e.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'))]
-        
         if filtrados:
-            prioritarios = [e for e in filtrados if any(p in e.lower() for p in ['contacto', 'info', 'administracion', 'ventas', 'hola'])]
+            prioritarios = [e for e in filtrados if any(p in e.lower() for p in ['contacto', 'info', 'ventas'])]
             return prioritarios[0].lower() if prioritarios else filtrados[0].lower()
-    except:
-        pass
+    except: pass
     return ""
 
-# --- BÚSQUEDA AUTOMÁTICA ESCALADA ---
+# --- BÚSQUEDA AUTOMÁTICA ---
 def buscar_y_agregar_nuevos(df_actual):
     comunas = ["Las Condes", "Providencia", "Vitacura", "Lo Barnechea", "Ñuñoa", "La Reina"]
     zona_objetivo = random.choice(comunas)
-    
-    print(f"🔍 Prospección estratégica iniciada en: {zona_objetivo}...")
-    
-    params = {
-        "engine": "google_maps",
-        "q": f"Clinica Estetica {zona_objetivo} Chile",
-        "type": "search",
-        "api_key": SERP_KEY,
-        "num": 20 
-    }
-    
+    print(f"🔍 Buscando nuevos leads en: {zona_objetivo}...")
+    params = {"engine": "google_maps", "q": f"Clinica Estetica {zona_objetivo} Chile", "api_key": SERP_KEY, "num": 20}
     try:
         response = requests.get("https://serpapi.com/search", params=params, timeout=30)
         results = response.json().get("local_results", [])
-        
         nuevos_leads = []
         tels_en_base = set(df_actual['Telefono'].astype(str).str.replace(".0", "", regex=False).str[-9:].tolist())
         ultimo_id = int(df_actual['Id'].max()) if not df_actual.empty else 0
-
         for place in results:
             tiene_web = place.get("website")
-            if not tiene_web: continue 
-
             raw_tel = str(place.get("phone", "")).replace(" ", "").replace("-", "")
-            if not raw_tel or len(raw_tel) < 8: continue
-            
+            if not tiene_web or not raw_tel or len(raw_tel) < 8: continue
             if raw_tel[-9:] not in tels_en_base:
-                print(f"🌐 Analizando sitio web: {tiene_web}...")
                 email_hallado = buscar_email_en_web(tiene_web)
-                
                 ultimo_id += 1
-                nuevo = {
-                    "Id": int(ultimo_id),
-                    "Fecha": datetime.now().strftime("%d/%m/%Y"),
-                    "Hora": datetime.now().strftime("%H:%M"),
-                    "Evento": place.get("title", "Clinica"),
-                    "Ministerio": "Prospeccion Automatica",
-                    "Ubicacion": zona_objetivo,
-                    "Estado": "Nuevo",
-                    "Telefono": raw_tel,
-                    "Email": email_hallado,
-                    "Email_Enviado": "No",
-                    "Dia_Secuencia": 0,
-                    "Fecha_Contacto": ""
-                }
-                nuevos_leads.append(nuevo)
+                nuevos_leads.append({
+                    "Id": int(ultimo_id), "Fecha": datetime.now().strftime("%d/%m/%Y"),
+                    "Hora": datetime.now().strftime("%H:%M"), "Evento": place.get("title", "Clinica"),
+                    "Ministerio": "Prospeccion Automatica", "Ubicacion": zona_objetivo, "Estado": "Nuevo",
+                    "Telefono": raw_tel, "Email": email_hallado, "Email_Enviado": "No", "Dia_Secuencia": 0, "Fecha_Contacto": ""
+                })
                 tels_en_base.add(raw_tel[-9:])
-                time.sleep(1)
-        
-        if nuevos_leads:
-            df_nuevos = pd.DataFrame(nuevos_leads)
-            return pd.concat([df_actual, df_nuevos], ignore_index=True)
-        return df_actual
-            
-    except Exception as e:
-        print(f"❌ Error en búsqueda: {str(e)}")
-        return df_actual
+        if nuevos_leads: return pd.concat([df_actual, pd.DataFrame(nuevos_leads)], ignore_index=True)
+    except Exception as e: print(f"❌ Error búsqueda: {e}")
+    return df_actual
 
 # --- COMUNICACIONES ---
 def enviar_mensaje_texto(numero, mensaje):
     base_url = EVO_URL.strip().rstrip('/')
     headers = {"Content-Type": "application/json", "apikey": EVO_TOKEN}
     try:
-        requests.post(f"{base_url}/chat/sendPresence/{EVO_INSTANCE}", 
-                      json={"number": numero, "presence": "composing"}, headers=headers)
+        requests.post(f"{base_url}/chat/sendPresence/{EVO_INSTANCE}", json={"number": numero, "presence": "composing"}, headers=headers)
         time.sleep(random.randint(5, 10))
-
-        text_url = f"{base_url}/message/sendText/{EVO_INSTANCE}"
-        text_payload = {
-            "number": numero, 
-            "options": {"delay": 1200, "presence": "composing"}, 
-            "textMessage": {"text": mensaje}
-        }
-        res_text = requests.post(text_url, json=text_payload, headers=headers, timeout=20)
-        return res_text.status_code in [200, 201]
+        payload = {"number": numero, "options": {"delay": 1200}, "textMessage": {"text": mensaje}}
+        res = requests.post(f"{base_url}/message/sendText/{EVO_INSTANCE}", json=payload, headers=headers, timeout=20)
+        return res.status_code in [200, 201]
     except: return False
 
 def obtener_mensaje_secuencia(nombre, ubicacion, dia):
     nombre = limpiar_acentos(nombre)
     zona = ubicacion if ubicacion else "su zona"
-    if dia == 1:
-        return (f"Estimados, un gusto saludarles. 👋 Mi nombre es Rodrigo y represento a **GestiónVital**, consultora especializada en la profesionalización de centros estéticos en {zona}.\n\n"
-                f"Hemos realizado un análisis preventivo sobre la presencia operativa de *{nombre}* y detectamos tres brechas críticas:\n\n"
-                f"1️⃣ **Fuga por Latencia:** Pacientes que no concretan por demora en respuesta.\n"
-                f"2️⃣ **Vulnerabilidad Legal:** Gestión manual de fichas y consentimientos.\n"
-                f"3️⃣ **Mermas en Insumos:** Falta de control de stock digital.\n\n"
-                f"¿Podríamos coordinar una sesión breve de 5 minutos para explicarles cómo optimizar estos puntos?")
-    elif dia == 2:
-        return (f"Hola de nuevo. 👋 En **GestiónVital** estandarizamos negocios para que escalen sin depender de la presencia física del dueño.\n\n"
-                f"¿Sabía que digitalizar la operación de *{nombre}* puede elevar su rentabilidad neta en un 20%? Me gustaría mostrarle nuestro modelo de gestión para clínicas en {zona}.")
-    elif dia == 3:
-        return (f"Buen día. 🏥 Estamos seleccionando a la clínica referente de {zona} para nuestro programa de **Transformación Digital 2026**.\n\n"
-                f"Buscamos un perfil como el de *{nombre}* para establecer un estándar de alta dirección. ¿Conversamos hoy para evaluar si su visión se alinea con este nivel profesional?")
-    elif dia == 4:
-        return (f"Estimados en *{nombre}*, entiendo que su agenda debe estar a tope. 👋\n\n"
-                f"Para no ser invasivo, les dejo mi contacto directo. Si en el futuro deciden dar el salto a una **Operación 360**, estaré encantado de ayudarles. ¡Mucho éxito!")
+    if dia == 1: return f"Estimados {nombre}. 👋 Soy Rodrigo de **GestiónVital**. Notamos brechas críticas en su clínica de {zona}. ¿Tienen 5 min para optimizar su rentabilidad?"
+    if dia == 2: return f"Hola de nuevo {nombre}. 👋 Digitalizar su operación en {zona} puede subir su rentabilidad un 20%. ¿Conversamos?"
+    if dia == 3: return f"Buen día {nombre}. 🏥 Los seleccionamos para el programa **Transformación Digital 2026** en {zona}. ¿Le interesa liderar el sector?"
+    if dia == 4: return f"Estimados {nombre}, entiendo el ajetreo. 👋 Les dejo mi contacto por si deciden profesionalizar su clínica a futuro. ¡Éxito!"
     return ""
 
-# --- CICLO PRINCIPAL ---
+# --- CICLO PRINCIPAL REFORZADO ---
 def ejecutar_ciclo():
     ahora = datetime.now()
-    if ahora.weekday() > 5 or not (9 <= ahora.hour <= 19): 
-        print("Fuera de horario de envío (Lunes-Sábado 09:00-20:00)")
-        return 
+    if ahora.weekday() > 5 or not (9 <= ahora.hour <= 19): return 
 
-    columnas = ["Id","Fecha","Hora","Evento","Ministerio","Ubicacion","Estado","Telefono","Email","Email_Enviado","Dia_Secuencia","Fecha_Contacto"]
+    if not os.path.exists(ARCHIVO_LEADS): return
+    df = pd.read_csv(ARCHIVO_LEADS)
+    df["Dia_Secuencia"] = pd.to_numeric(df["Dia_Secuencia"], errors='coerce').fillna(0).astype(int)
     
-    if not os.path.exists(ARCHIVO_LEADS):
-        df = pd.DataFrame(columns=columnas)
-    else:
-        df = pd.read_csv(ARCHIVO_LEADS)
-        df["Dia_Secuencia"] = pd.to_numeric(df["Dia_Secuencia"], errors='coerce').fillna(0).astype(int)
-        for col in columnas:
-            if col not in df.columns: 
-                df[col] = "No" if col == "Email_Enviado" else ("" if col != "Dia_Secuencia" else 0)
-    
-    hoy = ahora.strftime("%d/%m/%Y")
+    hoy_str = ahora.strftime("%d/%m/%Y")
     candidatos = []
-    
-    print(f"--- Revisión iniciada: {ahora.strftime('%H:%M')} ---")
 
     for idx, row in df.iterrows():
-        if hoy in str(row.get('Fecha_Contacto', '')): continue
+        # REGLA 1: No repetir si ya se envió ALGO hoy calendario
+        if hoy_str in str(row.get('Fecha_Contacto', '')): continue
         if row["Estado"] in ["Finalizado", "Rechazado", "Cita Agendada"]: continue
 
         dia_act = int(row.get("Dia_Secuencia", 0))
         
-        # VALIDACIÓN 24 HORAS PARA SEGUIMIENTOS (Día 2, 3 y 4)
+        # REGLA 2: VALIDACIÓN MATEMÁTICA DE 24 HORAS
         if row["Estado"] == "Contactado":
             fecha_str = str(row.get('Fecha_Contacto', ''))
             try:
+                # Intentamos parsear con fecha y hora
                 ultima_fecha = datetime.strptime(fecha_str, "%d/%m/%Y %H:%M")
-                if (ahora - ultima_fecha) < timedelta(hours=24):
+                segundos_transcurridos = (ahora - ultima_fecha).total_seconds()
+                
+                # Si han pasado menos de 84,600 segundos (23.5 horas), SALTAMOS.
+                if segundos_transcurridos < 84600: 
                     continue
             except:
+                # Si la fecha no tiene hora o está mal, por seguridad no enviamos hoy
                 if fecha_str != "": continue
 
+        # ASIGNACIÓN
         if row["Estado"] == "Contactado" and dia_act < 4:
             candidatos.append({'idx': idx, 'dia': dia_act + 1})
         elif row["Estado"] == "Nuevo":
@@ -206,6 +145,7 @@ def ejecutar_ciclo():
             df.at[idx, "Dia_Secuencia"] = dia_obj
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
             df.to_csv(ARCHIVO_LEADS, index=False)
+            print(f"✅ Enviado Día {dia_obj} a {row['Evento']}")
             time.sleep(random.randint(120, 300))
 
 if __name__ == "__main__":

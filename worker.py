@@ -90,63 +90,82 @@ def obtener_mensaje_secuencia(nombre, ubicacion, dia):
 # --- CICLO PRINCIPAL REFORZADO ---
 def ejecutar_ciclo():
     ahora = datetime.now()
-    if ahora.weekday() > 5 or not (9 <= ahora.hour <= 19): return 
+    # Restricción Lunes-Sábado 9:00 a 19:00
+    if ahora.weekday() > 5 or not (9 <= ahora.hour <= 19): 
+        print("Fuera de horario de envío.")
+        return 
 
-    if not os.path.exists(ARCHIVO_LEADS): return
-    df = pd.read_csv(ARCHIVO_LEADS)
-    df["Dia_Secuencia"] = pd.to_numeric(df["Dia_Secuencia"], errors='coerce').fillna(0).astype(int)
+    if not os.path.exists(ARCHIVO_LEADS):
+        # Si el archivo no existe, lo creamos vacío para empezar a buscar
+        df = pd.DataFrame(columns=["Id","Fecha","Hora","Evento","Ministerio","Ubicacion","Estado","Telefono","Email","Email_Enviado","Dia_Secuencia","Fecha_Contacto"])
+    else:
+        df = pd.read_csv(ARCHIVO_LEADS)
     
+    df["Dia_Secuencia"] = pd.to_numeric(df["Dia_Secuencia"], errors='coerce').fillna(0).astype(int)
     hoy_str = ahora.strftime("%d/%m/%Y")
     candidatos = []
 
+    # 1. BUSCAR MENSAJES DE SEGUIMIENTO (Día 2, 3, 4) Y NUEVOS EN COLA
     for idx, row in df.iterrows():
-        # REGLA 1: No repetir si ya se envió ALGO hoy calendario
         if hoy_str in str(row.get('Fecha_Contacto', '')): continue
         if row["Estado"] in ["Finalizado", "Rechazado", "Cita Agendada"]: continue
 
         dia_act = int(row.get("Dia_Secuencia", 0))
         
-        # REGLA 2: VALIDACIÓN MATEMÁTICA DE 24 HORAS
+        # Validación estricta de 23.5 horas para seguimientos
         if row["Estado"] == "Contactado":
             fecha_str = str(row.get('Fecha_Contacto', ''))
             try:
-                # Intentamos parsear con fecha y hora
                 ultima_fecha = datetime.strptime(fecha_str, "%d/%m/%Y %H:%M")
-                segundos_transcurridos = (ahora - ultima_fecha).total_seconds()
-                
-                # Si han pasado menos de 84,600 segundos (23.5 horas), SALTAMOS.
-                if segundos_transcurridos < 84600: 
+                if (ahora - ultima_fecha).total_seconds() < 84600:
                     continue
             except:
-                # Si la fecha no tiene hora o está mal, por seguridad no enviamos hoy
                 if fecha_str != "": continue
 
-        # ASIGNACIÓN
         if row["Estado"] == "Contactado" and dia_act < 4:
             candidatos.append({'idx': idx, 'dia': dia_act + 1})
         elif row["Estado"] == "Nuevo":
             candidatos.append({'idx': idx, 'dia': 1})
 
+    # 2. ACCIÓN SI NO HAY NADA QUE HACER: BUSCAR SANGRE NUEVA INMEDIATAMENTE
     if not candidatos:
+        print("📭 Nada pendiente por hoy. Iniciando búsqueda automática de nuevos clientes...")
         df = buscar_y_agregar_nuevos(df)
+        # Recargar candidatos tras la búsqueda para procesar los nuevos de una vez
         for idx, row in df.iterrows():
-            if row["Estado"] == "Nuevo" and len(candidatos) < 20:
-                candidatos.append({'idx': idx, 'dia': 1})
+            if row["Estado"] == "Nuevo" and len(candidatos) < 15:
+                # Solo agregamos los que acabamos de meter (que no tengan fecha de contacto)
+                if not str(row.get('Fecha_Contacto', '')):
+                    candidatos.append({'idx': idx, 'dia': 1})
 
+    # 3. EJECUCIÓN DE ENVÍOS (Máximo 20 por ciclo para evitar bloqueos)
+    if not candidatos:
+        print("😴 No se encontraron clientes nuevos ni seguimientos.")
+        return
+
+    print(f"🚀 Procesando {len(candidatos[:20])} envíos...")
     for item in candidatos[:20]:
         idx, dia_obj = item['idx'], item['dia']
         row = df.loc[idx]
+        
         tel = "".join(filter(str.isdigit, str(row["Telefono"])))
         if len(tel) == 9: tel = "56" + tel
         
         msg = obtener_mensaje_secuencia(row["Evento"], row["Ubicacion"], dia_obj)
+        
         if enviar_mensaje_texto(tel, msg):
             df.at[idx, "Estado"] = "Contactado" if dia_obj < 4 else "Finalizado"
             df.at[idx, "Dia_Secuencia"] = dia_obj
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
+            # Guardamos tras cada mensaje para no perder progreso si falla el script
             df.to_csv(ARCHIVO_LEADS, index=False)
-            print(f"✅ Enviado Día {dia_obj} a {row['Evento']}")
-            time.sleep(random.randint(120, 300))
+            print(f"✅ Día {dia_obj} enviado a {row['Evento']}")
+            time.sleep(random.randint(150, 350)) # Espera aleatoria entre mensajes
+        else:
+            print(f"❌ Falló envío a {row['Evento']}")
+
+if __name__ == "__main__":
+    ejecutar_ciclo()
 
 if __name__ == "__main__":
     ejecutar_ciclo()

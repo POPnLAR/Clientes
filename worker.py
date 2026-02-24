@@ -162,6 +162,8 @@ def ejecutar_ciclo():
         df = pd.DataFrame(columns=columnas)
     else:
         df = pd.read_csv(ARCHIVO_LEADS)
+        # Asegurar que Dia_Secuencia sea numérico para evitar errores de comparación
+        df["Dia_Secuencia"] = pd.to_numeric(df["Dia_Secuencia"], errors='coerce').fillna(0).astype(int)
         for col in columnas:
             if col not in df.columns: 
                 df[col] = "No" if col == "Email_Enviado" else ("" if col != "Dia_Secuencia" else 0)
@@ -169,39 +171,65 @@ def ejecutar_ciclo():
     hoy = ahora.strftime("%d/%m/%Y")
     candidatos = []
     
+    print(f"--- Iniciando revisión de secuencia para hoy {hoy} ---")
+
     for idx, row in df.iterrows():
-        if hoy in str(row['Fecha_Contacto']): continue
+        # 1. EVITAR REPETICIONES: Si ya se contactó hoy, saltar.
+        if hoy in str(row.get('Fecha_Contacto', '')):
+            continue
+            
+        # 2. EVITAR REPETICIONES: Si el estado es Finalizado o Rechazado, saltar.
+        if row["Estado"] in ["Finalizado", "Rechazado", "Cita Agendada"]:
+            continue
+
         dia_act = int(row.get("Dia_Secuencia", 0))
         
-        if row["Estado"] == "Contactado" and 1 <= dia_act < 4:
-            candidatos.append({'idx': idx, 'dia': dia_act + 1})
+        # LÓGICA DE PROGRESIÓN:
+        if row["Estado"] == "Contactado":
+            if dia_act < 4:
+                candidatos.append({'idx': idx, 'dia': dia_act + 1})
         elif row["Estado"] == "Nuevo":
             candidatos.append({'idx': idx, 'dia': 1})
 
-    # Si no hay trabajo, buscar sangre nueva (Aumentado a 20)
+    # Si no hay trabajo en seguimiento, buscar nuevos
     if not candidatos:
+        print("No hay seguimientos pendientes. Buscando nuevos leads...")
         df = buscar_y_agregar_nuevos(df)
+        # Recargar candidatos tras la búsqueda
         for idx, row in df.iterrows():
             if row["Estado"] == "Nuevo" and len(candidatos) < 20:
                 candidatos.append({'idx': idx, 'dia': 1})
 
-    # Procesar lote de 20 para mayor tracción comercial
+    print(f"Total de candidatos a procesar: {len(candidatos[:20])}")
+
     for item in candidatos[:20]:
         idx, dia_obj = item['idx'], item['dia']
         row = df.loc[idx]
         
+        # Limpieza rigurosa del teléfono
         tel = "".join(filter(str.isdigit, str(row["Telefono"])))
         if len(tel) == 9: tel = "56" + tel
         
         msg = obtener_mensaje_secuencia(row["Evento"], row["Ubicacion"], dia_obj)
         
+        print(f"Attempting: {row['Evento']} (Día {dia_obj}) al {tel}")
+        
         if enviar_mensaje_texto(tel, msg):
             df.at[idx, "Estado"] = "Contactado" if dia_obj < 4 else "Finalizado"
             df.at[idx, "Dia_Secuencia"] = dia_obj
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
-            print(f"✅ Mensaje Día {dia_obj} enviado a {row['Evento']}")
+            
+            # GUARDADO INMEDIATO LOCAL
             df.to_csv(ARCHIVO_LEADS, index=False)
-            time.sleep(random.randint(120, 300)) # Delay de 2 a 5 min
+            print(f"✅ Éxito: {row['Evento']} ahora en Día {dia_obj}")
+            
+            # Delay para evitar bloqueos
+            time.sleep(random.randint(120, 300))
+        else:
+            print(f"❌ Falló envío a {row['Evento']}")
+
+if __name__ == "__main__":
+    ejecutar_ciclo()
 
 if __name__ == "__main__":
     ejecutar_ciclo()

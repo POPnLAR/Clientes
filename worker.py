@@ -66,17 +66,40 @@ def buscar_y_agregar_nuevos(df_actual):
     except Exception as e: print(f"❌ Error búsqueda: {e}")
     return df_actual
 
-# --- COMUNICACIONES ---
+# --- COMUNICACIONES (CON LOG DE ERROR DETALLADO) ---
 def enviar_mensaje_texto(numero, mensaje):
+    if not EVO_URL or not EVO_TOKEN:
+        print("❌ Error: Faltan credenciales de Evolution en Variables de Entorno.")
+        return False
+    
     base_url = EVO_URL.strip().rstrip('/')
     headers = {"Content-Type": "application/json", "apikey": EVO_TOKEN}
+    
     try:
-        requests.post(f"{base_url}/chat/sendPresence/{EVO_INSTANCE}", json={"number": numero, "presence": "composing"}, headers=headers)
+        # 1. Simular presencia
+        requests.post(f"{base_url}/chat/sendPresence/{EVO_INSTANCE}", 
+                     json={"number": numero, "presence": "composing"}, 
+                     headers=headers, timeout=10)
+        
         time.sleep(random.randint(5, 10))
-        payload = {"number": numero, "options": {"delay": 1200}, "textMessage": {"text": mensaje}}
-        res = requests.post(f"{base_url}/message/sendText/{EVO_INSTANCE}", json=payload, headers=headers, timeout=20)
-        return res.status_code in [200, 201]
-    except: return False
+
+        # 2. Enviar mensaje
+        payload = {
+            "number": numero, 
+            "options": {"delay": 1200, "presence": "composing"}, 
+            "textMessage": {"text": mensaje}
+        }
+        res = requests.post(f"{base_url}/message/sendText/{EVO_INSTANCE}", 
+                           json=payload, headers=headers, timeout=20)
+        
+        if res.status_code in [200, 201]:
+            return True
+        else:
+            print(f"⚠️ Error API Evolution ({res.status_code}): {res.text}")
+            return False
+    except Exception as e: 
+        print(f"❌ Error de red: {e}")
+        return False
 
 def obtener_mensaje_secuencia(nombre, ubicacion, dia):
     nombre = limpiar_acentos(nombre)
@@ -87,16 +110,15 @@ def obtener_mensaje_secuencia(nombre, ubicacion, dia):
     if dia == 4: return f"Estimados {nombre}, entiendo el ajetreo. 👋 Les dejo mi contacto por si deciden profesionalizar su clínica a futuro. ¡Éxito!"
     return ""
 
-# --- CICLO PRINCIPAL REFORZADO ---
+# --- CICLO PRINCIPAL ---
 def ejecutar_ciclo():
     ahora = datetime.now()
-    # Restricción Lunes-Sábado 9:00 a 19:00
+    # Lunes a Sábado de 09:00 a 19:00
     if ahora.weekday() > 5 or not (9 <= ahora.hour <= 19): 
         print("Fuera de horario de envío.")
         return 
 
     if not os.path.exists(ARCHIVO_LEADS):
-        # Si el archivo no existe, lo creamos vacío para empezar a buscar
         df = pd.DataFrame(columns=["Id","Fecha","Hora","Evento","Ministerio","Ubicacion","Estado","Telefono","Email","Email_Enviado","Dia_Secuencia","Fecha_Contacto"])
     else:
         df = pd.read_csv(ARCHIVO_LEADS)
@@ -105,14 +127,15 @@ def ejecutar_ciclo():
     hoy_str = ahora.strftime("%d/%m/%Y")
     candidatos = []
 
-    # 1. BUSCAR MENSAJES DE SEGUIMIENTO (Día 2, 3, 4) Y NUEVOS EN COLA
+    # 1. IDENTIFICAR TAREAS PENDIENTES
     for idx, row in df.iterrows():
+        # No molestar si ya se le escribió HOY calendario
         if hoy_str in str(row.get('Fecha_Contacto', '')): continue
         if row["Estado"] in ["Finalizado", "Rechazado", "Cita Agendada"]: continue
 
         dia_act = int(row.get("Dia_Secuencia", 0))
         
-        # Validación estricta de 23.5 horas para seguimientos
+        # Validación de 23.5 horas para seguimientos
         if row["Estado"] == "Contactado":
             fecha_str = str(row.get('Fecha_Contacto', ''))
             try:
@@ -127,22 +150,20 @@ def ejecutar_ciclo():
         elif row["Estado"] == "Nuevo":
             candidatos.append({'idx': idx, 'dia': 1})
 
-    # 2. ACCIÓN SI NO HAY NADA QUE HACER: BUSCAR SANGRE NUEVA INMEDIATAMENTE
+    # 2. SI NO HAY TAREAS, BUSCAR CLIENTES NUEVOS
     if not candidatos:
-        print("📭 Nada pendiente por hoy. Iniciando búsqueda automática de nuevos clientes...")
+        print("📭 Nada pendiente. Iniciando prospección automática...")
         df = buscar_y_agregar_nuevos(df)
-        # Recargar candidatos tras la búsqueda para procesar los nuevos de una vez
         for idx, row in df.iterrows():
             if row["Estado"] == "Nuevo" and len(candidatos) < 15:
-                # Solo agregamos los que acabamos de meter (que no tengan fecha de contacto)
                 if not str(row.get('Fecha_Contacto', '')):
                     candidatos.append({'idx': idx, 'dia': 1})
 
-    # 3. EJECUCIÓN DE ENVÍOS (Máximo 20 por ciclo para evitar bloqueos)
     if not candidatos:
-        print("😴 No se encontraron clientes nuevos ni seguimientos.")
+        print("😴 Sin prospectos nuevos.")
         return
 
+    # 3. PROCESAR ENVÍOS
     print(f"🚀 Procesando {len(candidatos[:20])} envíos...")
     for item in candidatos[:20]:
         idx, dia_obj = item['idx'], item['dia']
@@ -157,15 +178,14 @@ def ejecutar_ciclo():
             df.at[idx, "Estado"] = "Contactado" if dia_obj < 4 else "Finalizado"
             df.at[idx, "Dia_Secuencia"] = dia_obj
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
-            # Guardamos tras cada mensaje para no perder progreso si falla el script
-            df.to_csv(ARCHIVO_LEADS, index=False)
-            print(f"✅ Día {dia_obj} enviado a {row['Evento']}")
-            time.sleep(random.randint(150, 350)) # Espera aleatoria entre mensajes
+            print(f"✅ Enviado Día {dia_obj} a {row['Evento']}")
         else:
-            print(f"❌ Falló envío a {row['Evento']}")
-
-if __name__ == "__main__":
-    ejecutar_ciclo()
+            # MARCAR COMO INTENTADO HOY PARA EVITAR BUCLE DE ERRORES
+            df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M") 
+            print(f"❌ Falló envío a {row['Evento']}. Se salta hasta mañana.")
+        
+        df.to_csv(ARCHIVO_LEADS, index=False)
+        time.sleep(random.randint(150, 350))
 
 if __name__ == "__main__":
     ejecutar_ciclo()

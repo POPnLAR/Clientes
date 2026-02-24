@@ -174,15 +174,23 @@ def ejecutar_ciclo():
         
         msg = obtener_mensaje_secuencia(row["Evento"], row["Ubicacion"], dia_obj)
         
+        # --- DENTRO DEL BUCLE DE ENVÍOS EN ejecutar_ciclo ---
+        
         if enviar_mensaje_texto(tel, msg):
             df.at[idx, "Estado"] = "Contactado" if dia_obj < 4 else "Finalizado"
             df.at[idx, "Dia_Secuencia"] = dia_obj
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
             print(f"✅ Enviado Día {dia_obj} a {row['Evento']}")
         else:
-            # MARCAR COMO INTENTADO HOY PARA EVITAR BUCLE DE ERRORES
+            # SI FALLA EL ENVÍO:
+            # Lo marcamos como "Error" para que el filtro 'Estado' lo ignore en el futuro.
+            # Esto sugiere que el número es inválido o no tiene WhatsApp.
+            df.at[idx, "Estado"] = "Error" 
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M") 
-            print(f"❌ Falló envío a {row['Evento']}. Se salta hasta mañana.")
+            print(f"❌ Falló envío a {row['Evento']}. Marcado como ERROR (posible número inválido).")
+        
+        # Guardar cambios inmediatamente para depurar la base de datos
+        df.to_csv(ARCHIVO_LEADS, index=False)
         
         df.to_csv(ARCHIVO_LEADS, index=False)
         time.sleep(random.randint(150, 350))

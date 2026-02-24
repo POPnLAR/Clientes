@@ -4,6 +4,7 @@ import os
 import time
 import requests
 import unicodedata
+import base64
 from datetime import datetime
 
 # --- CONFIGURACIÓN ---
@@ -49,7 +50,30 @@ st.markdown("""
     [data-testid="stDataFrame"] td { color: #F8FAFC !important; }
     </style>
     """, unsafe_allow_html=True)
-
+#Guardar a Git
+def push_to_github(filename, content):
+    # Configuración de GitHub desde secrets
+    token = st.secrets["GITHUB_TOKEN"]
+    repo = "tu_usuario/tu_repositorio" # CAMBIA ESTO
+    url = f"https://api.github.com/repos/{repo}/contents/{filename}"
+    
+    headers = {"Authorization": f"token {token}"}
+    
+    # 1. Obtener el SHA del archivo actual (necesario para actualizarlo)
+    res = requests.get(url, headers=headers)
+    sha = res.json().get("sha") if res.status_code == 200 else None
+    
+    # 2. Preparar el envío
+    data = {
+        "message": f"Update {filename} from App dashboard",
+        "content": base64.b64encode(content.encode()).decode(),
+    }
+    if sha:
+        data["sha"] = sha
+        
+    res = requests.put(url, json=data, headers=headers)
+    return res.status_code in [200, 201]
+    
 # --- LÓGICA DE PRUEBA ---
 def enviar_secuencia_test():
     if not EVO_URL: return
@@ -139,12 +163,22 @@ with t1:
     )
 
 with t2:
-    st.info("Edición directa de la base de datos.")
+    st.info("Edición directa de la base de datos con sincronización a GitHub.")
     df_edit = st.data_editor(df_actual, num_rows="dynamic", use_container_width=True, hide_index=True)
-    if st.button("💾 GUARDAR CAMBIOS"):
+    
+    if st.button("💾 GUARDAR Y SINCRONIZAR"):
+        # Guardar localmente
         df_edit.to_csv(ARCHIVO_LEADS, index=False)
-        st.success("Cambios guardados.")
-        st.rerun()
+        
+        # Intentar subir a GitHub
+        with st.spinner("Sincronizando con GitHub..."):
+            csv_content = df_edit.to_csv(index=False)
+            if push_to_github(ARCHIVO_LEADS, csv_content):
+                st.success("✅ ¡Cambios guardados y sincronizados con el Repositorio!")
+                time.sleep(1)
+                st.rerun()
+            else:
+                st.error("❌ Error al sincronizar con GitHub. Verifica el Token y permisos.")
 
 st.markdown("---")
 st.caption("GestionVital Pro - Sistema de Alta Dirección Clínica.")

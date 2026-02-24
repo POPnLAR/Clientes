@@ -112,7 +112,6 @@ def obtener_mensaje_secuencia(nombre, ubicacion, dia):
 # --- CICLO PRINCIPAL ---
 def ejecutar_ciclo():
     ahora = datetime.now()
-    # Restricción Lunes-Sábado 9:00 a 19:00
     if ahora.weekday() > 5 or not (9 <= ahora.hour <= 19): 
         print("🕒 Fuera de horario de envío.")
         return 
@@ -162,7 +161,6 @@ def ejecutar_ciclo():
         idx, dia_obj = item['idx'], item['dia']
         row = df.loc[idx]
         
-        # Validación estricta 569
         raw_tel = "".join(filter(str.isdigit, str(row["Telefono"])))
         tel_final = "56" + raw_tel if (len(raw_tel) == 9 and raw_tel.startswith("9")) else raw_tel
 
@@ -170,12 +168,13 @@ def ejecutar_ciclo():
             print(f"   ⚠️ Número inválido: {tel_final}. Saltando...")
             df.at[idx, "Estado"] = "Error"
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
-            df.to_csv(ARCHIVO_LEADS, index=False)
+            df.to_csv(ARCHIVO_LEADS, index=False) # Guardado inmediato del error
             continue
 
         msg = obtener_mensaje_secuencia(row["Evento"], row["Ubicacion"], dia_obj)
         print(f"[{i+1}/{len(candidatos)}] Enviando a: {row['Evento']} ({tel_final})...")
         
+        # EJECUCIÓN DEL ENVÍO
         if enviar_mensaje_texto(tel_final, msg):
             df.at[idx, "Estado"] = "Contactado" if dia_obj < 4 else "Finalizado"
             df.at[idx, "Dia_Secuencia"] = dia_obj
@@ -186,9 +185,11 @@ def ejecutar_ciclo():
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
             print(f"   ❌ Falló el envío técnico.")
 
+        # --- GUARDADO INMEDIATO (ANTES DEL SLEEP) ---
         df.to_csv(ARCHIVO_LEADS, index=False)
+        print(f"   💾 CSV actualizado correctamente.")
 
-        # Espera de seguridad (Corregido el NameError)
+        # ESPERA DE SEGURIDAD
         if i < len(candidatos) - 1:
             espera = random.randint(150, 250)
             print(f"   ⏳ Esperando {espera} segundos para el siguiente...")

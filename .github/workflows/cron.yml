@@ -2,8 +2,8 @@ name: GestionVital Pro Cron
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Se ejecuta cada hora en punto
-  workflow_dispatch:      # Permite ejecutarlo manualmente desde GitHub
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout repositorio
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Trae todo el historial para evitar errores de rebase
 
       - name: Configurar Python
         uses: actions/setup-python@v4
@@ -20,6 +22,12 @@ jobs:
       - name: Instalar dependencias
         run: pip install pandas requests fpdf beautifulsoup4 lxml
 
+      - name: Sincronizar con Streamlit (Antes de ejecutar)
+        run: |
+          git config --global user.name 'GestionVital Bot'
+          git config --global user.email 'bot@gestionvitalpro.cl'
+          git pull origin main --rebase
+
       - name: Ejecutar Prospeccion
         env:
           EVO_URL: ${{ secrets.EVO_URL }}
@@ -28,21 +36,8 @@ jobs:
           SERP_KEY: ${{ secrets.SERP_KEY }}
         run: python worker.py
 
-      - name: Guardar cambios en CSV
+      - name: Guardar cambios en GitHub
         run: |
-          git config --global user.name 'GestionVital Bot'
-          git config --global user.email 'bot@gestionvitalpro.cl'
-          
-          # 1. Guardar cambios locales temporalmente para limpiar el área de trabajo
-          git stash
-          
-          # 2. Traer cambios de la nube (Streamlit)
-          git pull origin main --rebase
-          
-          # 3. Recuperar los cambios del Worker
-          git stash pop || echo "No había cambios en el stash"
-          
-          # 4. Asegurar y subir
           git add prospeccion_gestionvital_pro.csv
-          git commit -m "Actualizacion de leads y envios [Skip CI]" || echo "No hay cambios para commitear"
-          git push origin main
+          # Solo hace commit si el worker realmente hizo cambios
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Actualizacion leads [Skip CI]" && git push origin main)

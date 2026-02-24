@@ -33,12 +33,16 @@ jobs:
           git config --global user.name 'GestionVital Bot'
           git config --global user.email 'bot@gestionvitalpro.cl'
           
-          # 1. Traer lo que hay en la nube antes de cualquier cosa para evitar el 'rejected'
+          # 1. Guardar cambios locales temporalmente para limpiar el área de trabajo
+          git stash
+          
+          # 2. Traer cambios de la nube (Streamlit)
           git pull origin main --rebase
           
-          # 2. Agregar cambios
-          git add prospeccion_gestionvital_pro.csv
+          # 3. Recuperar los cambios del Worker
+          git stash pop || echo "No había cambios en el stash"
           
-          # 3. Commit y Push con reintento si falla
-          git commit -m "Actualizacion de leads y envios [Skip CI]" || echo "No hay cambios"
-          git push origin main || (git pull origin main --rebase && git push origin main)
+          # 4. Asegurar y subir
+          git add prospeccion_gestionvital_pro.csv
+          git commit -m "Actualizacion de leads y envios [Skip CI]" || echo "No hay cambios para commitear"
+          git push origin main

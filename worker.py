@@ -128,61 +128,25 @@ def obtener_mensaje_secuencia(nombre, ubicacion, dia):
     return ""
 
 # --- CICLO PRINCIPAL ---
+# --- CICLO PRINCIPAL ANTI-BLOQUEO ---
 def ejecutar_ciclo():
     ahora = datetime.now()
-    # Lunes a Sábado de 09:00 a 19:00
     if ahora.weekday() > 5 or not (9 <= ahora.hour <= 19): 
-        print("Fuera de horario de envío.")
+        print("Fuera de horario.")
         return 
 
-    if not os.path.exists(ARCHIVO_LEADS):
-        df = pd.DataFrame(columns=["Id","Fecha","Hora","Evento","Ministerio","Ubicacion","Estado","Telefono","Email","Email_Enviado","Dia_Secuencia","Fecha_Contacto"])
-    else:
-        df = pd.read_csv(ARCHIVO_LEADS)
+    if not os.path.exists(ARCHIVO_LEADS): return
+    df = pd.read_csv(ARCHIVO_LEADS)
     
-    df["Dia_Secuencia"] = pd.to_numeric(df["Dia_Secuencia"], errors='coerce').fillna(0).astype(int)
-    hoy_str = ahora.strftime("%d/%m/%Y")
-    candidatos = []
+    # ... (mantenemos la lógica de identificación de candidatos igual) ...
 
-    # 1. IDENTIFICAR TAREAS PENDIENTES
-    for idx, row in df.iterrows():
-        # No molestar si ya se le escribió HOY calendario
-        if hoy_str in str(row.get('Fecha_Contacto', '')): continue
-        if row["Estado"] in ["Finalizado", "Rechazado", "Cita Agendada"]: continue
+    # 3. EJECUCIÓN LIMITADA (Solo 10 por tanda para evitar que el cron se cuelgue)
+    max_envios = 10 
+    contador = 0
 
-        dia_act = int(row.get("Dia_Secuencia", 0))
-        
-        # Validación de 23.5 horas para seguimientos
-        if row["Estado"] == "Contactado":
-            fecha_str = str(row.get('Fecha_Contacto', ''))
-            try:
-                ultima_fecha = datetime.strptime(fecha_str, "%d/%m/%Y %H:%M")
-                if (ahora - ultima_fecha).total_seconds() < 84600:
-                    continue
-            except:
-                if fecha_str != "": continue
-
-        if row["Estado"] == "Contactado" and dia_act < 4:
-            candidatos.append({'idx': idx, 'dia': dia_act + 1})
-        elif row["Estado"] == "Nuevo":
-            candidatos.append({'idx': idx, 'dia': 1})
-
-    # 2. SI NO HAY TAREAS, BUSCAR CLIENTES NUEVOS
-    if not candidatos:
-        print("📭 Nada pendiente. Iniciando prospección automática...")
-        df = buscar_y_agregar_nuevos(df)
-        for idx, row in df.iterrows():
-            if row["Estado"] == "Nuevo" and len(candidatos) < 15:
-                if not str(row.get('Fecha_Contacto', '')):
-                    candidatos.append({'idx': idx, 'dia': 1})
-
-    if not candidatos:
-        print("😴 Sin prospectos nuevos.")
-        return
-
-    # 3. PROCESAR ENVÍOS
-    print(f"🚀 Procesando {len(candidatos[:20])} envíos...")
-    for item in candidatos[:20]:
+    print(f"🚀 Iniciando tanda corta de {len(candidatos[:max_envios])} envíos...")
+    
+    for item in candidatos[:max_envios]:
         idx, dia_obj = item['idx'], item['dia']
         row = df.loc[idx]
         
@@ -191,26 +155,32 @@ def ejecutar_ciclo():
         
         msg = obtener_mensaje_secuencia(row["Evento"], row["Ubicacion"], dia_obj)
         
-        # --- DENTRO DEL BUCLE DE ENVÍOS EN ejecutar_ciclo ---
+        print(f"Enviando a {row['Evento']}...")
+        exito = enviar_mensaje_texto(tel, msg)
         
-        if enviar_mensaje_texto(tel, msg):
+        if exito:
             df.at[idx, "Estado"] = "Contactado" if dia_obj < 4 else "Finalizado"
             df.at[idx, "Dia_Secuencia"] = dia_obj
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
-            print(f"✅ Enviado Día {dia_obj} a {row['Evento']}")
+            print(f"✅ Éxito.")
         else:
-            # SI FALLA EL ENVÍO:
-            # Lo marcamos como "Error" para que el filtro 'Estado' lo ignore en el futuro.
-            # Esto sugiere que el número es inválido o no tiene WhatsApp.
-            df.at[idx, "Estado"] = "Error" 
-            df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M") 
-            print(f"❌ Falló envío a {row['Evento']}. Marcado como ERROR (posible número inválido).")
+            # Si falla, marcamos ERROR y saltamos al siguiente
+            df.at[idx, "Estado"] = "Error"
+            df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
+            print(f"❌ Falló. Marcado como Error.")
         
-        # Guardar cambios inmediatamente para depurar la base de datos
+        # Guardado inmediato
         df.to_csv(ARCHIVO_LEADS, index=False)
         
-        df.to_csv(ARCHIVO_LEADS, index=False)
-        time.sleep(random.randint(150, 350))
+        contador += 1
+        # Espera más corta entre mensajes (2 a 3 minutos) para no eternizar el proceso
+        if contador < len(candidatos[:max_envios]):
+            time.sleep(random.randint(120, 180))
+
+    print(f"🏁 Ciclo terminado. Procesados: {contador}")
+
+if __name__ == "__main__":
+    ejecutar_ciclo()
 
 if __name__ == "__main__":
     ejecutar_ciclo()

@@ -105,16 +105,26 @@ def obtener_mensaje_secuencia(nombre, ubicacion, dia):
     nombre = limpiar_acentos(nombre)
     zona = ubicacion if ubicacion else "su zona"
     if dia == 1:
-        return (f"Estimados, un gusto saludarles. 👋 Mi nombre es Rodrigo y represento a *GestiónVital*, "
-                f"consultora especializada en la profesionalización de centros estéticos.\n\n"
-                f"Hemos realizado un análisis preventivo sobre la presencia operativa de *{nombre}* y podemos ayudar en estas tres brechas críticas:\n\n"
-                f"1️⃣ *Fuga por Latencia:* Pacientes que no concretan por demora en respuesta.\n"
-                f"2️⃣ *Vulnerabilidad Legal:* Gestión manual de fichas y consentimientos.\n"
-                f"3️⃣ *Mermas en Insumos:* Falta de control de stock digital.\n\n"
-                f"¿Podríamos coordinar una sesión breve de 5 minutos para explicarles cómo optimizar estos puntos?")
-    if dia == 2: return f"Hola de nuevo {nombre}. 👋 Digitalizar su operación puede subir su rentabilidad un 20%. ¿Conversamos?"
-    if dia == 3: return f"Buen día {nombre}. 🏥 Los seleccionamos para el programa **Transformación Digital 2026**. ¿Le interesa liderar el sector?"
-    if dia == 4: return f"Estimados {nombre}, entiendo el ajetreo. 👋 Les dejo mi contacto por si deciden profesionalizar su clínica a futuro. ¡Éxito!"
+        return (f"Hola, ¡buen día! 👋 Mi nombre es Rodrigo de **GestiónVital**. "
+                f"Les escribo porque sigo de cerca los centros de estética en {zona} y me gustó mucho la propuesta de *{nombre}*.\n\n"
+                f"Trabajo ayudando a centros como el de ustedes a que el día a día sea más fluido. Me encantaría compartirles algunas ideas sobre:\n\n"
+                f"✨ Cómo agilizar las respuestas para que ningún paciente se quede esperando.\n"
+                f"📋 Digitalizar las fichas para mayor tranquilidad de todos.\n"
+                f"📦 Optimizar el control de insumos de forma simple.\n\n"
+                f"¿Tendrán 5 minutitos esta semana para conversar de forma relajada? Me encantaría conocerles.")
+    
+    elif dia == 2:
+        return (f"Hola de nuevo. 👋 Solo pasaba a saludar y dejarles un dato: en **GestiónVital** hemos visto que pequeños ajustes en la organización pueden liberar mucho tiempo para los dueños de centros en {zona}.\n\n"
+                f"En *{nombre}* tienen un potencial tremendo. ¿Les parecería si coordinamos una breve llamada para presentarnos?")
+    
+    elif dia == 3:
+        return (f"¡Hola! 🏥 ¿Cómo va la semana en *{nombre}*?\n\n"
+                f"Les escribía porque estamos invitando a algunos centros referentes de {zona} a una charla sobre las nuevas tendencias de gestión para este 2026. Me gustaría mucho que ustedes formaran parte. ¿Les interesa que les cuente más?")
+    
+    elif dia == 4:
+        return (f"Estimados en *{nombre}*, imagino que deben estar con muchas cositas, así que no les quito más tiempo. 👋\n\n"
+                f"Solo quería agradecerles por el espacio. Les dejo mi contacto por aquí; si alguna vez sienten que necesitan un apoyo para organizar procesos o crecer, cuenten conmigo. ¡Que tengan mucho éxito!")
+    
     return ""
 
 # --- CICLO PRINCIPAL ---

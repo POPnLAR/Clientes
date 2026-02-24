@@ -7,7 +7,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 6,23/02/2026,12:59,Entre nosotras estetica,Prospeccion Automatica,Ñuñoa,Contactado,56951952050,24/02/2026 12:59,2,,No
 7,23/02/2026,12:59,Clínica Estética Kinemistic Ñuñoa,Prospeccion Automatica,Ñuñoa,Contactado,56929914264,24/02/2026 12:59,2,,No
 8,23/02/2026,12:59,Clinica Estética nueva imagen,Prospeccion Automatica,Ñuñoa,Contactado,56965846294,24/02/2026 12:59,2,,No
-9,23/02/2026,12:59,LyL estetica integral,Prospeccion Automatica,Ñuñoa,Nuevo,56229295642,,0,info@lylcentrodesteticayspa.c1,No
+9,23/02/2026,12:59,LyL estetica integral,Prospeccion Automatica,Ñuñoa,Error,56229295642,,0,info@lylcentrodesteticayspa.c1,No
 10,23/02/2026,12:59,La Fuente de Belleza,Prospeccion Automatica,Ñuñoa,Contactado,56967691191,24/02/2026 12:59,2,,No
-11,23/02/2026,12:59,The Golden Spa,Prospeccion Automatica,Ñuñoa,Nuevo,56942103998,,0,contacto@thegoldenspa.cl,No
+11,23/02/2026,12:59,The Golden Spa,Prospeccion Automatica,Ñuñoa,Error,56942103998,,0,contacto@thegoldenspa.cl,No
 12,23/02/2026,13:00,Salón de belleza Ashes,Prospeccion Automatica,Ñuñoa,Contactado,56930101099,24/02/2026 12:59,2,ejemplo@dominio.com,No

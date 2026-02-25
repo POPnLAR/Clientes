@@ -53,6 +53,6 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 52,25/02/2026,10:53,"Cosmeclinic Clínica Estética , Estética Regenerativa, Pro Age, Tratamientos No Invasivos",Prospeccion Automatica,Las Condes,Contactado,56954385895,25/02/2026 10:53,1,,No
 53,25/02/2026,10:54,Clinica Gulfo - Medicina Estetica y Dermatología,Prospeccion Automatica,Las Condes,Rechazado,56947464746,25/02/2026 11:40,1,,No
 54,25/02/2026,10:54,Clínica estética Buddha Clinic,Prospeccion Automatica,Las Condes,Rechazado,56942017135,25/02/2026 11:40,1,contacto@buddhaclinic.cl,No
-55,25/02/2026,10:54,Clínica estética Meu,Prospeccion Automatica,Las Condes,Contactado,56957117131,25/02/2026 14:50,1,,
+55,25/02/2026,10:54,Clínica estética Meu,Prospeccion Automatica,Las Condes,Contactado,56957117131,25/02/2026 14:50,1,,No
 56,25/02/2026,10:54,Kintegra,Prospeccion Automatica,Las Condes,Correo,56944951115,25/02/2026 11:40,1,marketing@kintegra.cl,Si
-57,25/02/2026,10:54,Clínica Orión,Prospeccion Automatica,Las Condes,Contactado,56994956497,25/02/2026 14:50,1,,
+57,25/02/2026,10:54,Clínica Orión,Prospeccion Automatica,Las Condes,Correo,56994956497,25/02/2026 14:50,1,administracion@clinicaorion.cl,Si

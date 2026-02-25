@@ -26,7 +26,6 @@ jobs:
         run: |
           git config --global user.name 'GestionVital Bot'
           git config --global user.email 'bot@gestionvitalpro.cl'
-          # Configura Git para que el rebase sea la opción por defecto en caso de conflicto
           git config --global pull.rebase true
 
       - name: Sincronizar con Streamlit (Antes de ejecutar)
@@ -50,9 +49,12 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             git commit -m "Actualizacion leads [Skip CI]"
             
-            # 3. Intentamos subir. Si falló por cambios nuevos en Streamlit, 
-            # hacemos pull rebase otra vez y reintento de push.
-            git pull origin main --rebase
+            # 3. Intentamos subir. 
+            # Usamos -X theirs para que, en caso de conflicto, los cambios del commit actual (Worker)
+            # prevalezcan sobre los que están en el repositorio (Streamlit).
+            git pull origin main --rebase -X theirs
+            
+            # 4. Empujar los cambios limpios
             git push origin main
           else
             echo "No hay cambios para actualizar."

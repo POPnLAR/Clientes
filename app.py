@@ -46,15 +46,19 @@ st.markdown("""
         width: 100%;
         font-weight: 600 !important;
     }
+    /* Color especial para éxito */
+    [data-testid="stMetricValue"] { color: #10B981 !important; }
+    
     .test-btn > div > button { background-color: #10B981 !important; }
     [data-testid="stDataFrame"] td { color: #F8FAFC !important; }
     </style>
     """, unsafe_allow_html=True)
-#Guardar a Git
+
+# Guardar a Git
 def push_to_github(filename, content):
     try:
         token = st.secrets["GITHUB_TOKEN"]
-        repo = st.secrets["GITHUB_REPO"]  # Ej: "tu-usuario/Clientes"
+        repo = st.secrets["GITHUB_REPO"]
         url = f"https://api.github.com/repos/{repo}/contents/{filename}"
         
         headers = {
@@ -62,11 +66,9 @@ def push_to_github(filename, content):
             "Accept": "application/vnd.github.v3+json"
         }
         
-        # 1. Obtener el SHA del archivo actual
         res = requests.get(url, headers=headers)
         sha = res.json().get("sha") if res.status_code == 200 else None
         
-        # 2. Preparar el envío
         data = {
             "message": f"Sincronización desde Panel App {datetime.now().strftime('%d/%m/%Y %H:%M')}",
             "content": base64.b64encode(content.encode('utf-8')).decode('utf-8'),
@@ -87,6 +89,7 @@ def enviar_secuencia_test():
     base_url = EVO_URL.strip().rstrip('/')
     
     try:
+        # Importación dinámica para evitar errores si el archivo no existe aún
         from worker import obtener_mensaje_secuencia
         msg1 = obtener_mensaje_secuencia("Clinica de Prueba", "Santiago", 1)
         requests.post(f"{base_url}/chat/sendPresence/{EVO_INSTANCE}", 
@@ -96,8 +99,8 @@ def enviar_secuencia_test():
                       json={"number": NUMERO_PRUEBA, "textMessage": {"text": msg1}}, 
                       headers=headers, timeout=10)
         st.sidebar.success("✅ Test enviado")
-    except:
-        st.sidebar.error("❌ Fallo en la conexión")
+    except Exception as e:
+        st.sidebar.error(f"❌ Fallo: {str(e)}")
 
 # --- CARGA DE DATOS ---
 @st.cache_data(ttl=2)
@@ -112,14 +115,17 @@ def cargar_datos():
 # --- APP PRINCIPAL ---
 df_actual = cargar_datos()
 
+# Métricas Sidebar Actualizadas
+exitos_total = len(df_actual[df_actual["Estado"] == "Agendado"])
+
 with st.sidebar:
     st.markdown("<br><h2 style='color: white;'>GestiónVital</h2>", unsafe_allow_html=True)
     st.metric("Prospectos", len(df_actual))
-    st.metric("Contactados", len(df_actual[df_actual["Estado"] == "Contactado"]))
+    st.metric("Casos de Éxito 🏆", exitos_total)
     st.markdown("---")
     if st.button(f"🚀 ENVIAR MSJ PRUEBA"):
         enviar_secuencia_test()
-    st.caption(f"v3.4 | {datetime.now().strftime('%d/%m/%Y')}")
+    st.caption(f"v3.5 | {datetime.now().strftime('%d/%m/%Y')}")
 
 st.title("Panel de Prospección Integral")
 
@@ -128,12 +134,13 @@ t1, t2 = st.tabs(["📊 Dashboard", "⚙️ Editor"])
 with t1:
     col_a, col_b, col_c, col_d = st.columns(4)
     total = len(df_actual)
-    contactados = len(df_actual[df_actual["Estado"] == "Contactado"])
+    # Consideramos engagement a los contactados + los agendados
+    interesados = len(df_actual[df_actual["Estado"].isin(["Contactado", "Agendado"])])
     
     with col_a: st.metric("Cartera Total", total)
-    with col_b: st.metric("Engagement", f"{(contactados/total*100) if total > 0 else 0:.1f}%")
-    with col_c: st.metric("En Secuencia", len(df_actual[df_actual["Dia_Secuencia"] > 0]))
-    with col_d: st.metric("Por Auditar", len(df_actual[df_actual["Estado"] == "Nuevo"]))
+    with col_b: st.metric("Casos de Éxito", exitos_total)
+    with col_c: st.metric("Conversión", f"{(exitos_total/total*100) if total > 0 else 0:.1f}%")
+    with col_d: st.metric("En Secuencia", len(df_actual[df_actual["Dia_Secuencia"] > 0]))
 
     busqueda = st.text_input("🔍 Buscar Clínica...", placeholder="Ej: Las Condes...", label_visibility="collapsed")
     
@@ -152,14 +159,14 @@ with t1:
     df_display["WhatsApp"] = df_display["Telefono"].apply(format_whatsapp_link)
 
     st.dataframe(
-        df_display.sort_values(by="Dia_Secuencia", ascending=False),
+        df_display.sort_values(by="Estado", ascending=False),
         use_container_width=True,
         hide_index=True,
         column_config={
             "Id": None,
             "Evento": st.column_config.TextColumn("Clínica / Lead", width="medium"),
             "Ubicacion": "📍 Ubicación",
-            "Estado": st.column_config.SelectboxColumn("Estatus", options=["Nuevo", "Contactado", "Cita Agendada", "Finalizado"]),
+            "Estado": st.column_config.SelectboxColumn("Estatus", options=["Nuevo", "Contactado", "Agendado", "Finalizado", "Error"]),
             "Dia_Secuencia": st.column_config.ProgressColumn("Madurez", min_value=0, max_value=4, format="%d/4"),
             "WhatsApp": st.column_config.LinkColumn("Chat WhatsApp", display_text="Enviar Mensaje"),
             "Telefono": None,
@@ -173,18 +180,15 @@ with t2:
     df_edit = st.data_editor(df_actual, num_rows="dynamic", use_container_width=True, hide_index=True)
     
     if st.button("💾 GUARDAR Y SINCRONIZAR"):
-        # Guardar localmente
         df_edit.to_csv(ARCHIVO_LEADS, index=False)
-        
-        # Intentar subir a GitHub
         with st.spinner("Sincronizando con GitHub..."):
             csv_content = df_edit.to_csv(index=False)
             if push_to_github(ARCHIVO_LEADS, csv_content):
-                st.success("✅ ¡Cambios guardados y sincronizados con el Repositorio!")
+                st.success("✅ ¡Cambios guardados y sincronizados!")
                 time.sleep(1)
                 st.rerun()
             else:
-                st.error("❌ Error al sincronizar con GitHub. Verifica el Token y permisos.")
+                st.error("❌ Error al sincronizar con GitHub.")
 
 st.markdown("---")
 st.caption("GestionVital Pro - Sistema de Alta Dirección Clínica.")

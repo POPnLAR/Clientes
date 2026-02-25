@@ -6,7 +6,7 @@ import time
 import unicodedata
 import re
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # --- CONFIGURACIÓN ---
 EVO_URL = os.getenv("EVO_URL")
@@ -16,6 +16,11 @@ SERP_KEY = os.getenv("SERP_KEY")
 ARCHIVO_LEADS = "prospeccion_gestionvital_pro.csv"
 
 # --- UTILIDADES ---
+def obtener_ahora_chile():
+    # GitHub corre en UTC. Chile es UTC-3.
+    # Esto asegura que 'ahora.hour' sea la hora real de Chile.
+    return datetime.utcnow() - timedelta(hours=3)
+
 def limpiar_acentos(text):
     if not isinstance(text, str): return str(text)
     return "".join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
@@ -40,6 +45,7 @@ def buscar_email_en_web(url):
 def buscar_y_agregar_nuevos(df_actual):
     comunas = ["Las Condes", "Providencia", "Vitacura", "Lo Barnechea", "Ñuñoa", "La Reina"]
     zona_objetivo = random.choice(comunas)
+    ahora_cl = obtener_ahora_chile()
     print(f"🔍 Buscando nuevos leads en: {zona_objetivo}...")
     params = {"engine": "google_maps", "q": f"Clinica Estetica {zona_objetivo} Chile", "api_key": SERP_KEY, "num": 20}
     try:
@@ -56,8 +62,8 @@ def buscar_y_agregar_nuevos(df_actual):
                 email_hallado = buscar_email_en_web(tiene_web)
                 ultimo_id += 1
                 nuevos_leads.append({
-                    "Id": int(ultimo_id), "Fecha": datetime.now().strftime("%d/%m/%Y"),
-                    "Hora": datetime.now().strftime("%H:%M"), "Evento": place.get("title", "Clinica"),
+                    "Id": int(ultimo_id), "Fecha": ahora_cl.strftime("%d/%m/%Y"),
+                    "Hora": ahora_cl.strftime("%H:%M"), "Evento": place.get("title", "Clinica"),
                     "Ministerio": "Prospeccion Automatica", "Ubicacion": zona_objetivo, "Estado": "Nuevo",
                     "Telefono": raw_tel, "Email": email_hallado, "Email_Enviado": "No", "Dia_Secuencia": 0, "Fecha_Contacto": ""
                 })
@@ -68,9 +74,14 @@ def buscar_y_agregar_nuevos(df_actual):
 
 # --- COMUNICACIONES ---
 def enviar_mensaje_texto(numero, mensaje):
+    if not mensaje or len(mensaje.strip()) < 10:
+        print("⚠️ Abortando: Intento de enviar mensaje vacío o muy corto.")
+        return False
+        
     if not EVO_URL or not EVO_TOKEN:
         print("❌ Error: Faltan credenciales.")
         return False
+        
     base_url = EVO_URL.strip().rstrip('/')
     headers = {"Content-Type": "application/json", "apikey": EVO_TOKEN}
     try:
@@ -111,9 +122,11 @@ def obtener_mensaje_secuencia(nombre, ubicacion, dia):
 
 # --- CICLO PRINCIPAL ---
 def ejecutar_ciclo():
-    ahora = datetime.now()
+    ahora = obtener_ahora_chile()
+    
+    # Restricción Lunes-Sábado 9:00 a 19:00 (Hora Chile)
     if ahora.weekday() > 5 or not (9 <= ahora.hour <= 19): 
-        print("🕒 Fuera de horario de envío.")
+        print(f"🕒 Fuera de horario de envío (Hora Chile: {ahora.strftime('%H:%M')}).")
         return 
 
     if not os.path.exists(ARCHIVO_LEADS):
@@ -133,6 +146,7 @@ def ejecutar_ciclo():
         if row["Estado"] == "Contactado":
             try:
                 ultima_fecha = datetime.strptime(str(row['Fecha_Contacto']), "%d/%m/%Y %H:%M")
+                # Comparar con ahora_chile
                 if (ahora - ultima_fecha).total_seconds() < 84600: continue
             except:
                 if str(row['Fecha_Contacto']) != "": continue
@@ -146,6 +160,7 @@ def ejecutar_ciclo():
         print("📭 Nada pendiente. Buscando nuevos leads...")
         df = buscar_y_agregar_nuevos(df)
         df.to_csv(ARCHIVO_LEADS, index=False)
+        # Recargar candidatos tras la búsqueda
         for idx, row in df.iterrows():
             if row["Estado"] == "Nuevo" and not str(row.get('Fecha_Contacto', '')):
                 if len(candidatos) < 10:
@@ -155,7 +170,7 @@ def ejecutar_ciclo():
         print("😴 No hay tareas por realizar.")
         return
 
-    print(f"🚀 Procesando {len(candidatos)} envíos programados...")
+    print(f"🚀 Procesando {len(candidatos)} envíos programados (Hora Chile: {ahora.strftime('%H:%M')})...")
     
     for i, item in enumerate(candidatos):
         idx, dia_obj = item['idx'], item['dia']
@@ -168,13 +183,18 @@ def ejecutar_ciclo():
             print(f"   ⚠️ Número inválido: {tel_final}. Saltando...")
             df.at[idx, "Estado"] = "Error"
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
-            df.to_csv(ARCHIVO_LEADS, index=False) # Guardado inmediato del error
+            df.to_csv(ARCHIVO_LEADS, index=False)
             continue
 
         msg = obtener_mensaje_secuencia(row["Evento"], row["Ubicacion"], dia_obj)
+        
+        # VALIDACIÓN EXTRA DE MENSAJE
+        if not msg:
+            print(f"   ⚠️ Mensaje vacío generado para día {dia_obj}. Saltando...")
+            continue
+
         print(f"[{i+1}/{len(candidatos)}] Enviando a: {row['Evento']} ({tel_final})...")
         
-        # EJECUCIÓN DEL ENVÍO
         if enviar_mensaje_texto(tel_final, msg):
             df.at[idx, "Estado"] = "Contactado" if dia_obj < 4 else "Finalizado"
             df.at[idx, "Dia_Secuencia"] = dia_obj
@@ -185,11 +205,8 @@ def ejecutar_ciclo():
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
             print(f"   ❌ Falló el envío técnico.")
 
-        # --- GUARDADO INMEDIATO (ANTES DEL SLEEP) ---
         df.to_csv(ARCHIVO_LEADS, index=False)
-        print(f"   💾 CSV actualizado correctamente.")
 
-        # ESPERA DE SEGURIDAD
         if i < len(candidatos) - 1:
             espera = random.randint(150, 250)
             print(f"   ⏳ Esperando {espera} segundos para el siguiente...")

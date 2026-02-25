@@ -2,7 +2,8 @@ name: GestionVital Pro Cron
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    # Corre cada 2 horas, pero en el minuto 15 para no ser tan predecible
+    - cron: '15 */2 * * *'
   workflow_dispatch:
 
 jobs:

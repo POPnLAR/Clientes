@@ -40,4 +40,19 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 39,24/02/2026,17:08,CB Medicina Estética | Cara Bonita | Rinomodelación | Botox | Sculptra | Mesoterapia | Exosomas,Prospeccion Automatica,Vitacura,Contactado,56931007002,24/02/2026 17:08,1,contacto@cbestetica.com,No
 40,24/02/2026,17:08,GG Cirujano Plástico - Cirugia plástica estética Santiago Chile,Prospeccion Automatica,Vitacura,Error,56994129342,24/02/2026 17:08,0,gonzalogomez@blissps.com,No
 41,24/02/2026,17:08,"Clínica EM Estétika Médica, Las Condes",Prospeccion Automatica,Vitacura,Error,56442229928,24/02/2026 19:03,0,consultas@estetikamedica.cl,No
-42,25/02/2026,09:56,The Beauty Clinic,Prospeccion Automatica,Vitacura,Contactado,+56982629090,25/02/2026 09:55,1,,No
+42,25/02/2026,09:56,The Beauty Clinic,Prospeccion Automatica,Vitacura,Contactado,56982629090,25/02/2026 09:55,1,,No
+43,25/02/2026,10:53,Clínica Estética W,Prospeccion Automatica,Las Condes,Error,+566004230100,25/02/2026 10:53,0,,No
+44,25/02/2026,10:53,CLINICA VS,Prospeccion Automatica,Las Condes,Contactado,+56995283756,25/02/2026 10:53,1,contacto@clinicavs.cl,No
+45,25/02/2026,10:53,Clínica Avaria - Las Condes,Prospeccion Automatica,Las Condes,Contactado,+56961426693,25/02/2026 10:53,1,contacto@clinicaavaria.cl,No
+46,25/02/2026,10:53,Clínica La Parva,Prospeccion Automatica,Las Condes,Error,+56222071125,25/02/2026 10:53,0,,No
+47,25/02/2026,10:53,Milos Clínica Estética,Prospeccion Automatica,Las Condes,Contactado,+56966350767,25/02/2026 10:53,1,contacto@clinicamilos.cl,No
+48,25/02/2026,10:53,Clínica Estética Bien Être,Prospeccion Automatica,Las Condes,Contactado,+56957122756,25/02/2026 10:53,1,contacto@clinicabienetre.cl,No
+49,25/02/2026,10:53,Clínica Santiago Estética,Prospeccion Automatica,Las Condes,Contactado,+56964968073,25/02/2026 10:53,1,,No
+50,25/02/2026,10:53,Ama Clínica Facial,Prospeccion Automatica,Las Condes,Contactado,+56968569876,25/02/2026 10:53,1,hola@amaclinica.cl,No
+51,25/02/2026,10:53,Clínica Syal - Medicina Estética,Prospeccion Automatica,Las Condes,Contactado,+56983096086,25/02/2026 10:53,1,,No
+52,25/02/2026,10:53,"Cosmeclinic Clínica Estética , Estética Regenerativa, Pro Age, Tratamientos No Invasivos",Prospeccion Automatica,Las Condes,Contactado,+56954385895,25/02/2026 10:53,1,,No
+53,25/02/2026,10:54,Clinica Gulfo - Medicina Estetica y Dermatología,Prospeccion Automatica,Las Condes,Nuevo,+56947464746,,0,,No
+54,25/02/2026,10:54,Clínica estética Buddha Clinic,Prospeccion Automatica,Las Condes,Nuevo,+56942017135,,0,contacto@buddhaclinic.cl,No
+55,25/02/2026,10:54,Clínica estética Meu,Prospeccion Automatica,Las Condes,Nuevo,+56957117131,,0,,No
+56,25/02/2026,10:54,Kintegra,Prospeccion Automatica,Las Condes,Nuevo,+56944951115,,0,,No
+57,25/02/2026,10:54,Clínica Orión,Prospeccion Automatica,Las Condes,Nuevo,+56994956497,,0,,No

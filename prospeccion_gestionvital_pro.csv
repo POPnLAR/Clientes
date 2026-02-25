@@ -56,18 +56,18 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 55,25/02/2026,10:54,Clínica estética Meu,Prospeccion Automatica,Las Condes,Contactado,56957117131,25/02/2026 14:50,1,,No
 56,25/02/2026,10:54,Kintegra,Prospeccion Automatica,Las Condes,Correo,56944951115,25/02/2026 11:40,1,marketing@kintegra.cl,Si
 57,25/02/2026,10:54,Clínica Orión,Prospeccion Automatica,Las Condes,Correo,56994956497,25/02/2026 14:50,1,administracion@clinicaorion.cl,Si
-58,25/02/2026,13:04,Clínica Avaria - Providencia,Prospeccion Automatica,Providencia,Contactado,+56950176115,25/02/2026 13:04,1,contacto@clinicaavaria.cl,No
-59,25/02/2026,13:04,Clínica Arrayán,Prospeccion Automatica,Providencia,Contactado,+56971003645,25/02/2026 13:04,1,clinicaarrayan@clinicaarrayan.cl,No
-60,25/02/2026,13:04,Clínica Dermonova Chile,Prospeccion Automatica,Providencia,Contactado,+56981231240,25/02/2026 13:04,1,contacto@dermonova.cl,No
-61,25/02/2026,13:04,Clínica Estética Me Quiero ®,Prospeccion Automatica,Providencia,Contactado,+56939147080,25/02/2026 13:04,1,contacto@mequiero.cl,No
-62,25/02/2026,13:04,Aurora Estética - Centro de belleza y Estética,Prospeccion Automatica,Providencia,Contactado,+56948441269,25/02/2026 13:04,1,contacto@auraestetica.cl,No
-63,25/02/2026,13:04,Clínica Balance Facial | Centro Estética Providencia | Bótox | Ácido Hialurónico | Tratamiento Dental | Limpieza Facial,Prospeccion Automatica,Providencia,Contactado,+56958360407,25/02/2026 13:04,1,,No
-64,25/02/2026,13:04,Clínica BeYou Estética y Dental,Prospeccion Automatica,Providencia,Error,+56232595985,25/02/2026 13:04,0,,No
-65,25/02/2026,13:04,Clinica Estética Magnética,Prospeccion Automatica,Providencia,Contactado,+56928734862,25/02/2026 13:04,1,,No
-66,25/02/2026,13:04,Franvide Wellness | Clínica Estética integral,Prospeccion Automatica,Providencia,Contactado,+56964977339,25/02/2026 13:04,1,,No
-67,25/02/2026,13:04,Clínica Bela,Prospeccion Automatica,Providencia,Contactado,+56973017686,25/02/2026 13:04,1,,No
-68,25/02/2026,13:04,Pro Esthetic Fit,Prospeccion Automatica,Providencia,Nuevo,+56975473353,,0,,No
-69,25/02/2026,13:04,Clinica Estetica Dental VeraFondi,Prospeccion Automatica,Providencia,Nuevo,+56232450853,,0,hola@verafondiclinic.cl,No
-70,25/02/2026,13:04,Clinica MIAPAU Chile,Prospeccion Automatica,Providencia,Nuevo,+56984531232,,0,,No
-71,25/02/2026,13:04,Centro de Estética NCA - Guardia Vieja,Prospeccion Automatica,Providencia,Nuevo,+56990784304,,0,,No
-72,25/02/2026,13:04,Clínica Be Now,Prospeccion Automatica,Providencia,Nuevo,+56930778917,,0,contacto@clinicabenow.cl,No
+58,25/02/2026,13:04,Clínica Avaria - Providencia,Prospeccion Automatica,Providencia,Contactado,56950176115,25/02/2026 13:04,1,contacto@clinicaavaria.cl,No
+59,25/02/2026,13:04,Clínica Arrayán,Prospeccion Automatica,Providencia,Contactado,56971003645,25/02/2026 13:04,1,clinicaarrayan@clinicaarrayan.cl,No
+60,25/02/2026,13:04,Clínica Dermonova Chile,Prospeccion Automatica,Providencia,Contactado,56981231240,25/02/2026 13:04,1,contacto@dermonova.cl,No
+61,25/02/2026,13:04,Clínica Estética Me Quiero ®,Prospeccion Automatica,Providencia,Contactado,56939147080,25/02/2026 13:04,1,contacto@mequiero.cl,No
+62,25/02/2026,13:04,Aurora Estética - Centro de belleza y Estética,Prospeccion Automatica,Providencia,Contactado,56948441269,25/02/2026 13:04,1,contacto@auraestetica.cl,No
+63,25/02/2026,13:04,Clínica Balance Facial | Centro Estética Providencia | Bótox | Ácido Hialurónico | Tratamiento Dental | Limpieza Facial,Prospeccion Automatica,Providencia,Contactado,56958360407,25/02/2026 13:04,1,,No
+64,25/02/2026,13:04,Clínica BeYou Estética y Dental,Prospeccion Automatica,Providencia,Error,56232595985,25/02/2026 13:04,0,,No
+65,25/02/2026,13:04,Clinica Estética Magnética,Prospeccion Automatica,Providencia,Contactado,56928734862,25/02/2026 13:04,1,,No
+66,25/02/2026,13:04,Franvide Wellness | Clínica Estética integral,Prospeccion Automatica,Providencia,Contactado,56964977339,25/02/2026 13:04,1,,No
+67,25/02/2026,13:04,Clínica Bela,Prospeccion Automatica,Providencia,Contactado,56973017686,25/02/2026 13:04,1,,No
+68,25/02/2026,13:04,Pro Esthetic Fit,Prospeccion Automatica,Providencia,Contactado,56975473353,25/02/2026 14:58,1,,No
+69,25/02/2026,13:04,Clinica Estetica Dental VeraFondi,Prospeccion Automatica,Providencia,Error,56232450853,25/02/2026 14:58,0,hola@verafondiclinic.cl,No
+70,25/02/2026,13:04,Clinica MIAPAU Chile,Prospeccion Automatica,Providencia,Contactado,56984531232,25/02/2026 14:58,1,,No
+71,25/02/2026,13:04,Centro de Estética NCA - Guardia Vieja,Prospeccion Automatica,Providencia,Contactado,56990784304,25/02/2026 14:58,1,,No
+72,25/02/2026,13:04,Clínica Be Now,Prospeccion Automatica,Providencia,Contactado,56930778917,25/02/2026 14:58,1,contacto@clinicabenow.cl,No

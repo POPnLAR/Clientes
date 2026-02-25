@@ -71,3 +71,4 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 70,25/02/2026,13:04,Clinica MIAPAU Chile,Prospeccion Automatica,Providencia,Contactado,56984531232,25/02/2026 14:58,1,,No
 71,25/02/2026,13:04,Centro de Estética NCA - Guardia Vieja,Prospeccion Automatica,Providencia,Contactado,56990784304,25/02/2026 14:58,1,,No
 72,25/02/2026,13:04,Clínica Be Now,Prospeccion Automatica,Providencia,Contactado,56930778917,25/02/2026 14:58,1,contacto@clinicabenow.cl,No
+73,25/02/2026,18:35,Clínica de Cirugía Estética Smer / Autorizada por SEREMI de Salud,Prospeccion Automatica,Providencia,Error,+56950146178,25/02/2026 18:35,0,clinica@smer.cl,No

@@ -16,14 +16,14 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 15,24/02/2026,12:00,Clínica Estética San Martín,Prospeccion Automatica,Vitacura,Contactado,56982969574,24/02/2026 12:59,1,,No
 16,24/02/2026,12:00,ESTÉTICA FACIAL DRA SOFIA LEVRINI,Prospeccion Automatica,Vitacura,Contactado,56989774602,24/02/2026 12:59,1,,No
 17,24/02/2026,12:00,Clínica Esan,Prospeccion Automatica,Vitacura,Contactado,56938902388,24/02/2026 12:59,1,,No
-18,24/02/2026,12:00,Clínica Aurea,Prospeccion Automatica,Vitacura,Contactado,56942706095,24/02/2026 12:59,1,contacto@clinicaaurea.cl,Si
-19,24/02/2026,12:00,Clínica estética ILUM,Prospeccion Automatica,Lo Barnechea,Rechazado,56939169086,24/02/2026 12:59,1,,No
+18,24/02/2026,12:00,Clínica Aurea,Prospeccion Automatica,Vitacura,Correo,56942706095,24/02/2026 12:59,1,contacto@clinicaaurea.cl,Si
+19,24/02/2026,12:00,Clínica estética ILUM,Prospeccion Automatica,Lo Barnechea,Rechazado,56939169086,25/02/2026 12:59,2,,No
 20,24/02/2026,12:00,Clínica Estética Palavas La Dehesa,Prospeccion Automatica,Lo Barnechea,Rechazado,56965072455,24/02/2026 12:59,1,,No
 21,24/02/2026,12:00,Clínica Medicina Estética Dra. Belén Lama,Prospeccion Automatica,Lo Barnechea,Contactado,56965887655,24/02/2026 12:59,1,,No
 22,24/02/2026,12:00,Clínica Maat,Prospeccion Automatica,Lo Barnechea,Contactado,56926233604,24/02/2026 12:59,1,,No
 23,24/02/2026,12:00,Dr. Sebastián Eladio,Prospeccion Automatica,Lo Barnechea,Contactado,56956080418,24/02/2026 12:59,1,,No
 24,24/02/2026,12:00,Clínica Belleza del Bosque,Prospeccion Automatica,Lo Barnechea,Contactado,56958035765,24/02/2026 12:59,1,,No
-25,24/02/2026,12:00,Skin and Glow,Prospeccion Automatica,Lo Barnechea,Contactado,56944218003,24/02/2026 12:59,1,,No
+25,24/02/2026,12:00,Skin and Glow,Prospeccion Automatica,Lo Barnechea,Rechazado,56944218003,25/02/2026 12:59,2,,No
 26,24/02/2026,12:00,Cirugía 360,Prospeccion Automatica,Lo Barnechea,Contactado,56942204831,24/02/2026 12:59,1,,No
 27,24/02/2026,12:00,CLINICA MOREN,Prospeccion Automatica,Lo Barnechea,Contactado,56965098771,24/02/2026 12:59,1,,No
 28,24/02/2026,12:00,Elysium Beauty Clinic,Prospeccion Automatica,Lo Barnechea,Agendado,56945782258,24/02/2026 12:59,1,,No

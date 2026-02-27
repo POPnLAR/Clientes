@@ -2,7 +2,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 1,23/02/2026,12:59,Welsch Estética Ñuñoa,Prospeccion Automatica,Ñuñoa,Rechazado,56945653610,24/02/2026 12:59,2,,No
 2,23/02/2026,12:59,Armonia Clínica Estetica Médica,Prospeccion Automatica,Ñuñoa,Rechazado,56931467483,24/02/2026 12:59,2,,No
 3,23/02/2026,12:59,NoaHealthy Centro Médico y Estético,Prospeccion Automatica,Ñuñoa,Rechazado,56998858883,24/02/2026 12:59,2,,No
-4,23/02/2026,12:59,Clínica Kbody Ñuñoa,Prospeccion Automatica,Ñuñoa,Contactado,56971884561,25/02/2026 12:59,3,,No
+4,23/02/2026,12:59,Clínica Kbody Ñuñoa,Prospeccion Automatica,Ñuñoa,Finalizado,56971884561,27/02/2026 13:56,4,,No
 5,23/02/2026,12:59,Mine Estética Ñuñoa | Depilación Láser y HIFU,Prospeccion Automatica,Ñuñoa,Contactado,56956082740,25/02/2026 12:59,3,,No
 6,23/02/2026,12:59,Entre nosotras estetica,Prospeccion Automatica,Ñuñoa,Finalizado,56951952050,27/02/2026 10:32,4,,No
 7,23/02/2026,12:59,Clínica Estética Kinemistic Ñuñoa,Prospeccion Automatica,Ñuñoa,Finalizado,56929914264,26/02/2026 18:11,4,,No
@@ -19,8 +19,8 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 18,24/02/2026,12:00,Clínica Aurea,Prospeccion Automatica,Vitacura,Correo,56942706095,25/02/2026 12:59,2,contacto@clinicaaurea.cl,Si
 19,24/02/2026,12:00,Clínica estética ILUM,Prospeccion Automatica,Lo Barnechea,Rechazado,56939169086,25/02/2026 12:59,2,,No
 20,24/02/2026,12:00,Clínica Estética Palavas La Dehesa,Prospeccion Automatica,Lo Barnechea,Rechazado,56965072455,24/02/2026 12:59,1,,No
-21,24/02/2026,12:00,Clínica Medicina Estética Dra. Belén Lama,Prospeccion Automatica,Lo Barnechea,Contactado,56965887655,25/02/2026 12:59,2,,No
-22,24/02/2026,12:00,Clínica Maat,Prospeccion Automatica,Lo Barnechea,Contactado,56926233604,25/02/2026 12:59,2,,No
+21,24/02/2026,12:00,Clínica Medicina Estética Dra. Belén Lama,Prospeccion Automatica,Lo Barnechea,Contactado,56965887655,27/02/2026 13:56,3,,No
+22,24/02/2026,12:00,Clínica Maat,Prospeccion Automatica,Lo Barnechea,Contactado,56926233604,27/02/2026 13:56,3,,No
 23,24/02/2026,12:00,Dr. Sebastián Eladio,Prospeccion Automatica,Lo Barnechea,Contactado,56956080418,26/02/2026 18:11,3,,No
 24,24/02/2026,12:00,Clínica Belleza del Bosque,Prospeccion Automatica,Lo Barnechea,Contactado,56958035765,25/02/2026 12:59,2,,No
 25,24/02/2026,12:00,Skin and Glow,Prospeccion Automatica,Lo Barnechea,Rechazado,56944218003,25/02/2026 12:59,2,,No
@@ -28,7 +28,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 27,24/02/2026,12:00,CLINICA MOREN,Prospeccion Automatica,Lo Barnechea,Contactado,56965098771,25/02/2026 12:59,2,,No
 28,24/02/2026,12:00,Elysium Beauty Clinic,Prospeccion Automatica,Lo Barnechea,Agendado,56945782258,24/02/2026 12:59,1,,No
 29,24/02/2026,12:00,Body Clinic Clinica Estetica Integral,Prospeccion Automatica,Lo Barnechea,Contactado,56944199640,25/02/2026 12:59,2,,No
-30,24/02/2026,12:00,Clínica Estética KineNova,Prospeccion Automatica,La Reina,Contactado,56966645305,25/02/2026 12:59,2,,No
+30,24/02/2026,12:00,Clínica Estética KineNova,Prospeccion Automatica,La Reina,Contactado,56966645305,27/02/2026 13:56,3,,No
 31,24/02/2026,17:08,Clinica Borealis Estetica Integral,Prospeccion Automatica,Vitacura,Error,56232529509,24/02/2026 17:08,0,reservasborealis@gmail.com,Si
 32,24/02/2026,17:08,Carolina Varela,Prospeccion Automatica,Vitacura,Error,56222193000,24/02/2026 17:08,0,,No
 33,24/02/2026,17:08,Central Klinic,Prospeccion Automatica,Vitacura,Error,56222080120,24/02/2026 17:08,0,,No
@@ -68,7 +68,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 67,25/02/2026,13:04,Clínica Bela,Prospeccion Automatica,Providencia,Contactado,56973017686,27/02/2026 11:59,2,,No
 68,25/02/2026,13:04,Pro Esthetic Fit,Prospeccion Automatica,Providencia,Contactado,56975473353,27/02/2026 10:32,2,,No
 69,25/02/2026,13:04,Clinica Estetica Dental VeraFondi,Prospeccion Automatica,Providencia,Error,56232450853,25/02/2026 14:58,0,hola@verafondiclinic.cl,No
-70,25/02/2026,13:04,Clinica MIAPAU Chile,Prospeccion Automatica,Providencia,Contactado,56984531232,25/02/2026 14:58,1,,No
+70,25/02/2026,13:04,Clinica MIAPAU Chile,Prospeccion Automatica,Providencia,Error,56984531232,27/02/2026 13:56,1,,No
 71,25/02/2026,13:04,Centro de Estética NCA - Guardia Vieja,Prospeccion Automatica,Providencia,Error,56990784304,27/02/2026 11:59,1,,No
 72,25/02/2026,13:04,Clínica Be Now,Prospeccion Automatica,Providencia,Contactado,56930778917,25/02/2026 14:58,1,contacto@clinicabenow.cl,No
 73,25/02/2026,18:35,Clínica de Cirugía Estética Smer / Autorizada por SEREMI de Salud,Prospeccion Automatica,Providencia,Error,56950146178,25/02/2026 18:35,0,clinica@smer.cl,No

@@ -1,0 +1,54 @@
+name: Prospeccion Almacenes Cron
+
+on:
+  schedule:
+    # Corre cada 3 horas entre las 11:00 AM y las 19:00 PM (Hora Chile aprox)
+    # 14:15, 17:15, 20:15, 23:15 UTC -> 11:15, 14:15, 17:15, 20:15 Chile
+    - cron: '15 14,17,20,23 * * *'
+  workflow_dispatch: # Permite ejecutarlo manualmente desde el botón de GitHub
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Instalar dependencias
+        run: pip install pandas requests
+
+      - name: Configurar Git
+        run: |
+          git config --global user.name 'GestionVital Almacen Bot'
+          git config --global user.email 'bot-almacen@gestionvitalpro.cl'
+          git config --global pull.rebase true
+
+      - name: Sincronizar Cambios
+        run: git pull origin main
+
+      - name: Ejecutar Prospeccion Almacenes
+        env:
+          EVO_URL: ${{ secrets.EVO_URL }}
+          EVO_TOKEN: ${{ secrets.EVO_TOKEN }}
+          EVO_INSTANCE: ${{ secrets.EVO_INSTANCE }}
+          SERP_KEY: ${{ secrets.SERP_KEY }}
+        run: python worker_almacenes.py
+
+      - name: Guardar y Sincronizar
+        run: |
+          git add prospeccion_almacenes_pro.csv
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "Worker Almacenes: Actualización [Skip CI]"
+            # Resolvemos conflictos priorizando el trabajo del worker
+            git pull origin main --rebase -X theirs
+            git push origin main
+          else
+            echo "Sin cambios para commitear."
+          fi

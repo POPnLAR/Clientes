@@ -1,16 +1,16 @@
 Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Contacto
 1,27/02/2026,11:42,Fritz almacen y minimarket. Quilicura,App Almacen,Quilicura,Contactado,56939006214,1,28/02/2026 11:41
 2,27/02/2026,11:42,"Minimarket ""Donde La Nancy""",App Almacen,Quilicura,Contactado,56999569675,1,27/02/2026 17:46
-3,27/02/2026,11:42,Almacen Millauquen,App Almacen,Quilicura,Contactado,56992458252,1,27/02/2026 14:55
+3,27/02/2026,11:42,Almacen Millauquen,App Almacen,Quilicura,Finalizado,56992458252,2,28/02/2026 17:42
 4,27/02/2026,11:42,MiniMarket del Valle,App Almacen,Quilicura,Contactado,56975810528,1,27/02/2026 14:55
 5,27/02/2026,11:42,Minimarket Lo Marcoleta,App Almacen,Quilicura,Contactado,56986507302,1,27/02/2026 17:46
 6,27/02/2026,11:42,Almacen,App Almacen,Quilicura,Error,56226273940,0,27/02/2026 17:46
 7,27/02/2026,11:42,Minimarket Donde Alonso,App Almacen,Quilicura,Error,56966669999,0,28/02/2026 11:41
 8,27/02/2026,11:42,Almacen Minimarket Arens,App Almacen,Quilicura,Contactado,56978029604,1,27/02/2026 14:55
-9,28/02/2026,14:37,Amasanderia Y Almacén Donde Margarita,App Almacen,La Florida,Nuevo,+56222628722,0,
-10,28/02/2026,14:37,Minimarket Los Martinez,App Almacen,La Florida,Nuevo,+56222870177,0,
-11,28/02/2026,14:37,Minimarket Alto La Florida,App Almacen,La Florida,Nuevo,+56222864275,0,
-12,28/02/2026,14:37,Minimarket El Chumbequito,App Almacen,La Florida,Nuevo,+56947041741,0,
-13,28/02/2026,14:37,Mini Mercado🛒 Oasis Plaza,App Almacen,La Florida,Nuevo,+56991376573,0,
-14,28/02/2026,14:37,Minimarket Luna Market,App Almacen,La Florida,Nuevo,+56935396140,0,
-15,28/02/2026,14:37,Minimarket Roo!!Market,App Almacen,La Florida,Nuevo,+56997500995,0,
+9,28/02/2026,14:37,Amasanderia Y Almacén Donde Margarita,App Almacen,La Florida,Nuevo,56222628722,0,
+10,28/02/2026,14:37,Minimarket Los Martinez,App Almacen,La Florida,Nuevo,56222870177,0,
+11,28/02/2026,14:37,Minimarket Alto La Florida,App Almacen,La Florida,Error,56222864275,0,28/02/2026 17:42
+12,28/02/2026,14:37,Minimarket El Chumbequito,App Almacen,La Florida,Nuevo,56947041741,0,
+13,28/02/2026,14:37,Mini Mercado🛒 Oasis Plaza,App Almacen,La Florida,Nuevo,56991376573,0,
+14,28/02/2026,14:37,Minimarket Luna Market,App Almacen,La Florida,Nuevo,56935396140,0,
+15,28/02/2026,14:37,Minimarket Roo!!Market,App Almacen,La Florida,Contactado,56997500995,1,28/02/2026 17:42

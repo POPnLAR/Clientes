@@ -13,15 +13,15 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 12,23/02/2026,13:00,Salón de belleza Ashes,Prospeccion Automatica,Ñuñoa,Finalizado,56930101099,28/02/2026 10:07,4,ejemplo@dominio.com,No
 13,24/02/2026,12:00,Centro de Estética NCA,Prospeccion Automatica,Vitacura,Error,56984305553,27/02/2026 10:32,2,,No
 14,24/02/2026,12:00,Dubó Estética,Prospeccion Automatica,Vitacura,Contactado,56951442995,27/02/2026 16:03,3,,No
-15,24/02/2026,12:00,Clínica Estética San Martín,Prospeccion Automatica,Vitacura,Contactado,56982969574,25/02/2026 12:59,2,,No
+15,24/02/2026,12:00,Clínica Estética San Martín,Prospeccion Automatica,Vitacura,Contactado,56982969574,28/02/2026 11:40,3,,No
 16,24/02/2026,12:00,ESTÉTICA FACIAL DRA SOFIA LEVRINI,Prospeccion Automatica,Vitacura,Contactado,56989774602,25/02/2026 12:59,2,,No
-17,24/02/2026,12:00,Clínica Esan,Prospeccion Automatica,Vitacura,Contactado,56938902388,27/02/2026 10:32,3,,No
+17,24/02/2026,12:00,Clínica Esan,Prospeccion Automatica,Vitacura,Finalizado,56938902388,28/02/2026 11:40,4,,No
 18,24/02/2026,12:00,Clínica Aurea,Prospeccion Automatica,Vitacura,Correo,56942706095,25/02/2026 12:59,2,contacto@clinicaaurea.cl,Si
 19,24/02/2026,12:00,Clínica estética ILUM,Prospeccion Automatica,Lo Barnechea,Rechazado,56939169086,25/02/2026 12:59,2,,No
 20,24/02/2026,12:00,Clínica Estética Palavas La Dehesa,Prospeccion Automatica,Lo Barnechea,Rechazado,56965072455,24/02/2026 12:59,1,,No
 21,24/02/2026,12:00,Clínica Medicina Estética Dra. Belén Lama,Prospeccion Automatica,Lo Barnechea,Contactado,56965887655,27/02/2026 13:56,3,,No
 22,24/02/2026,12:00,Clínica Maat,Prospeccion Automatica,Lo Barnechea,Contactado,56926233604,27/02/2026 13:56,3,,No
-23,24/02/2026,12:00,Dr. Sebastián Eladio,Prospeccion Automatica,Lo Barnechea,Contactado,56956080418,26/02/2026 18:11,3,,No
+23,24/02/2026,12:00,Dr. Sebastián Eladio,Prospeccion Automatica,Lo Barnechea,Finalizado,56956080418,28/02/2026 11:40,4,,No
 24,24/02/2026,12:00,Clínica Belleza del Bosque,Prospeccion Automatica,Lo Barnechea,Contactado,56958035765,27/02/2026 16:03,3,,No
 25,24/02/2026,12:00,Skin and Glow,Prospeccion Automatica,Lo Barnechea,Rechazado,56944218003,25/02/2026 12:59,2,,No
 26,24/02/2026,12:00,Cirugía 360,Prospeccion Automatica,Lo Barnechea,Contactado,56942204831,25/02/2026 12:59,2,,No
@@ -43,14 +43,14 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 42,25/02/2026,09:56,The Beauty Clinic,Prospeccion Automatica,Vitacura,Contactado,56982629090,27/02/2026 17:45,2,,
 43,25/02/2026,10:53,Clínica Estética W,Prospeccion Automatica,Las Condes,Error,566004230100,25/02/2026 10:53,0,,No
 44,25/02/2026,10:53,CLINICA VS,Prospeccion Automatica,Las Condes,Contactado,56995283756,28/02/2026 10:07,3,contacto@clinicavs.cl,No
-45,25/02/2026,10:53,Clínica Avaria - Las Condes,Prospeccion Automatica,Las Condes,Contactado,56961426693,25/02/2026 10:53,1,contacto@clinicaavaria.cl,No
+45,25/02/2026,10:53,Clínica Avaria - Las Condes,Prospeccion Automatica,Las Condes,Contactado,56961426693,28/02/2026 11:40,2,contacto@clinicaavaria.cl,No
 46,25/02/2026,10:53,Clínica La Parva,Prospeccion Automatica,Las Condes,Error,56222071125,25/02/2026 10:53,0,,No
 47,25/02/2026,10:53,Milos Clínica Estética,Prospeccion Automatica,Las Condes,Contactado,56966350767,28/02/2026 10:07,2,contacto@clinicamilos.cl,No
 48,25/02/2026,10:53,Clínica Estética Bien Être,Prospeccion Automatica,Las Condes,Rechazado,56957122756,25/02/2026 10:53,1,contacto@clinicabienetre.cl,No
 49,25/02/2026,10:53,Clínica Santiago Estética,Prospeccion Automatica,Las Condes,Contactado,56964968073,28/02/2026 10:07,2,,No
 50,25/02/2026,10:53,Ama Clínica Facial,Prospeccion Automatica,Las Condes,Contactado,56968569876,25/02/2026 10:53,1,hola@amaclinica.cl,No
 51,25/02/2026,10:53,Clínica Syal - Medicina Estética,Prospeccion Automatica,Las Condes,Rechazado,56983096086,25/02/2026 10:53,1,,No
-52,25/02/2026,10:53,"Cosmeclinic Clínica Estética , Estética Regenerativa, Pro Age, Tratamientos No Invasivos",Prospeccion Automatica,Las Condes,Contactado,56954385895,27/02/2026 10:32,2,,No
+52,25/02/2026,10:53,"Cosmeclinic Clínica Estética , Estética Regenerativa, Pro Age, Tratamientos No Invasivos",Prospeccion Automatica,Las Condes,Contactado,56954385895,28/02/2026 11:40,3,,No
 53,25/02/2026,10:54,Clinica Gulfo - Medicina Estetica y Dermatología,Prospeccion Automatica,Las Condes,Rechazado,56947464746,25/02/2026 11:40,1,,No
 54,25/02/2026,10:54,Clínica estética Buddha Clinic,Prospeccion Automatica,Las Condes,Rechazado,56942017135,25/02/2026 11:40,1,contacto@buddhaclinic.cl,No
 55,25/02/2026,10:54,Clínica estética Meu,Prospeccion Automatica,Las Condes,Error,56957117131,26/02/2026 18:11,1,,No

@@ -10,7 +10,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 9,23/02/2026,12:59,LyL estetica integral,Prospeccion Automatica,Ñuñoa,Error,56229295642,,0,info@lylcentrodesteticayspa.c1,No
 10,23/02/2026,12:59,La Fuente de Belleza,Prospeccion Automatica,Ñuñoa,Finalizado,56967691191,27/02/2026 17:45,4,,No
 11,23/02/2026,12:59,The Golden Spa,Prospeccion Automatica,Ñuñoa,Error,56942103998,,0,contacto@thegoldenspa.cl,No
-12,23/02/2026,13:00,Salón de belleza Ashes,Prospeccion Automatica,Ñuñoa,Contactado,56930101099,25/02/2026 12:59,3,ejemplo@dominio.com,No
+12,23/02/2026,13:00,Salón de belleza Ashes,Prospeccion Automatica,Ñuñoa,Finalizado,56930101099,28/02/2026 10:07,4,ejemplo@dominio.com,No
 13,24/02/2026,12:00,Centro de Estética NCA,Prospeccion Automatica,Vitacura,Error,56984305553,27/02/2026 10:32,2,,No
 14,24/02/2026,12:00,Dubó Estética,Prospeccion Automatica,Vitacura,Contactado,56951442995,27/02/2026 16:03,3,,No
 15,24/02/2026,12:00,Clínica Estética San Martín,Prospeccion Automatica,Vitacura,Contactado,56982969574,25/02/2026 12:59,2,,No
@@ -42,12 +42,12 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 41,24/02/2026,17:08,"Clínica EM Estétika Médica, Las Condes",Prospeccion Automatica,Vitacura,Error,56442229928,24/02/2026 19:03,0,consultas@estetikamedica.cl,No
 42,25/02/2026,09:56,The Beauty Clinic,Prospeccion Automatica,Vitacura,Contactado,56982629090,27/02/2026 17:45,2,,
 43,25/02/2026,10:53,Clínica Estética W,Prospeccion Automatica,Las Condes,Error,566004230100,25/02/2026 10:53,0,,No
-44,25/02/2026,10:53,CLINICA VS,Prospeccion Automatica,Las Condes,Contactado,56995283756,26/02/2026 18:11,2,contacto@clinicavs.cl,No
+44,25/02/2026,10:53,CLINICA VS,Prospeccion Automatica,Las Condes,Contactado,56995283756,28/02/2026 10:07,3,contacto@clinicavs.cl,No
 45,25/02/2026,10:53,Clínica Avaria - Las Condes,Prospeccion Automatica,Las Condes,Contactado,56961426693,25/02/2026 10:53,1,contacto@clinicaavaria.cl,No
 46,25/02/2026,10:53,Clínica La Parva,Prospeccion Automatica,Las Condes,Error,56222071125,25/02/2026 10:53,0,,No
-47,25/02/2026,10:53,Milos Clínica Estética,Prospeccion Automatica,Las Condes,Contactado,56966350767,25/02/2026 10:53,1,contacto@clinicamilos.cl,No
+47,25/02/2026,10:53,Milos Clínica Estética,Prospeccion Automatica,Las Condes,Contactado,56966350767,28/02/2026 10:07,2,contacto@clinicamilos.cl,No
 48,25/02/2026,10:53,Clínica Estética Bien Être,Prospeccion Automatica,Las Condes,Rechazado,56957122756,25/02/2026 10:53,1,contacto@clinicabienetre.cl,No
-49,25/02/2026,10:53,Clínica Santiago Estética,Prospeccion Automatica,Las Condes,Contactado,56964968073,25/02/2026 10:53,1,,No
+49,25/02/2026,10:53,Clínica Santiago Estética,Prospeccion Automatica,Las Condes,Contactado,56964968073,28/02/2026 10:07,2,,No
 50,25/02/2026,10:53,Ama Clínica Facial,Prospeccion Automatica,Las Condes,Contactado,56968569876,25/02/2026 10:53,1,hola@amaclinica.cl,No
 51,25/02/2026,10:53,Clínica Syal - Medicina Estética,Prospeccion Automatica,Las Condes,Rechazado,56983096086,25/02/2026 10:53,1,,No
 52,25/02/2026,10:53,"Cosmeclinic Clínica Estética , Estética Regenerativa, Pro Age, Tratamientos No Invasivos",Prospeccion Automatica,Las Condes,Contactado,56954385895,27/02/2026 10:32,2,,No
@@ -70,6 +70,6 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 69,25/02/2026,13:04,Clinica Estetica Dental VeraFondi,Prospeccion Automatica,Providencia,Error,56232450853,25/02/2026 14:58,0,hola@verafondiclinic.cl,No
 70,25/02/2026,13:04,Clinica MIAPAU Chile,Prospeccion Automatica,Providencia,Error,56984531232,27/02/2026 13:56,1,,No
 71,25/02/2026,13:04,Centro de Estética NCA - Guardia Vieja,Prospeccion Automatica,Providencia,Error,56990784304,27/02/2026 11:59,1,,No
-72,25/02/2026,13:04,Clínica Be Now,Prospeccion Automatica,Providencia,Contactado,56930778917,25/02/2026 14:58,1,contacto@clinicabenow.cl,No
+72,25/02/2026,13:04,Clínica Be Now,Prospeccion Automatica,Providencia,Contactado,56930778917,28/02/2026 10:07,2,contacto@clinicabenow.cl,No
 73,25/02/2026,18:35,Clínica de Cirugía Estética Smer / Autorizada por SEREMI de Salud,Prospeccion Automatica,Providencia,Error,56950146178,25/02/2026 18:35,0,clinica@smer.cl,No
 74,25/02/2026,19:34,Centro de Estética NCA - Casa Therapy,Prospeccion Automatica,Vitacura,Error,56984305677,25/02/2026 19:34,0,,No

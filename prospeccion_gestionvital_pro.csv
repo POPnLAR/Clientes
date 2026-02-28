@@ -12,9 +12,9 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 11,23/02/2026,12:59,The Golden Spa,Prospeccion Automatica,Ñuñoa,Error,56942103998,,0,contacto@thegoldenspa.cl,No
 12,23/02/2026,13:00,Salón de belleza Ashes,Prospeccion Automatica,Ñuñoa,Finalizado,56930101099,28/02/2026 10:07,4,ejemplo@dominio.com,No
 13,24/02/2026,12:00,Centro de Estética NCA,Prospeccion Automatica,Vitacura,Error,56984305553,27/02/2026 10:32,2,,No
-14,24/02/2026,12:00,Dubó Estética,Prospeccion Automatica,Vitacura,Contactado,56951442995,27/02/2026 16:03,3,,No
+14,24/02/2026,12:00,Dubó Estética,Prospeccion Automatica,Vitacura,Finalizado,56951442995,28/02/2026 17:40,4,,No
 15,24/02/2026,12:00,Clínica Estética San Martín,Prospeccion Automatica,Vitacura,Contactado,56982969574,28/02/2026 11:40,3,,No
-16,24/02/2026,12:00,ESTÉTICA FACIAL DRA SOFIA LEVRINI,Prospeccion Automatica,Vitacura,Contactado,56989774602,25/02/2026 12:59,2,,No
+16,24/02/2026,12:00,ESTÉTICA FACIAL DRA SOFIA LEVRINI,Prospeccion Automatica,Vitacura,Contactado,56989774602,28/02/2026 17:40,3,,No
 17,24/02/2026,12:00,Clínica Esan,Prospeccion Automatica,Vitacura,Finalizado,56938902388,28/02/2026 11:40,4,,No
 18,24/02/2026,12:00,Clínica Aurea,Prospeccion Automatica,Vitacura,Correo,56942706095,25/02/2026 12:59,2,contacto@clinicaaurea.cl,Si
 19,24/02/2026,12:00,Clínica estética ILUM,Prospeccion Automatica,Lo Barnechea,Rechazado,56939169086,25/02/2026 12:59,2,,No
@@ -24,7 +24,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 23,24/02/2026,12:00,Dr. Sebastián Eladio,Prospeccion Automatica,Lo Barnechea,Finalizado,56956080418,28/02/2026 11:40,4,,No
 24,24/02/2026,12:00,Clínica Belleza del Bosque,Prospeccion Automatica,Lo Barnechea,Contactado,56958035765,27/02/2026 16:03,3,,No
 25,24/02/2026,12:00,Skin and Glow,Prospeccion Automatica,Lo Barnechea,Rechazado,56944218003,25/02/2026 12:59,2,,No
-26,24/02/2026,12:00,Cirugía 360,Prospeccion Automatica,Lo Barnechea,Contactado,56942204831,25/02/2026 12:59,2,,No
+26,24/02/2026,12:00,Cirugía 360,Prospeccion Automatica,Lo Barnechea,Contactado,56942204831,28/02/2026 17:40,3,,No
 27,24/02/2026,12:00,CLINICA MOREN,Prospeccion Automatica,Lo Barnechea,Contactado,56965098771,27/02/2026 17:45,3,,No
 28,24/02/2026,12:00,Elysium Beauty Clinic,Prospeccion Automatica,Lo Barnechea,Agendado,56945782258,24/02/2026 12:59,1,,No
 29,24/02/2026,12:00,Body Clinic Clinica Estetica Integral,Prospeccion Automatica,Lo Barnechea,Error,56944199640,27/02/2026 16:03,2,,No
@@ -61,10 +61,10 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 60,25/02/2026,13:04,Clínica Dermonova Chile,Prospeccion Automatica,Providencia,Error,56981231240,26/02/2026 18:11,1,contacto@dermonova.cl,No
 61,25/02/2026,13:04,Clínica Estética Me Quiero ®,Prospeccion Automatica,Providencia,Contactado,56939147080,28/02/2026 13:43,2,contacto@mequiero.cl,No
 62,25/02/2026,13:04,Aurora Estética - Centro de belleza y Estética,Prospeccion Automatica,Providencia,Contactado,56948441269,28/02/2026 15:50,2,contacto@auraestetica.cl,No
-63,25/02/2026,13:04,Clínica Balance Facial | Centro Estética Providencia | Bótox | Ácido Hialurónico | Tratamiento Dental | Limpieza Facial,Prospeccion Automatica,Providencia,Contactado,56958360407,27/02/2026 11:59,2,,No
+63,25/02/2026,13:04,Clínica Balance Facial | Centro Estética Providencia | Bótox | Ácido Hialurónico | Tratamiento Dental | Limpieza Facial,Prospeccion Automatica,Providencia,Contactado,56958360407,28/02/2026 17:40,3,,No
 64,25/02/2026,13:04,Clínica BeYou Estética y Dental,Prospeccion Automatica,Providencia,Error,56232595985,25/02/2026 13:04,0,,No
 65,25/02/2026,13:04,Clinica Estética Magnética,Prospeccion Automatica,Providencia,Contactado,56928734862,28/02/2026 13:43,3,,No
-66,25/02/2026,13:04,Franvide Wellness | Clínica Estética integral,Prospeccion Automatica,Providencia,Contactado,56964977339,27/02/2026 16:03,2,,No
+66,25/02/2026,13:04,Franvide Wellness | Clínica Estética integral,Prospeccion Automatica,Providencia,Contactado,56964977339,28/02/2026 17:40,3,,No
 67,25/02/2026,13:04,Clínica Bela,Prospeccion Automatica,Providencia,Contactado,56973017686,28/02/2026 15:50,3,,No
 68,25/02/2026,13:04,Pro Esthetic Fit,Prospeccion Automatica,Providencia,Contactado,56975473353,28/02/2026 13:43,3,,No
 69,25/02/2026,13:04,Clinica Estetica Dental VeraFondi,Prospeccion Automatica,Providencia,Error,56232450853,25/02/2026 14:58,0,hola@verafondiclinic.cl,No

@@ -3,7 +3,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 2,23/02/2026,12:59,Armonia Clínica Estetica Médica,Prospeccion Automatica,Ñuñoa,Rechazado,56931467483,24/02/2026 12:59,2,,No
 3,23/02/2026,12:59,NoaHealthy Centro Médico y Estético,Prospeccion Automatica,Ñuñoa,Rechazado,56998858883,24/02/2026 12:59,2,,No
 4,23/02/2026,12:59,Clínica Kbody Ñuñoa,Prospeccion Automatica,Ñuñoa,Finalizado,56971884561,27/02/2026 13:56,4,,No
-5,23/02/2026,12:59,Mine Estética Ñuñoa | Depilación Láser y HIFU,Prospeccion Automatica,Ñuñoa,Contactado,56956082740,25/02/2026 12:59,3,,No
+5,23/02/2026,12:59,Mine Estética Ñuñoa | Depilación Láser y HIFU,Prospeccion Automatica,Ñuñoa,Error,56956082740,28/02/2026 13:43,3,,No
 6,23/02/2026,12:59,Entre nosotras estetica,Prospeccion Automatica,Ñuñoa,Finalizado,56951952050,27/02/2026 10:32,4,,No
 7,23/02/2026,12:59,Clínica Estética Kinemistic Ñuñoa,Prospeccion Automatica,Ñuñoa,Finalizado,56929914264,26/02/2026 18:11,4,,No
 8,23/02/2026,12:59,Clinica Estética nueva imagen,Prospeccion Automatica,Ñuñoa,Finalizado,56965846294,27/02/2026 17:45,4,,No
@@ -48,7 +48,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 47,25/02/2026,10:53,Milos Clínica Estética,Prospeccion Automatica,Las Condes,Contactado,56966350767,28/02/2026 10:07,2,contacto@clinicamilos.cl,No
 48,25/02/2026,10:53,Clínica Estética Bien Être,Prospeccion Automatica,Las Condes,Rechazado,56957122756,25/02/2026 10:53,1,contacto@clinicabienetre.cl,No
 49,25/02/2026,10:53,Clínica Santiago Estética,Prospeccion Automatica,Las Condes,Contactado,56964968073,28/02/2026 10:07,2,,No
-50,25/02/2026,10:53,Ama Clínica Facial,Prospeccion Automatica,Las Condes,Contactado,56968569876,25/02/2026 10:53,1,hola@amaclinica.cl,No
+50,25/02/2026,10:53,Ama Clínica Facial,Prospeccion Automatica,Las Condes,Error,56968569876,28/02/2026 13:43,1,hola@amaclinica.cl,No
 51,25/02/2026,10:53,Clínica Syal - Medicina Estética,Prospeccion Automatica,Las Condes,Rechazado,56983096086,25/02/2026 10:53,1,,No
 52,25/02/2026,10:53,"Cosmeclinic Clínica Estética , Estética Regenerativa, Pro Age, Tratamientos No Invasivos",Prospeccion Automatica,Las Condes,Contactado,56954385895,28/02/2026 11:40,3,,No
 53,25/02/2026,10:54,Clinica Gulfo - Medicina Estetica y Dermatología,Prospeccion Automatica,Las Condes,Rechazado,56947464746,25/02/2026 11:40,1,,No
@@ -59,14 +59,14 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 58,25/02/2026,13:04,Clínica Avaria - Providencia,Prospeccion Automatica,Providencia,Contactado,56950176115,27/02/2026 17:45,2,contacto@clinicaavaria.cl,No
 59,25/02/2026,13:04,Clínica Arrayán,Prospeccion Automatica,Providencia,Contactado,56971003645,27/02/2026 11:59,2,clinicaarrayan@clinicaarrayan.cl,No
 60,25/02/2026,13:04,Clínica Dermonova Chile,Prospeccion Automatica,Providencia,Error,56981231240,26/02/2026 18:11,1,contacto@dermonova.cl,No
-61,25/02/2026,13:04,Clínica Estética Me Quiero ®,Prospeccion Automatica,Providencia,Contactado,56939147080,25/02/2026 13:04,1,contacto@mequiero.cl,No
+61,25/02/2026,13:04,Clínica Estética Me Quiero ®,Prospeccion Automatica,Providencia,Contactado,56939147080,28/02/2026 13:43,2,contacto@mequiero.cl,No
 62,25/02/2026,13:04,Aurora Estética - Centro de belleza y Estética,Prospeccion Automatica,Providencia,Contactado,56948441269,25/02/2026 13:04,1,contacto@auraestetica.cl,No
 63,25/02/2026,13:04,Clínica Balance Facial | Centro Estética Providencia | Bótox | Ácido Hialurónico | Tratamiento Dental | Limpieza Facial,Prospeccion Automatica,Providencia,Contactado,56958360407,27/02/2026 11:59,2,,No
 64,25/02/2026,13:04,Clínica BeYou Estética y Dental,Prospeccion Automatica,Providencia,Error,56232595985,25/02/2026 13:04,0,,No
-65,25/02/2026,13:04,Clinica Estética Magnética,Prospeccion Automatica,Providencia,Contactado,56928734862,27/02/2026 11:59,2,,No
+65,25/02/2026,13:04,Clinica Estética Magnética,Prospeccion Automatica,Providencia,Contactado,56928734862,28/02/2026 13:43,3,,No
 66,25/02/2026,13:04,Franvide Wellness | Clínica Estética integral,Prospeccion Automatica,Providencia,Contactado,56964977339,27/02/2026 16:03,2,,No
 67,25/02/2026,13:04,Clínica Bela,Prospeccion Automatica,Providencia,Contactado,56973017686,27/02/2026 11:59,2,,No
-68,25/02/2026,13:04,Pro Esthetic Fit,Prospeccion Automatica,Providencia,Contactado,56975473353,27/02/2026 10:32,2,,No
+68,25/02/2026,13:04,Pro Esthetic Fit,Prospeccion Automatica,Providencia,Contactado,56975473353,28/02/2026 13:43,3,,No
 69,25/02/2026,13:04,Clinica Estetica Dental VeraFondi,Prospeccion Automatica,Providencia,Error,56232450853,25/02/2026 14:58,0,hola@verafondiclinic.cl,No
 70,25/02/2026,13:04,Clinica MIAPAU Chile,Prospeccion Automatica,Providencia,Error,56984531232,27/02/2026 13:56,1,,No
 71,25/02/2026,13:04,Centro de Estética NCA - Guardia Vieja,Prospeccion Automatica,Providencia,Error,56990784304,27/02/2026 11:59,1,,No

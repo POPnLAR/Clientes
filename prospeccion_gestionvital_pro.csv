@@ -40,24 +40,24 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 39,24/02/2026,17:08,CB Medicina Estética | Cara Bonita | Rinomodelación | Botox | Sculptra | Mesoterapia | Exosomas,Prospeccion Automatica,Vitacura,Error,56931007002,27/02/2026 16:03,2,contacto@cbestetica.com,No
 40,24/02/2026,17:08,GG Cirujano Plástico - Cirugia plástica estética Santiago Chile,Prospeccion Automatica,Vitacura,Error,56994129342,24/02/2026 17:08,0,gonzalogomez@blissps.com,No
 41,24/02/2026,17:08,"Clínica EM Estétika Médica, Las Condes",Prospeccion Automatica,Vitacura,Error,56442229928,24/02/2026 19:03,0,consultas@estetikamedica.cl,No
-42,25/02/2026,09:56,The Beauty Clinic,Prospeccion Automatica,Vitacura,Contactado,56982629090,27/02/2026 17:45,2,,
+42,25/02/2026,09:56,The Beauty Clinic,Prospeccion Automatica,Vitacura,Contactado,56982629090,02/03/2026 10:35,3,,
 43,25/02/2026,10:53,Clínica Estética W,Prospeccion Automatica,Las Condes,Error,566004230100,25/02/2026 10:53,0,,No
 44,25/02/2026,10:53,CLINICA VS,Prospeccion Automatica,Las Condes,Contactado,56995283756,28/02/2026 10:07,3,contacto@clinicavs.cl,No
 45,25/02/2026,10:53,Clínica Avaria - Las Condes,Prospeccion Automatica,Las Condes,Contactado,56961426693,28/02/2026 11:40,2,contacto@clinicaavaria.cl,No
 46,25/02/2026,10:53,Clínica La Parva,Prospeccion Automatica,Las Condes,Error,56222071125,25/02/2026 10:53,0,,No
-47,25/02/2026,10:53,Milos Clínica Estética,Prospeccion Automatica,Las Condes,Contactado,56966350767,28/02/2026 10:07,2,contacto@clinicamilos.cl,No
+47,25/02/2026,10:53,Milos Clínica Estética,Prospeccion Automatica,Las Condes,Contactado,56966350767,02/03/2026 10:35,3,contacto@clinicamilos.cl,No
 48,25/02/2026,10:53,Clínica Estética Bien Être,Prospeccion Automatica,Las Condes,Rechazado,56957122756,25/02/2026 10:53,1,contacto@clinicabienetre.cl,No
 49,25/02/2026,10:53,Clínica Santiago Estética,Prospeccion Automatica,Las Condes,Contactado,56964968073,28/02/2026 10:07,2,,No
 50,25/02/2026,10:53,Ama Clínica Facial,Prospeccion Automatica,Las Condes,Error,56968569876,28/02/2026 13:43,1,hola@amaclinica.cl,No
 51,25/02/2026,10:53,Clínica Syal - Medicina Estética,Prospeccion Automatica,Las Condes,Rechazado,56983096086,25/02/2026 10:53,1,,No
-52,25/02/2026,10:53,"Cosmeclinic Clínica Estética , Estética Regenerativa, Pro Age, Tratamientos No Invasivos",Prospeccion Automatica,Las Condes,Contactado,56954385895,28/02/2026 11:40,3,,No
+52,25/02/2026,10:53,"Cosmeclinic Clínica Estética , Estética Regenerativa, Pro Age, Tratamientos No Invasivos",Prospeccion Automatica,Las Condes,Finalizado,56954385895,02/03/2026 10:35,4,,No
 53,25/02/2026,10:54,Clinica Gulfo - Medicina Estetica y Dermatología,Prospeccion Automatica,Las Condes,Rechazado,56947464746,25/02/2026 11:40,1,,No
 54,25/02/2026,10:54,Clínica estética Buddha Clinic,Prospeccion Automatica,Las Condes,Rechazado,56942017135,25/02/2026 11:40,1,contacto@buddhaclinic.cl,No
 55,25/02/2026,10:54,Clínica estética Meu,Prospeccion Automatica,Las Condes,Error,56957117131,26/02/2026 18:11,1,,No
 56,25/02/2026,10:54,Kintegra,Prospeccion Automatica,Las Condes,Correo,56944951115,25/02/2026 11:40,1,marketing@kintegra.cl,Si
 57,25/02/2026,10:54,Clínica Orión,Prospeccion Automatica,Las Condes,Correo,56994956497,25/02/2026 14:50,1,administracion@clinicaorion.cl,Si
-58,25/02/2026,13:04,Clínica Avaria - Providencia,Prospeccion Automatica,Providencia,Contactado,56950176115,27/02/2026 17:45,2,contacto@clinicaavaria.cl,No
-59,25/02/2026,13:04,Clínica Arrayán,Prospeccion Automatica,Providencia,Contactado,56971003645,28/02/2026 15:50,3,clinicaarrayan@clinicaarrayan.cl,No
+58,25/02/2026,13:04,Clínica Avaria - Providencia,Prospeccion Automatica,Providencia,Contactado,56950176115,02/03/2026 10:35,3,contacto@clinicaavaria.cl,No
+59,25/02/2026,13:04,Clínica Arrayán,Prospeccion Automatica,Providencia,Finalizado,56971003645,02/03/2026 10:35,4,clinicaarrayan@clinicaarrayan.cl,No
 60,25/02/2026,13:04,Clínica Dermonova Chile,Prospeccion Automatica,Providencia,Error,56981231240,26/02/2026 18:11,1,contacto@dermonova.cl,No
 61,25/02/2026,13:04,Clínica Estética Me Quiero ®,Prospeccion Automatica,Providencia,Contactado,56939147080,28/02/2026 13:43,2,contacto@mequiero.cl,No
 62,25/02/2026,13:04,Aurora Estética - Centro de belleza y Estética,Prospeccion Automatica,Providencia,Contactado,56948441269,28/02/2026 15:50,2,contacto@auraestetica.cl,No

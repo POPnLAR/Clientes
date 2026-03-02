@@ -14,7 +14,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 13,24/02/2026,12:00,Centro de Estética NCA,Prospeccion Automatica,Vitacura,Error,56984305553,27/02/2026 10:32,2,,No
 14,24/02/2026,12:00,Dubó Estética,Prospeccion Automatica,Vitacura,Finalizado,56951442995,28/02/2026 17:40,4,,No
 15,24/02/2026,12:00,Clínica Estética San Martín,Prospeccion Automatica,Vitacura,Finalizado,56982969574,02/03/2026 12:01,4,,No
-16,24/02/2026,12:00,ESTÉTICA FACIAL DRA SOFIA LEVRINI,Prospeccion Automatica,Vitacura,Contactado,56989774602,28/02/2026 17:40,3,,No
+16,24/02/2026,12:00,ESTÉTICA FACIAL DRA SOFIA LEVRINI,Prospeccion Automatica,Vitacura,Finalizado,56989774602,02/03/2026 17:52,4,,No
 17,24/02/2026,12:00,Clínica Esan,Prospeccion Automatica,Vitacura,Finalizado,56938902388,28/02/2026 11:40,4,,No
 18,24/02/2026,12:00,Clínica Aurea,Prospeccion Automatica,Vitacura,Correo,56942706095,25/02/2026 12:59,2,contacto@clinicaaurea.cl,Si
 19,24/02/2026,12:00,Clínica estética ILUM,Prospeccion Automatica,Lo Barnechea,Rechazado,56939169086,25/02/2026 12:59,2,,No
@@ -59,7 +59,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 58,25/02/2026,13:04,Clínica Avaria - Providencia,Prospeccion Automatica,Providencia,Contactado,56950176115,02/03/2026 10:35,3,contacto@clinicaavaria.cl,No
 59,25/02/2026,13:04,Clínica Arrayán,Prospeccion Automatica,Providencia,Finalizado,56971003645,02/03/2026 10:35,4,clinicaarrayan@clinicaarrayan.cl,No
 60,25/02/2026,13:04,Clínica Dermonova Chile,Prospeccion Automatica,Providencia,Error,56981231240,26/02/2026 18:11,1,contacto@dermonova.cl,No
-61,25/02/2026,13:04,Clínica Estética Me Quiero ®,Prospeccion Automatica,Providencia,Contactado,56939147080,28/02/2026 13:43,2,contacto@mequiero.cl,No
+61,25/02/2026,13:04,Clínica Estética Me Quiero ®,Prospeccion Automatica,Providencia,Contactado,56939147080,02/03/2026 17:52,3,contacto@mequiero.cl,No
 62,25/02/2026,13:04,Aurora Estética - Centro de belleza y Estética,Prospeccion Automatica,Providencia,Contactado,56948441269,02/03/2026 14:06,3,contacto@auraestetica.cl,No
 63,25/02/2026,13:04,Clínica Balance Facial | Centro Estética Providencia | Bótox | Ácido Hialurónico | Tratamiento Dental | Limpieza Facial,Prospeccion Automatica,Providencia,Finalizado,56958360407,02/03/2026 12:01,4,,No
 64,25/02/2026,13:04,Clínica BeYou Estética y Dental,Prospeccion Automatica,Providencia,Error,56232595985,25/02/2026 13:04,0,,No

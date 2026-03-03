@@ -43,7 +43,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 42,25/02/2026,09:56,The Beauty Clinic,Prospeccion Automatica,Vitacura,Finalizado,56982629090,03/03/2026 12:06,4,,
 43,25/02/2026,10:53,Clínica Estética W,Prospeccion Automatica,Las Condes,Error,566004230100,25/02/2026 10:53,0,,No
 44,25/02/2026,10:53,CLINICA VS,Prospeccion Automatica,Las Condes,Finalizado,56995283756,02/03/2026 16:07,4,contacto@clinicavs.cl,No
-45,25/02/2026,10:53,Clínica Avaria - Las Condes,Prospeccion Automatica,Las Condes,Contactado,56961426693,02/03/2026 12:01,3,contacto@clinicaavaria.cl,No
+45,25/02/2026,10:53,Clínica Avaria - Las Condes,Prospeccion Automatica,Las Condes,Finalizado,56961426693,03/03/2026 14:07,4,contacto@clinicaavaria.cl,No
 46,25/02/2026,10:53,Clínica La Parva,Prospeccion Automatica,Las Condes,Error,56222071125,25/02/2026 10:53,0,,No
 47,25/02/2026,10:53,Milos Clínica Estética,Prospeccion Automatica,Las Condes,Finalizado,56966350767,03/03/2026 12:06,4,contacto@clinicamilos.cl,No
 48,25/02/2026,10:53,Clínica Estética Bien Être,Prospeccion Automatica,Las Condes,Rechazado,56957122756,25/02/2026 10:53,1,contacto@clinicabienetre.cl,No

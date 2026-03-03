@@ -14,10 +14,10 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 13,28/02/2026,14:37,Mini Mercado🛒 Oasis Plaza,App Almacen,La Florida,Contactado,56991376573,1,03/03/2026 12:08
 14,28/02/2026,14:37,Minimarket Luna Market,App Almacen,La Florida,Contactado,56935396140,1,02/03/2026 17:53
 15,28/02/2026,14:37,Minimarket Roo!!Market,App Almacen,La Florida,Finalizado,56997500995,2,02/03/2026 15:00
-16,03/03/2026,15:01,Mini Market FC,App Almacen,Estacion Central,Nuevo,+56994781485,0,
-17,03/03/2026,15:01,Lider Alameda,App Almacen,Estacion Central,Nuevo,+566004009000,0,
-18,03/03/2026,15:01,Santa Isabel,App Almacen,Estacion Central,Nuevo,+566004006000,0,
-19,03/03/2026,15:01,Almacen Camila,App Almacen,Estacion Central,Nuevo,+56223243055,0,
-20,03/03/2026,15:01,Minimarket botilleria Amengual,App Almacen,Estacion Central,Nuevo,+56968584948,0,
-21,03/03/2026,15:01,MiniMarket Los Medanos,App Almacen,Estacion Central,Nuevo,+56936499908,0,
-22,03/03/2026,15:01,CRISOL Almacén y Botilleria,App Almacen,Estacion Central,Nuevo,+56957351486,0,
+16,03/03/2026,15:01,Mini Market FC,App Almacen,Estacion Central,Contactado,56994781485,1,03/03/2026 17:49
+17,03/03/2026,15:01,Lider Alameda,App Almacen,Estacion Central,Nuevo,566004009000,0,
+18,03/03/2026,15:01,Santa Isabel,App Almacen,Estacion Central,Nuevo,566004006000,0,
+19,03/03/2026,15:01,Almacen Camila,App Almacen,Estacion Central,Nuevo,56223243055,0,
+20,03/03/2026,15:01,Minimarket botilleria Amengual,App Almacen,Estacion Central,Contactado,56968584948,1,03/03/2026 17:49
+21,03/03/2026,15:01,MiniMarket Los Medanos,App Almacen,Estacion Central,Nuevo,56936499908,0,
+22,03/03/2026,15:01,CRISOL Almacén y Botilleria,App Almacen,Estacion Central,Contactado,56957351486,1,03/03/2026 17:49

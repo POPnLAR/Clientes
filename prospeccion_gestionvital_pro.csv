@@ -76,15 +76,15 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 75,03/03/2026,10:33,Novo Skin Clínica Estética,Prospeccion Automatica,Las Condes,Contactado,56972897803,04/03/2026 16:07,2,,No
 76,04/03/2026,11:58,MIRADA DE MUJER SALON,Prospeccion Automatica,La Reina,Contactado,56987411435,04/03/2026 14:03,1,,No
 77,04/03/2026,11:58,Clínica de Medicina Estética Gliamori,Prospeccion Automatica,La Reina,Contactado,56942529181,04/03/2026 14:03,1,,No
-78,04/03/2026,11:58,EL CLUB BEAUTY,Prospeccion Automatica,La Reina,Nuevo,56995314568,,0,388fe63e6063cc241ca2a1b0f52622a3@o61919.ingest.us.sentry.io,No
+78,04/03/2026,11:58,EL CLUB BEAUTY,Prospeccion Automatica,La Reina,Contactado,56995314568,04/03/2026 17:49,1,388fe63e6063cc241ca2a1b0f52622a3@o61919.ingest.us.sentry.io,No
 79,04/03/2026,11:58,Kine Estética La Reina,Prospeccion Automatica,La Reina,Contactado,56981913525,04/03/2026 14:03,1,605a7baede844d278b89dc95ae0a9123@sentry-next.wixpress.com,No
 80,04/03/2026,11:58,Centro de Estetica y Barberia PQ,Prospeccion Automatica,La Reina,Contactado,56998672420,04/03/2026 16:07,1,,No
 81,04/03/2026,11:58,Clínica Le Ciel,Prospeccion Automatica,La Reina,Error,56228306344,04/03/2026 16:07,0,,No
 82,04/03/2026,11:58,Medicina Estética EB,Prospeccion Automatica,La Reina,Contactado,56982192819,04/03/2026 14:03,1,,No
-83,04/03/2026,11:58,Clínica Auraskin,Prospeccion Automatica,La Reina,Nuevo,56961127276,,0,,No
+83,04/03/2026,11:58,Clínica Auraskin,Prospeccion Automatica,La Reina,Contactado,56961127276,04/03/2026 17:49,1,,No
 84,04/03/2026,11:58,Dúo belleza JF,Prospeccion Automatica,La Reina,Contactado,56926391366,04/03/2026 14:03,1,,No
 85,04/03/2026,11:58,DR JULIAN DÍAZ SANTAMARÍA,Prospeccion Automatica,La Reina,Contactado,56996765686,04/03/2026 16:07,1,,No
-86,04/03/2026,11:58,Amaite,Prospeccion Automatica,La Reina,Nuevo,56979615494,,0,admi.amaite@gmail.com,No
-87,04/03/2026,11:58,Salón y Spa Studio 1,Prospeccion Automatica,La Reina,Nuevo,56939100902,,0,,No
-88,04/03/2026,11:58,Clínica Cela | Depilación Láser,Prospeccion Automatica,La Reina,Nuevo,566007573600,,0,atencionalcliente@cela.cl,No
+86,04/03/2026,11:58,Amaite,Prospeccion Automatica,La Reina,Contactado,56979615494,04/03/2026 17:49,1,admi.amaite@gmail.com,No
+87,04/03/2026,11:58,Salón y Spa Studio 1,Prospeccion Automatica,La Reina,Contactado,56939100902,04/03/2026 17:49,1,,No
+88,04/03/2026,11:58,Clínica Cela | Depilación Láser,Prospeccion Automatica,La Reina,Error,566007573600,04/03/2026 17:49,0,atencionalcliente@cela.cl,No
 89,04/03/2026,11:58,Pause BeautyBar La Reina,Prospeccion Automatica,La Reina,Contactado,56939589794,04/03/2026 16:07,1,,No

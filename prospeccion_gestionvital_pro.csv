@@ -59,7 +59,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 58,25/02/2026,13:04,Clínica Avaria - Providencia,Prospeccion Automatica,Providencia,Finalizado,56950176115,03/03/2026 12:06,4,contacto@clinicaavaria.cl,No
 59,25/02/2026,13:04,Clínica Arrayán,Prospeccion Automatica,Providencia,Finalizado,56971003645,02/03/2026 10:35,4,clinicaarrayan@clinicaarrayan.cl,No
 60,25/02/2026,13:04,Clínica Dermonova Chile,Prospeccion Automatica,Providencia,Error,56981231240,26/02/2026 18:11,1,contacto@dermonova.cl,No
-61,25/02/2026,13:04,Clínica Estética Me Quiero ®,Prospeccion Automatica,Providencia,Contactado,56939147080,02/03/2026 17:52,3,contacto@mequiero.cl,No
+61,25/02/2026,13:04,Clínica Estética Me Quiero ®,Prospeccion Automatica,Providencia,Finalizado,56939147080,04/03/2026 10:32,4,contacto@mequiero.cl,No
 62,25/02/2026,13:04,Aurora Estética - Centro de belleza y Estética,Prospeccion Automatica,Providencia,Finalizado,56948441269,03/03/2026 17:49,4,contacto@auraestetica.cl,No
 63,25/02/2026,13:04,Clínica Balance Facial | Centro Estética Providencia | Bótox | Ácido Hialurónico | Tratamiento Dental | Limpieza Facial,Prospeccion Automatica,Providencia,Finalizado,56958360407,02/03/2026 12:01,4,,No
 64,25/02/2026,13:04,Clínica BeYou Estética y Dental,Prospeccion Automatica,Providencia,Error,56232595985,25/02/2026 13:04,0,,No

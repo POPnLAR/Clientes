@@ -14,13 +14,13 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 13,28/02/2026,14:37,Mini Mercado🛒 Oasis Plaza,App Almacen,La Florida,Finalizado,56991376573,2,04/03/2026 14:58
 14,28/02/2026,14:37,Minimarket Luna Market,App Almacen,La Florida,Finalizado,56935396140,2,04/03/2026 12:00
 15,28/02/2026,14:37,Minimarket Roo!!Market,App Almacen,La Florida,Finalizado,56997500995,2,02/03/2026 15:00
-16,03/03/2026,15:01,Mini Market FC,App Almacen,Estacion Central,Contactado,56994781485,1,03/03/2026 17:49
+16,03/03/2026,15:01,Mini Market FC,App Almacen,Estacion Central,Finalizado,56994781485,2,05/03/2026 17:54
 17,03/03/2026,15:01,Lider Alameda,App Almacen,Estacion Central,Error,566004009000,0,
 18,03/03/2026,15:01,Santa Isabel,App Almacen,Estacion Central,Error,566004006000,0,
 19,03/03/2026,15:01,Almacen Camila,App Almacen,Estacion Central,Error,56223243055,0,
 20,03/03/2026,15:01,Minimarket botilleria Amengual,App Almacen,Estacion Central,Finalizado,56968584948,2,05/03/2026 12:08
 21,03/03/2026,15:01,MiniMarket Los Medanos,App Almacen,Estacion Central,Contactado,56936499908,1,04/03/2026 12:00
-22,03/03/2026,15:01,CRISOL Almacén y Botilleria,App Almacen,Estacion Central,Contactado,56957351486,1,03/03/2026 17:49
+22,03/03/2026,15:01,CRISOL Almacén y Botilleria,App Almacen,Estacion Central,Finalizado,56957351486,2,05/03/2026 17:54
 23,04/03/2026,17:50,Almacén M&M Maipú,App Almacen,Maipu,Contactado,56945914617,1,05/03/2026 15:55
 24,04/03/2026,17:50,"Minimarket ""El típico Chileno""",App Almacen,Maipu,Contactado,56958066801,1,05/03/2026 15:55
 25,04/03/2026,17:50,Kimba Market,App Almacen,Maipu,Contactado,56920217282,1,05/03/2026 12:08
@@ -28,5 +28,5 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 27,04/03/2026,17:50,FLOIS Market LP,App Almacen,Maipu,Contactado,56920481113,1,05/03/2026 15:55
 28,04/03/2026,17:50,LOS ISLEÑOS Minimarket,App Almacen,Maipu,Contactado,56953389581,1,05/03/2026 12:08
 29,04/03/2026,17:50,Minimarket monita,App Almacen,Maipu,Nuevo,56995814341,0,
-30,04/03/2026,17:50,MINIMARKET DONDE TONEKE,App Almacen,Maipu,Nuevo,56930099449,0,
+30,04/03/2026,17:50,MINIMARKET DONDE TONEKE,App Almacen,Maipu,Contactado,56930099449,1,05/03/2026 17:54
 31,04/03/2026,17:50,Almacén El Cielo,App Almacen,Maipu,Nuevo,56223248510,0,

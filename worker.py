@@ -110,7 +110,8 @@ def obtener_mensaje_secuencia(nombre, ubicacion, dia):
                "✨ Cómo agilizar las respuestas para que ningún paciente se quede esperando.\n"
                "📋 Digitalizar las fichas para mayor tranquilidad de todos.\n"
                "📦 Optimizar el control de insumos de forma simple.\n\n"
-               "{¿Tendrán 5 minutitos|¿Tendrán un espacio|¿Podríamos conversar brevemente} esta semana {para conocernos|de forma relajada}? Me encantaría conocerles.")
+               "{¿Tendrán 5 minutitos|¿Tendrán un espacio|¿Podríamos conversar brevemente} esta semana {para conocernos|de forma relajada}? Me encantaría conocerles.\n\n"
+               "https://gestionvitalpro.cl")
     elif dia == 2:
         msg = ("{Hola de nuevo|Hola nuevamente}. 👋 Solo pasaba a saludar y dejarles un dato: en **GestiónVital** hemos visto que {pequeños ajustes|mejoras simples|cambios sencillos} en la organización pueden liberar mucho tiempo para los dueños de centros en {zona}.\n\n"
                "En *{nombre}* tienen un potencial tremendo. ¿Les parecería si coordinamos una breve llamada {para presentarnos|esta semana}?")

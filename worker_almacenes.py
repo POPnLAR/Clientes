@@ -94,7 +94,8 @@ def obtener_mensaje_almacen(nombre, ubicacion, dia):
     if dia == 1:
         msg = ("{Hola|Buenas tardes|Hola, ¿qué tal?} 👋 Mi nombre es Rodrigo. Paso seguido por {zona} y veo que en **{nombre}** {tienen mucha variedad|siempre tienen movimiento}.\n\n"
                "Les escribo porque desarrollamos una **app chilena** para dueños de almacenes que quieren {controlar su stock|ver sus ventas diarias|ordenar las cuentas} desde el celular de forma fácil. ✨\n\n"
-               "{¿Les gustaría|¿Les interesa} que hablemos para que vean cómo les podemos ayudar a ganar tiempo? ¡Saludos!")
+               "{¿Les gustaría|¿Les interesa} que les envíe un videito de 1 minuto para que vean cómo les puede ayudar a ganar tiempo? ¡Saludos!\n\n"
+               "https://gestionalmacenpro.cl")
     elif dia == 2:
         msg = ("{Hola de nuevo|Hola nuevamente} 👋 Solo les escribía para comentarles que nuestra app también ayuda a llevar el control de los **fiados**, para que no se pierda ninguna cuenta en el cuaderno. 📋 ¿Les tinca conversar un minutito?")
     else: return ""
@@ -170,5 +171,4 @@ def ejecutar_ciclo():
             time.sleep(random.randint(300, 600)) # Pausas de 5-10 minutos
 
 if __name__ == "__main__":
-
     ejecutar_ciclo()

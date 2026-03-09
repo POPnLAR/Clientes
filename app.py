@@ -10,9 +10,23 @@ from datetime import datetime
 # --- CONFIGURACIÓN ---
 MODOS = {
     "🏥 Clínicas Estéticas": "prospeccion_gestionvital_pro.csv",
-    "🏪 Almacenes de Barrio": "prospeccion_almacenes_pro.csv"
+    "🏪 Almacenes de Barrio": "prospeccion_almacenes_pro.csv",
 }
-COLUMNAS_REQUERIDAS = ["Id", "Fecha", "Hora", "Evento", "Ministerio", "Ubicacion", "Estado", "Telefono", "Fecha_Contacto", "Dia_Secuencia"]
+COLUMNAS_REQUERIDAS = [
+    "Id",
+    "Fecha",
+    "Hora",
+    "Evento",
+    "Ministerio",
+    "Ubicacion",
+    "Estado",
+    "Telefono",
+    "Fecha_Contacto",
+    "Dia_Secuencia",
+    "Resultado",
+    "Notas",
+    "Version_Mensaje",
+]
 NUMERO_PRUEBA = "56971394997"
 
 # Conexión Segura a Secrets
@@ -28,8 +42,43 @@ st.set_page_config(page_title="GestiónVital Pro Multi-SaaS", layout="wide", pag
 
 # --- UTILIDADES ---
 def limpiar_acentos(text):
-    if not isinstance(text, str): return str(text)
-    return "".join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
+    if not isinstance(text, str):
+        return str(text)
+    return "".join(c for c in unicodedata.normalize("NFD", text) if unicodedata.category(c) != "Mn")
+
+
+def normalizar_telefono_chile(raw):
+    """
+    Normaliza distintos formatos de teléfono chileno a un formato consistente.
+    Preferimos devolver '56XXXXXXXXX' cuando es posible.
+    """
+    digits = "".join(filter(str.isdigit, str(raw)))
+    if not digits:
+        return ""
+
+    # Ya viene con código de país
+    if digits.startswith("56") and len(digits) >= 11:
+        return digits
+
+    # Quitar ceros iniciales típicos (09..., 02..., etc.)
+    while digits.startswith("0"):
+        digits = digits[1:]
+
+    # Celular típico 9XXXXXXXX
+    if len(digits) == 9 and digits.startswith("9"):
+        return "56" + digits
+
+    # Fijo típico 2XXXXXXX u otros códigos de área de 1 dígito + 7
+    if len(digits) == 9 and not digits.startswith("9"):
+        return "56" + digits
+
+    # Si hay más de 9 dígitos, intenta con los últimos 9
+    if len(digits) > 9:
+        ultimos = digits[-9:]
+        if len(ultimos) == 9:
+            return "56" + ultimos
+
+    return digits
 
 # --- DISEÑO CSS DARK PRO ---
 st.markdown("""
@@ -127,9 +176,12 @@ with t1:
 
     # Formatear link de WhatsApp
     def format_whatsapp_link(tel):
-        num = "".join(filter(str.isdigit, str(tel)))
-        if not num: return None
-        if len(num) == 9: num = "56" + num
+        tel_norm = normalizar_telefono_chile(tel)
+        if not tel_norm:
+            return None
+        num = "".join(filter(str.isdigit, str(tel_norm)))
+        if not num:
+            return None
         return f"https://wa.me/{num}"
 
     df_display = df_f.copy()
@@ -149,7 +201,17 @@ with t1:
             "Estado": st.column_config.SelectboxColumn("Estatus", options=["Nuevo", "Contactado", "Agendado", "Finalizado", "Error"]),
             "Dia_Secuencia": st.column_config.ProgressColumn("Madurez", min_value=0, max_value=max_secuencia, format="%d pasos"),
             "WhatsApp": st.column_config.LinkColumn("WhatsApp", display_text="Chat Directo"),
-            "Telefono": None, "Fecha_Contacto": "Último Contacto", "Ministerio": None, "Hora": None, "Fecha": None
+            "Resultado": st.column_config.SelectboxColumn(
+                "Resultado",
+                options=["", "Interesado", "No interesado", "Numero equivocado"],
+            ),
+            "Notas": st.column_config.TextColumn("Notas", width="large"),
+            "Version_Mensaje": "Versión Msg",
+            "Telefono": None,
+            "Fecha_Contacto": "Último Contacto",
+            "Ministerio": None,
+            "Hora": None,
+            "Fecha": None,
         }
     )
 

@@ -1,45 +1,45 @@
-Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Contacto
-1,27/02/2026,11:42,Fritz almacen y minimarket. Quilicura,App Almacen,Quilicura,Finalizado,56939006214,2,02/03/2026 12:02
-2,27/02/2026,11:42,"Minimarket ""Donde La Nancy""",App Almacen,Quilicura,Finalizado,56999569675,2,02/03/2026 15:00
-3,27/02/2026,11:42,Almacen Millauquen,App Almacen,Quilicura,Finalizado,56992458252,2,28/02/2026 17:42
-4,27/02/2026,11:42,MiniMarket del Valle,App Almacen,Quilicura,Finalizado,56975810528,2,02/03/2026 17:53
-5,27/02/2026,11:42,Minimarket Lo Marcoleta,App Almacen,Quilicura,Finalizado,56986507302,2,02/03/2026 12:02
-6,27/02/2026,11:42,Almacen,App Almacen,Quilicura,Error,56226273940,0,27/02/2026 17:46
-7,27/02/2026,11:42,Minimarket Donde Alonso,App Almacen,Quilicura,Error,56966669999,0,28/02/2026 11:41
-8,27/02/2026,11:42,Almacen Minimarket Arens,App Almacen,Quilicura,Finalizado,56978029604,2,02/03/2026 15:00
-9,28/02/2026,14:37,Amasanderia Y Almacén Donde Margarita,App Almacen,La Florida,Error,56222628722,0,03/03/2026 12:08
-10,28/02/2026,14:37,Minimarket Los Martinez,App Almacen,La Florida,Error,56222870177,0,02/03/2026 17:53
-11,28/02/2026,14:37,Minimarket Alto La Florida,App Almacen,La Florida,Error,56222864275,0,28/02/2026 17:42
-12,28/02/2026,14:37,Minimarket El Chumbequito,App Almacen,La Florida,Agendado,56947041741,1,02/03/2026 12:02
-13,28/02/2026,14:37,Mini Mercado🛒 Oasis Plaza,App Almacen,La Florida,Finalizado,56991376573,2,04/03/2026 14:58
-14,28/02/2026,14:37,Minimarket Luna Market,App Almacen,La Florida,Finalizado,56935396140,2,04/03/2026 12:00
-15,28/02/2026,14:37,Minimarket Roo!!Market,App Almacen,La Florida,Finalizado,56997500995,2,02/03/2026 15:00
-16,03/03/2026,15:01,Mini Market FC,App Almacen,Estacion Central,Finalizado,56994781485,2,05/03/2026 17:54
-17,03/03/2026,15:01,Lider Alameda,App Almacen,Estacion Central,Error,566004009000,0,
-18,03/03/2026,15:01,Santa Isabel,App Almacen,Estacion Central,Error,566004006000,0,
-19,03/03/2026,15:01,Almacen Camila,App Almacen,Estacion Central,Error,56223243055,0,
-20,03/03/2026,15:01,Minimarket botilleria Amengual,App Almacen,Estacion Central,Finalizado,56968584948,2,05/03/2026 12:08
-21,03/03/2026,15:01,MiniMarket Los Medanos,App Almacen,Estacion Central,Finalizado,56936499908,2,06/03/2026 11:58
-22,03/03/2026,15:01,CRISOL Almacén y Botilleria,App Almacen,Estacion Central,Finalizado,56957351486,2,05/03/2026 17:54
-23,04/03/2026,17:50,Almacén M&M Maipú,App Almacen,Maipu,Finalizado,56945914617,2,06/03/2026 17:49
-24,04/03/2026,17:50,"Minimarket ""El típico Chileno""",App Almacen,Maipu,Finalizado,56958066801,2,06/03/2026 17:49
-25,04/03/2026,17:50,Kimba Market,App Almacen,Maipu,Finalizado,56920217282,2,06/03/2026 14:54
-26,04/03/2026,17:50,Minimarket y Botillería Paddock,App Almacen,Maipu,Finalizado,56996287564,2,07/03/2026 14:39
-27,04/03/2026,17:50,FLOIS Market LP,App Almacen,Maipu,Finalizado,56920481113,2,06/03/2026 17:49
-28,04/03/2026,17:50,LOS ISLEÑOS Minimarket,App Almacen,Maipu,Finalizado,56953389581,2,06/03/2026 14:54
-29,04/03/2026,17:50,Minimarket monita,App Almacen,Maipu,Finalizado,56995814341,2,07/03/2026 17:42
-30,04/03/2026,17:50,MINIMARKET DONDE TONEKE,App Almacen,Maipu,Finalizado,56930099449,2,07/03/2026 11:43
-31,04/03/2026,17:50,Almacén El Cielo,App Almacen,Maipu,Error,56223248510,0,06/03/2026 11:58
-32,09/03/2026,12:13,MINIMARKET,App Almacen,San Miguel,Nuevo,+56957475536,0,
-33,09/03/2026,12:13,Minimarket Los Vecinos,App Almacen,San Miguel,Nuevo,+56936495947,0,
-34,09/03/2026,12:13,Minimarket almacén El Kairos,App Almacen,San Miguel,Nuevo,+56949565021,0,
-35,09/03/2026,12:13,FRESHMARKET,App Almacen,San Miguel,Nuevo,+56981387023,0,
-36,09/03/2026,12:13,Minimarket San Ignacio,App Almacen,San Miguel,Nuevo,+56959035050,0,
-37,09/03/2026,12:13,Minimarket Simmental,App Almacen,San Miguel,Nuevo,+56935901773,0,
-38,09/03/2026,12:13,Minimarket Santa Margarita,App Almacen,San Miguel,Nuevo,+56962284003,0,
-39,09/03/2026,12:13,Minimarket Panadería Verdulería MEGA-MARKET,App Almacen,San Miguel,Nuevo,+56956598718,0,
-40,09/03/2026,12:13,Somos Good Minimarket & Coffee,App Almacen,San Miguel,Nuevo,+56948872884,0,
-41,09/03/2026,12:13,Minimarket Chinita,App Almacen,San Miguel,Nuevo,+56223121146,0,
-42,09/03/2026,12:13,+58 market,App Almacen,San Miguel,Nuevo,+56931327318,0,
-43,09/03/2026,12:13,MINIMARKET Y CONFITERIA,App Almacen,San Miguel,Nuevo,+56223551613,0,
-44,09/03/2026,12:13,Emporio Vitta,App Almacen,San Miguel,Nuevo,+56972678102,0,
+Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Contacto,Resultado,Notas,Version_Mensaje
+1,27/02/2026,11:42,Fritz almacen y minimarket. Quilicura,App Almacen,Quilicura,Finalizado,56939006214,2,02/03/2026 12:02,,,
+2,27/02/2026,11:42,"Minimarket ""Donde La Nancy""",App Almacen,Quilicura,Finalizado,56999569675,2,02/03/2026 15:00,,,
+3,27/02/2026,11:42,Almacen Millauquen,App Almacen,Quilicura,Finalizado,56992458252,2,28/02/2026 17:42,,,
+4,27/02/2026,11:42,MiniMarket del Valle,App Almacen,Quilicura,Finalizado,56975810528,2,02/03/2026 17:53,,,
+5,27/02/2026,11:42,Minimarket Lo Marcoleta,App Almacen,Quilicura,Finalizado,56986507302,2,02/03/2026 12:02,,,
+6,27/02/2026,11:42,Almacen,App Almacen,Quilicura,Error,56226273940,0,27/02/2026 17:46,,,
+7,27/02/2026,11:42,Minimarket Donde Alonso,App Almacen,Quilicura,Error,56966669999,0,28/02/2026 11:41,,,
+8,27/02/2026,11:42,Almacen Minimarket Arens,App Almacen,Quilicura,Finalizado,56978029604,2,02/03/2026 15:00,,,
+9,28/02/2026,14:37,Amasanderia Y Almacén Donde Margarita,App Almacen,La Florida,Error,56222628722,0,03/03/2026 12:08,,,
+10,28/02/2026,14:37,Minimarket Los Martinez,App Almacen,La Florida,Error,56222870177,0,02/03/2026 17:53,,,
+11,28/02/2026,14:37,Minimarket Alto La Florida,App Almacen,La Florida,Error,56222864275,0,28/02/2026 17:42,,,
+12,28/02/2026,14:37,Minimarket El Chumbequito,App Almacen,La Florida,Agendado,56947041741,1,02/03/2026 12:02,,,
+13,28/02/2026,14:37,Mini Mercado🛒 Oasis Plaza,App Almacen,La Florida,Finalizado,56991376573,2,04/03/2026 14:58,,,
+14,28/02/2026,14:37,Minimarket Luna Market,App Almacen,La Florida,Finalizado,56935396140,2,04/03/2026 12:00,,,
+15,28/02/2026,14:37,Minimarket Roo!!Market,App Almacen,La Florida,Finalizado,56997500995,2,02/03/2026 15:00,,,
+16,03/03/2026,15:01,Mini Market FC,App Almacen,Estacion Central,Finalizado,56994781485,2,05/03/2026 17:54,,,
+17,03/03/2026,15:01,Lider Alameda,App Almacen,Estacion Central,Error,566004009000,0,,,,
+18,03/03/2026,15:01,Santa Isabel,App Almacen,Estacion Central,Error,566004006000,0,,,,
+19,03/03/2026,15:01,Almacen Camila,App Almacen,Estacion Central,Error,56223243055,0,,,,
+20,03/03/2026,15:01,Minimarket botilleria Amengual,App Almacen,Estacion Central,Finalizado,56968584948,2,05/03/2026 12:08,,,
+21,03/03/2026,15:01,MiniMarket Los Medanos,App Almacen,Estacion Central,Finalizado,56936499908,2,06/03/2026 11:58,,,
+22,03/03/2026,15:01,CRISOL Almacén y Botilleria,App Almacen,Estacion Central,Finalizado,56957351486,2,05/03/2026 17:54,,,
+23,04/03/2026,17:50,Almacén M&M Maipú,App Almacen,Maipu,Finalizado,56945914617,2,06/03/2026 17:49,,,
+24,04/03/2026,17:50,"Minimarket ""El típico Chileno""",App Almacen,Maipu,Finalizado,56958066801,2,06/03/2026 17:49,,,
+25,04/03/2026,17:50,Kimba Market,App Almacen,Maipu,Finalizado,56920217282,2,06/03/2026 14:54,,,
+26,04/03/2026,17:50,Minimarket y Botillería Paddock,App Almacen,Maipu,Finalizado,56996287564,2,07/03/2026 14:39,,,
+27,04/03/2026,17:50,FLOIS Market LP,App Almacen,Maipu,Finalizado,56920481113,2,06/03/2026 17:49,,,
+28,04/03/2026,17:50,LOS ISLEÑOS Minimarket,App Almacen,Maipu,Finalizado,56953389581,2,06/03/2026 14:54,,,
+29,04/03/2026,17:50,Minimarket monita,App Almacen,Maipu,Finalizado,56995814341,2,07/03/2026 17:42,,,
+30,04/03/2026,17:50,MINIMARKET DONDE TONEKE,App Almacen,Maipu,Finalizado,56930099449,2,07/03/2026 11:43,,,
+31,04/03/2026,17:50,Almacén El Cielo,App Almacen,Maipu,Error,56223248510,0,06/03/2026 11:58,,,
+32,09/03/2026,12:13,MINIMARKET,App Almacen,San Miguel,Nuevo,56957475536,0,,,,
+33,09/03/2026,12:13,Minimarket Los Vecinos,App Almacen,San Miguel,Nuevo,56936495947,0,,,,
+34,09/03/2026,12:13,Minimarket almacén El Kairos,App Almacen,San Miguel,Nuevo,56949565021,0,,,,
+35,09/03/2026,12:13,FRESHMARKET,App Almacen,San Miguel,Contactado,56981387023,1,09/03/2026 15:02,,,B
+36,09/03/2026,12:13,Minimarket San Ignacio,App Almacen,San Miguel,Nuevo,56959035050,0,,,,
+37,09/03/2026,12:13,Minimarket Simmental,App Almacen,San Miguel,Nuevo,56935901773,0,,,,
+38,09/03/2026,12:13,Minimarket Santa Margarita,App Almacen,San Miguel,Contactado,56962284003,1,09/03/2026 15:02,,,A
+39,09/03/2026,12:13,Minimarket Panadería Verdulería MEGA-MARKET,App Almacen,San Miguel,Nuevo,56956598718,0,,,,
+40,09/03/2026,12:13,Somos Good Minimarket & Coffee,App Almacen,San Miguel,Nuevo,56948872884,0,,,,
+41,09/03/2026,12:13,Minimarket Chinita,App Almacen,San Miguel,Error,56223121146,0,09/03/2026 15:02,,,
+42,09/03/2026,12:13,+58 market,App Almacen,San Miguel,Nuevo,56931327318,0,,,,
+43,09/03/2026,12:13,MINIMARKET Y CONFITERIA,App Almacen,San Miguel,Nuevo,56223551613,0,,,,
+44,09/03/2026,12:13,Emporio Vitta,App Almacen,San Miguel,Nuevo,56972678102,0,,,,

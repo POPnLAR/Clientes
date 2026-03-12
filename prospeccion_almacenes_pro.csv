@@ -34,7 +34,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 33,09/03/2026,12:13,Minimarket Los Vecinos,App Almacen,San Miguel,Error,56936495947,0,10/03/2026 12:12,,,
 34,09/03/2026,12:13,Minimarket almacén El Kairos,App Almacen,San Miguel,Finalizado,56949565021,2,11/03/2026 12:07,,,A
 35,09/03/2026,12:13,FRESHMARKET,App Almacen,San Miguel,Finalizado,56981387023,2,10/03/2026 17:50,,,B
-36,09/03/2026,12:13,Minimarket San Ignacio,App Almacen,San Miguel,Contactado,56959035050,1,11/03/2026 12:07,,,B
+36,09/03/2026,12:13,Minimarket San Ignacio,App Almacen,San Miguel,Finalizado,56959035050,2,12/03/2026 12:11,,,B
 37,09/03/2026,12:13,Minimarket Simmental,App Almacen,San Miguel,Finalizado,56935901773,2,11/03/2026 15:05,,,B
 38,09/03/2026,12:13,Minimarket Santa Margarita,App Almacen,San Miguel,Finalizado,56962284003,2,10/03/2026 17:50,,,A
 39,09/03/2026,12:13,Minimarket Panadería Verdulería MEGA-MARKET,App Almacen,San Miguel,Finalizado,56956598718,2,10/03/2026 15:02,,,B
@@ -43,4 +43,4 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 42,09/03/2026,12:13,+58 market,App Almacen,San Miguel,Finalizado,56931327318,2,11/03/2026 15:05,,,A
 43,09/03/2026,12:13,MINIMARKET Y CONFITERIA,App Almacen,San Miguel,Error,56223551613,0,09/03/2026 17:52,,,
 44,09/03/2026,12:13,Emporio Vitta,App Almacen,San Miguel,Error,56972678102,0,10/03/2026 15:02,,,
-45,11/03/2026,17:51,Botilleria y minimarket JR,App Almacen,San Miguel,Nuevo,56940934865,0,,,,
+45,11/03/2026,17:51,Botilleria y minimarket JR,App Almacen,San Miguel,Contactado,56940934865,1,12/03/2026 12:11,,,A

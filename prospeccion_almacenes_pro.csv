@@ -45,13 +45,13 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 44,09/03/2026,12:13,Emporio Vitta,App Almacen,San Miguel,Error,56972678102,0,10/03/2026 15:02,,,
 45,11/03/2026,17:51,Botilleria y minimarket JR,App Almacen,San Miguel,Finalizado,56940934865,2,13/03/2026 12:04,,,A
 46,12/03/2026,15:04,Minimarket,App Almacen,Las Condes,Finalizado,56984672284,2,13/03/2026 12:04,,,A
-47,12/03/2026,15:04,Minimarket Fénix,App Almacen,Las Condes,Contactado,56998575894,1,12/03/2026 17:54,,,B
+47,12/03/2026,15:04,Minimarket Fénix,App Almacen,Las Condes,Finalizado,56998575894,2,13/03/2026 14:53,,,B
 48,12/03/2026,15:04,"Alto Market, Las Condes",App Almacen,Las Condes,Nuevo,56921689457,0,,,,
 49,12/03/2026,15:04,Minimarket Campos,App Almacen,Las Condes,Nuevo,56232809607,0,,,,
 50,12/03/2026,15:04,MiniMarket Don Elias,App Almacen,Las Condes,Contactado,56949285099,1,13/03/2026 12:04,,,B
-51,12/03/2026,15:04,Minimarket Napoleón,App Almacen,Las Condes,Nuevo,56222349546,0,,,,
+51,12/03/2026,15:04,Minimarket Napoleón,App Almacen,Las Condes,Error,56222349546,0,13/03/2026 14:53,,,
 52,12/03/2026,15:04,Minimarket J&R,App Almacen,Las Condes,Contactado,56983804393,1,12/03/2026 17:54,,,B
-53,12/03/2026,15:04,Minimercado La Esquina,App Almacen,Las Condes,Nuevo,56978858124,0,,,,
+53,12/03/2026,15:04,Minimercado La Esquina,App Almacen,Las Condes,Error,56978858124,0,13/03/2026 14:53,,,
 54,12/03/2026,15:04,Almacen Nini,App Almacen,Las Condes,Nuevo,56229184735,0,,,,
 55,12/03/2026,15:04,Mercadito del campo,App Almacen,Las Condes,Nuevo,56975140370,0,,,,
 56,12/03/2026,15:04,"Minimarket - Almacén - Bazar ""EL PORVENIR""",App Almacen,Las Condes,Nuevo,56225036944,0,,,,

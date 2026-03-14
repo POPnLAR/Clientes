@@ -106,3 +106,4 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 105,12/03/2026,14:11,CLÍNICA ESSENZA,Prospeccion Automatica,Vitacura,Contactado,56978539951,13/03/2026 17:53,2,contacto@clinicaessenza.cl,No,,,
 106,12/03/2026,14:11,"Dr. Vicente De Carolis, Cirugia plástica estética, Vitacura, Santiago Chile",Prospeccion Automatica,Vitacura,Error,56224360197,12/03/2026 16:12,0,,No,,,
 107,13/03/2026,16:02,Clinica Dra. Raveau,Prospeccion Automatica,Las Condes,Contactado,56942474542,13/03/2026 17:53,1,,No,,,
+108,14/03/2026,11:48,Clínica Estética Kalos,Prospeccion Automatica,Vitacura,Nuevo,+56926132862,,0,,No,,,

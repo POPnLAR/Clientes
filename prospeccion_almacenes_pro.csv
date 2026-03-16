@@ -55,3 +55,8 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 54,12/03/2026,15:04,Almacen Nini,App Almacen,Las Condes,Error,56229184735,0,14/03/2026 14:45,,,
 55,12/03/2026,15:04,Mercadito del campo,App Almacen,Las Condes,Error,56975140370,0,13/03/2026 17:54,,,
 56,12/03/2026,15:04,"Minimarket - Almacén - Bazar ""EL PORVENIR""",App Almacen,Las Condes,Error,56225036944,0,14/03/2026 11:48,,,
+57,16/03/2026,12:33,Unimarc,App Almacen,Las Condes,Nuevo,566006000025,0,,,,
+58,16/03/2026,12:33,Minimarket,App Almacen,Las Condes,Nuevo,56222291993,0,,,,
+59,16/03/2026,12:33,Supermercado Santa Isabel,App Almacen,Las Condes,Nuevo,566004002000,0,,,,
+60,16/03/2026,12:33,Amasanderia y verdulería Lionel,App Almacen,Las Condes,Nuevo,56961215295,0,,,,
+61,16/03/2026,12:33,Jumbo,App Almacen,Las Condes,Nuevo,566004003000,0,,,,

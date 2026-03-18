@@ -109,4 +109,4 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 108,14/03/2026,11:48,Clínica Estética Kalos,Prospeccion Automatica,Vitacura,Error,56926132862,17/03/2026 10:52,0,,No,,,
 109,14/03/2026,17:46,Maritza Salones & Spa,Prospeccion Automatica,Ñuñoa,Error,56971442432,17/03/2026 10:52,0,,No,,,
 110,17/03/2026,14:17,Clinica Estética Infinite Glow,Prospeccion Automatica,La Reina,Error,56978510577,17/03/2026 16:21,0,contacto@infiniteglow.cl,No,,,
-111,17/03/2026,17:57,IDERMA. Medical and Cosmetic Dermatology.,Prospeccion Automatica,Vitacura,Nuevo,+56243672323,,0,contacto@iderma.cl,No,,,
+111,17/03/2026,17:57,IDERMA. Medical and Cosmetic Dermatology.,Prospeccion Automatica,Vitacura,Error,56243672323,18/03/2026 10:54,0,contacto@iderma.cl,No,,,

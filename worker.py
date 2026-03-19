@@ -7,6 +7,7 @@ import unicodedata
 import re
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
+import logging
 
 # --- CONFIGURACIÓN ---
 EVO_URL = os.getenv("EVO_URL")
@@ -14,6 +15,11 @@ EVO_TOKEN = os.getenv("EVO_TOKEN")
 EVO_INSTANCE = os.getenv("EVO_INSTANCE")
 SERP_KEY = os.getenv("SERP_KEY")
 ARCHIVO_LEADS = "prospeccion_gestionvital_pro.csv"
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+)
 
 # --- UTILIDADES DE HUMANIZACIÓN ---
 def aplicar_spintax(texto):
@@ -54,9 +60,19 @@ def buscar_y_agregar_nuevos(df_actual):
     params = {"engine": "google_maps", "q": f"Clinica Estetica {zona_objetivo} Chile", "api_key": SERP_KEY, "num": 15}
     try:
         response = requests.get("https://serpapi.com/search", params=params, timeout=30)
+        print(f"🔎 SerpAPI status: {response.status_code}")
         results = response.json().get("local_results", [])
+        print(f"🔎 SerpAPI local_results: {len(results)}")
         nuevos_leads = []
-        tels_en_base = set(df_actual['Telefono'].astype(str).str.replace(".0", "", regex=False).str[-9:].tolist())
+        tels_en_base = set()
+        if not df_actual.empty and "Telefono" in df_actual.columns:
+            tels_en_base = set(
+                df_actual["Telefono"]
+                .astype(str)
+                .str.replace(".0", "", regex=False)
+                .str[-9:]
+                .tolist()
+            )
         ultimo_id = int(df_actual['Id'].max()) if not df_actual.empty else 0
         for place in results:
             raw_tel = str(place.get("phone", "")).replace(" ", "").replace("-", "")
@@ -71,7 +87,10 @@ def buscar_y_agregar_nuevos(df_actual):
                     "Email_Enviado": "No", "Dia_Secuencia": 0, "Fecha_Contacto": ""
                 })
                 tels_en_base.add(raw_tel[-9:])
-        if nuevos_leads: return pd.concat([df_actual, pd.DataFrame(nuevos_leads)], ignore_index=True)
+        if nuevos_leads:
+            print(f"➕ Leads agregados: {len(nuevos_leads)}")
+            return pd.concat([df_actual, pd.DataFrame(nuevos_leads)], ignore_index=True)
+        print("📭 SerpAPI no devolvió leads nuevos (duplicados o sin teléfono/web válido).")
     except Exception as e: print(f"❌ Error búsqueda: {e}")
     return df_actual
 
@@ -96,7 +115,9 @@ def enviar_mensaje_texto(numero, mensaje):
         }
         res = requests.post(f"{base_url}/message/sendText/{EVO_INSTANCE}", json=payload, headers=headers, timeout=20)
         return res.status_code in [200, 201]
-    except: return False
+    except Exception:
+        logging.exception("❌ Error al enviar mensaje.")
+        return False
 
 def obtener_mensaje_secuencia(nombre, ubicacion, dia):
     nombre = limpiar_acentos(nombre)
@@ -165,7 +186,35 @@ def ejecutar_ciclo():
         print("📭 Nada pendiente. Buscando nuevos leads...")
         df = buscar_y_agregar_nuevos(df)
         df.to_csv(ARCHIVO_LEADS, index=False)
-        return
+
+        # Recalcular candidatos luego de agregar leads nuevos para enviar en el mismo run
+        candidatos = []
+        for idx, row in df.iterrows():
+            if hoy_str in str(row.get("Fecha_Contacto", "")):
+                continue
+            if row["Estado"] in ["Finalizado", "Rechazado", "Cita Agendada", "Error"]:
+                continue
+
+            dia_act = int(row.get("Dia_Secuencia", 0))
+            if row["Estado"] == "Contactado":
+                try:
+                    ultima_fecha = datetime.strptime(str(row["Fecha_Contacto"]), "%d/%m/%Y %H:%M")
+                    if (ahora - ultima_fecha).total_seconds() < 90000:
+                        continue
+                except Exception:
+                    pass
+
+            if row["Estado"] == "Contactado" and dia_act < 4:
+                candidatos.append({"idx": idx, "dia": dia_act + 1})
+            elif row["Estado"] == "Nuevo":
+                candidatos.append({"idx": idx, "dia": 1})
+
+        random.shuffle(candidatos)
+        candidatos = candidatos[:5]
+
+        if not candidatos:
+            print("📭 Aun así no hay candidatos para enviar después de buscar nuevos leads.")
+            return
 
     print(f"🚀 Procesando ráfaga de {len(candidatos)} envíos (Hora Chile: {ahora.strftime('%H:%M')})...")
     

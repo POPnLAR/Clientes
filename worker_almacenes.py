@@ -103,7 +103,11 @@ def buscar_y_agregar_almacenes(df_actual):
 
     try:
         response = requests.get("https://serpapi.com/search", params=params, timeout=30)
+        # Nota: no imprimimos la respuesta completa para no saturar logs.
+        # Si SerpAPI falla normalmente retorna JSON con campos de error.
+        print(f"🔎 SerpAPI status: {response.status_code}")
         results = response.json().get("local_results", [])
+        print(f"🔎 SerpAPI local_results: {len(results)}")
         nuevos_leads = []
 
         tels_en_base = set()
@@ -143,6 +147,7 @@ def buscar_y_agregar_almacenes(df_actual):
 
         if nuevos_leads:
             return pd.concat([df_actual, pd.DataFrame(nuevos_leads)], ignore_index=True)
+        print("📭 SerpAPI no devolvió leads nuevos (por duplicados o sin teléfonos válidos).")
     except Exception:
         logging.exception("❌ Error en búsqueda de almacenes")
         print("❌ Error en búsqueda de almacenes (ver logs).")
@@ -315,9 +320,46 @@ def ejecutar_ciclo():
 
     if not candidatos:
         print("📭 Buscando nuevos almacenes...")
+        antes = len(df)
         df = buscar_y_agregar_almacenes(df)
         df.to_csv(ARCHIVO_ALMACENES, index=False)
-        return
+        despues = len(df)
+        print(f"➕ Leads agregados: {max(0, despues-antes)}")
+
+        # Si se agregaron leads, intentamos enviar en el mismo ciclo (para no esperar al próximo cron).
+        candidatos = []
+        for idx, row in df.iterrows():
+            if hoy_str in str(row.get("Fecha_Contacto", "")):
+                continue
+            if row["Estado"] in ["Finalizado", "Rechazado", "Error", "Cita Agendada"]:
+                continue
+            if row.get("Resultado") in ["Interesado", "No interesado", "Numero equivocado"]:
+                continue
+
+            dia_act = int(row.get("Dia_Secuencia", 0))
+            if row["Estado"] == "Contactado":
+                try:
+                    ultima_fecha = datetime.strptime(str(row["Fecha_Contacto"]), "%d/%m/%Y %H:%M")
+                    if (ahora - ultima_fecha).total_seconds() < 90000:
+                        continue
+                except Exception:
+                    logging.warning(
+                        "No se pudo parsear Fecha_Contacto para Id %s: %s",
+                        row.get("Id"),
+                        row.get("Fecha_Contacto"),
+                    )
+
+            if row["Estado"] == "Contactado" and dia_act < 2:
+                candidatos.append({"idx": idx, "dia": dia_act + 1})
+            elif row["Estado"] == "Nuevo":
+                candidatos.append({"idx": idx, "dia": 1})
+
+        random.shuffle(candidatos)
+        candidatos = candidatos[:3]
+
+        if not candidatos:
+            print("📭 Aún no hay candidatos después de buscar nuevos almacenes.")
+            return
 
     print(f"🚀 Enviando a {len(candidatos)} almacenes...")
     

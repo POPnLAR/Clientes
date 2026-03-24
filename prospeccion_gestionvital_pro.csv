@@ -118,3 +118,4 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 117,20/03/2026,17:50,Clínica LB Medical Spa | Medicina Estética y AntiAge | Depilación Láser Diodo| Cosmetología|,Prospeccion Automatica,Las Condes,Error,56932070812,20/03/2026 17:50,0,contacto@lbmedicalspa.cl,No,,,
 118,21/03/2026,17:43,Clinica el Llano Estética Facial.,Prospeccion Automatica,Vitacura,Error,56961898336,21/03/2026 17:43,0,contacto@clinicaelllano.cl,No,,,
 119,23/03/2026,10:49,Urania - Universo de Belleza,Prospeccion Automatica,La Reina,Error,56932321953,23/03/2026 10:49,0,emailto@example.com,No,,,
+120,24/03/2026,14:14,KAIZEN - Estética Integral y Bienestar,Prospeccion Automatica,Ñuñoa,Error,+56943461711,24/03/2026 14:14,0,,No,,,

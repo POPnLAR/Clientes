@@ -125,3 +125,5 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Fecha_Contacto,Dia_Sec
 124,01/04/2026,12:42,Clínica Alta Belleza,Prospeccion Automatica,Ñuñoa,Error,56921837540,01/04/2026 12:42,0,,No,,,
 125,01/04/2026,12:42,Anne stetica avanzada,Prospeccion Automatica,Ñuñoa,Error,56996381164,01/04/2026 12:42,0,,No,,,
 126,02/04/2026,14:10,Neymartin Estetica,Prospeccion Automatica,Lo Barnechea,Error,56979733654,02/04/2026 14:10,0,,No,,,
+127,06/04/2026,10:46,Clínica Corpórea,Prospeccion Automatica,Las Condes,Error,+56984322194,06/04/2026 10:46,0,pacientes@corporea.cl,No,,,
+128,06/04/2026,10:46,Clínica Dra. Zaror,Prospeccion Automatica,Las Condes,Error,+56232757900,06/04/2026 10:46,0,,No,,,

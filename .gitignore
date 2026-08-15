@@ -2,3 +2,15 @@
 auditoria_*.pdf
 __pycache__/
 *.csv.bak
+
+# Secrets locales (nunca deben subirse al repo)
+.streamlit/secrets.toml
+.env
+
+# Estado runtime del agente conversacional (vive en el VPS, no en git)
+*.db
+agent_service.log
+alert_status_agente.json
+
+# Config local de Claude Code (no es parte del proyecto para el equipo/CI)
+.claude/

@@ -300,48 +300,59 @@ def generar_mailto(email, nombre, ubicacion, ministerio=""):
 
 
 # --- CONTACTO POR WHATSAPP ---
+# Mensajes de primer contacto: cortos, sin sonar a spam, y con un cierre suave
+# que busca coordinar una reunion breve (para mostrar la presentacion) en vez
+# de vender de entrada. Sin emojis: un emoji rompio el encoding en wa.me en
+# algunos entornos, asi que se evitan por robustez.
 PLANTILLAS_WHATSAPP = {
     "Clinica Estetica": (
-        "Hola, mi nombre es Rodrigo, de GestionVital. Vi la clinica de "
-        "*{nombre}* en {zona} y queria comentarles como ayudamos a clinicas "
-        "esteticas a organizar la agenda, las fichas clinicas y el control "
-        "de insumos. Tendrian 5 minutos para conversarlo?"
+        "Hola, soy Rodrigo de GestionVital. Vi la clinica *{nombre}* en "
+        "{zona} y trabajo ayudando a clinicas esteticas a ordenar la "
+        "agenda, las fichas clinicas y el control de insumos en un solo "
+        "lugar. Tengo una presentacion breve armada, les acomodaria que "
+        "agendemos 15 minutos esta semana para mostrarsela?"
     ),
     "Centro de Estetica": (
-        "Hola, soy Rodrigo, de GestionVital. Vi el centro de estetica de "
-        "*{nombre}* en {zona} y me gustaria mostrarles como ayudamos a "
+        "Hola, soy Rodrigo de GestionVital. Vi el centro de estetica "
+        "*{nombre}* en {zona} y trabajo ayudando a centros como el suyo a "
         "organizar la agenda y fidelizar clientas con recordatorios "
-        "automaticos. Les interesaria una breve conversacion?"
+        "automaticos. Tengo una presentacion corta preparada, les "
+        "interesaria que coordinemos una reunion breve esta semana?"
     ),
     "Medicina Estetica": (
-        "Hola, soy Rodrigo, de GestionVital. Trabajo con centros de "
-        "medicina estetica ayudandolos a digitalizar consentimientos y el "
-        "historial de tratamientos de cada paciente. Vi a *{nombre}* en "
-        "{zona} y me encantaria mostrarles como funciona."
+        "Hola, soy Rodrigo de GestionVital. Vi a *{nombre}* en {zona} y "
+        "trabajo con centros de medicina estetica ayudandolos a digitalizar "
+        "consentimientos informados y el historial de tratamientos de cada "
+        "paciente. Puedo mostrarles en 15 minutos como funciona, tendrian "
+        "un espacio esta semana?"
     ),
     "Spa Facial": (
-        "Hola, soy Rodrigo, de GestionVital. Vi el spa *{nombre}* en "
-        "{zona} y queria contarles como ayudamos a reducir las "
-        "inasistencias con recordatorios automaticos de horas. Tendrian "
-        "un minuto para conversarlo?"
+        "Hola, soy Rodrigo de GestionVital. Vi el spa *{nombre}* en {zona} "
+        "y trabajo ayudando a spas a reducir las inasistencias con "
+        "recordatorios automaticos de horas. Tengo una presentacion breve "
+        "armada, les acomodaria una reunion corta esta semana para "
+        "mostrarsela?"
     ),
     "Depilacion Laser": (
-        "Hola, soy Rodrigo, de GestionVital. Trabajo con centros de "
-        "depilacion laser ayudandolos a controlar los paquetes de sesiones "
-        "por clienta y avisar cuando toca la proxima. Vi a *{nombre}* en "
-        "{zona}, les interesaria conocer mas?"
+        "Hola, soy Rodrigo de GestionVital. Vi a *{nombre}* en {zona} y "
+        "trabajo con centros de depilacion laser ayudandolos a controlar "
+        "los paquetes de sesiones por clienta y avisar automaticamente "
+        "cuando toca la proxima. Tengo una presentacion corta preparada, "
+        "coordinamos 15 minutos esta semana?"
     ),
     "Botox y Rellenos": (
-        "Hola, soy Rodrigo, de GestionVital. Vi que *{nombre}* en {zona} "
-        "realiza botox y rellenos, y queria mostrarles como ayudamos a "
-        "mantener las fichas de procedimientos y consentimientos "
-        "ordenados. Tendrian 5 minutos esta semana?"
+        "Hola, soy Rodrigo de GestionVital. Vi que *{nombre}* en {zona} "
+        "realiza botox y rellenos, y trabajo ayudando a centros como el "
+        "suyo a mantener las fichas de procedimientos y los consentimientos "
+        "ordenados. Tengo una presentacion breve armada, les acomodaria una "
+        "reunion corta esta semana?"
     ),
     "_default": (
-        "Hola, mi nombre es Rodrigo, de GestionVital. Vi el negocio de "
-        "*{nombre}* en {zona} y me gustaria mostrarles como ayudamos a "
-        "optimizar la agenda, las fichas y el control de insumos. "
-        "Tendrian 5 minutos para conversarlo?"
+        "Hola, soy Rodrigo de GestionVital. Vi el negocio de *{nombre}* en "
+        "{zona} y trabajo ayudando a negocios como el suyo a optimizar la "
+        "agenda, las fichas y el control de insumos. Tengo una "
+        "presentacion breve armada, les acomodaria que coordinemos 15 "
+        "minutos esta semana para mostrarsela?"
     ),
 }
 

@@ -71,8 +71,26 @@ def aplicar_spintax(texto):
     return re.sub(r'\{([^{}]*)\}', reemplazar, texto)
 
 def obtener_ahora_chile():
-    """ GitHub corre en UTC. Chile es UTC-3. """
-    return datetime.utcnow() - timedelta(hours=3)
+    """
+    Devuelve la hora actual de Chile como datetime naive (sin tzinfo), para que
+    siga siendo comparable con las fechas naive que se parsean desde el CSV
+    (datetime.strptime(...) en Fecha_Contacto).
+
+    Chile continental SÍ cambia de hora (UTC-3 en horario de verano, UTC-4 en
+    invierno), así que un offset fijo queda desfasado ~1 hora media temporada
+    del año. Usamos zoneinfo con la base de datos IANA real; si no está
+    disponible (ej. Windows sin el paquete tzdata instalado), caemos a UTC-3
+    fijo como aproximación.
+    """
+    try:
+        from zoneinfo import ZoneInfo  # Python 3.9+
+        return datetime.now(ZoneInfo("America/Santiago")).replace(tzinfo=None)
+    except Exception:
+        logging.warning(
+            "No se pudo usar zoneinfo/tzdata para America/Santiago, usando "
+            "fallback UTC-3 fijo (puede estar desfasado ~1h en horario de invierno)."
+        )
+        return datetime.utcnow() - timedelta(hours=3)
 
 def limpiar_acentos(text):
     if not isinstance(text, str): return str(text)

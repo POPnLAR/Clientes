@@ -302,43 +302,43 @@ def generar_mailto(email, nombre, ubicacion, ministerio=""):
 # --- CONTACTO POR WHATSAPP ---
 PLANTILLAS_WHATSAPP = {
     "Clinica Estetica": (
-        "Hola! 👋 Mi nombre es Rodrigo, de GestionVital. Vi la clinica de "
+        "Hola, mi nombre es Rodrigo, de GestionVital. Vi la clinica de "
         "*{nombre}* en {zona} y queria comentarles como ayudamos a clinicas "
         "esteticas a organizar la agenda, las fichas clinicas y el control "
         "de insumos. Tendrian 5 minutos para conversarlo?"
     ),
     "Centro de Estetica": (
-        "Hola! 👋 Soy Rodrigo, de GestionVital. Vi el centro de estetica de "
+        "Hola, soy Rodrigo, de GestionVital. Vi el centro de estetica de "
         "*{nombre}* en {zona} y me gustaria mostrarles como ayudamos a "
         "organizar la agenda y fidelizar clientas con recordatorios "
         "automaticos. Les interesaria una breve conversacion?"
     ),
     "Medicina Estetica": (
-        "Hola! 👋 Soy Rodrigo, de GestionVital. Trabajo con centros de "
+        "Hola, soy Rodrigo, de GestionVital. Trabajo con centros de "
         "medicina estetica ayudandolos a digitalizar consentimientos y el "
         "historial de tratamientos de cada paciente. Vi a *{nombre}* en "
         "{zona} y me encantaria mostrarles como funciona."
     ),
     "Spa Facial": (
-        "Hola! 👋 Soy Rodrigo, de GestionVital. Vi el spa *{nombre}* en "
+        "Hola, soy Rodrigo, de GestionVital. Vi el spa *{nombre}* en "
         "{zona} y queria contarles como ayudamos a reducir las "
         "inasistencias con recordatorios automaticos de horas. Tendrian "
         "un minuto para conversarlo?"
     ),
     "Depilacion Laser": (
-        "Hola! 👋 Soy Rodrigo, de GestionVital. Trabajo con centros de "
+        "Hola, soy Rodrigo, de GestionVital. Trabajo con centros de "
         "depilacion laser ayudandolos a controlar los paquetes de sesiones "
         "por clienta y avisar cuando toca la proxima. Vi a *{nombre}* en "
         "{zona}, les interesaria conocer mas?"
     ),
     "Botox y Rellenos": (
-        "Hola! 👋 Soy Rodrigo, de GestionVital. Vi que *{nombre}* en {zona} "
+        "Hola, soy Rodrigo, de GestionVital. Vi que *{nombre}* en {zona} "
         "realiza botox y rellenos, y queria mostrarles como ayudamos a "
         "mantener las fichas de procedimientos y consentimientos "
         "ordenados. Tendrian 5 minutos esta semana?"
     ),
     "_default": (
-        "Hola! 👋 Mi nombre es Rodrigo, de GestionVital. Vi el negocio de "
+        "Hola, mi nombre es Rodrigo, de GestionVital. Vi el negocio de "
         "*{nombre}* en {zona} y me gustaria mostrarles como ayudamos a "
         "optimizar la agenda, las fichas y el control de insumos. "
         "Tendrian 5 minutos para conversarlo?"

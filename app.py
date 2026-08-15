@@ -300,59 +300,53 @@ def generar_mailto(email, nombre, ubicacion, ministerio=""):
 
 
 # --- CONTACTO POR WHATSAPP ---
-# Mensajes de primer contacto: cortos, sin sonar a spam, y con un cierre suave
-# que busca coordinar una reunion breve (para mostrar la presentacion) en vez
-# de vender de entrada. Sin emojis: un emoji rompio el encoding en wa.me en
-# algunos entornos, asi que se evitan por robustez.
+# Mensajes de primer contacto: cortos, sin sonar a spam, y cerrando con una
+# pregunta sobre un dolor concreto del rubro (no ofrecen la presentación de
+# entrada, buscan que respondan y abrir la conversación desde ahí). Sin
+# emojis: un emoji rompió el encoding en wa.me en algunos entornos.
 PLANTILLAS_WHATSAPP = {
     "Clinica Estetica": (
         "Hola, soy Rodrigo de GestionVital. Vi la clinica *{nombre}* en "
         "{zona} y trabajo ayudando a clinicas esteticas a ordenar la "
         "agenda, las fichas clinicas y el control de insumos en un solo "
-        "lugar. Tengo una presentacion breve armada, les acomodaria que "
-        "agendemos 15 minutos esta semana para mostrarsela?"
+        "lugar. Como estan agendando las horas hoy en dia?"
     ),
     "Centro de Estetica": (
         "Hola, soy Rodrigo de GestionVital. Vi el centro de estetica "
         "*{nombre}* en {zona} y trabajo ayudando a centros como el suyo a "
         "organizar la agenda y fidelizar clientas con recordatorios "
-        "automaticos. Tengo una presentacion corta preparada, les "
-        "interesaria que coordinemos una reunion breve esta semana?"
+        "automaticos. Que estan usando hoy para agendar las horas?"
     ),
     "Medicina Estetica": (
         "Hola, soy Rodrigo de GestionVital. Vi a *{nombre}* en {zona} y "
         "trabajo con centros de medicina estetica ayudandolos a digitalizar "
         "consentimientos informados y el historial de tratamientos de cada "
-        "paciente. Puedo mostrarles en 15 minutos como funciona, tendrian "
-        "un espacio esta semana?"
+        "paciente. Como estan llevando hoy ese historial?"
     ),
     "Spa Facial": (
         "Hola, soy Rodrigo de GestionVital. Vi el spa *{nombre}* en {zona} "
         "y trabajo ayudando a spas a reducir las inasistencias con "
-        "recordatorios automaticos de horas. Tengo una presentacion breve "
-        "armada, les acomodaria una reunion corta esta semana para "
-        "mostrarsela?"
+        "recordatorios automaticos de horas. Como estan agendando y "
+        "confirmando las horas hoy?"
     ),
     "Depilacion Laser": (
         "Hola, soy Rodrigo de GestionVital. Vi a *{nombre}* en {zona} y "
         "trabajo con centros de depilacion laser ayudandolos a controlar "
         "los paquetes de sesiones por clienta y avisar automaticamente "
-        "cuando toca la proxima. Tengo una presentacion corta preparada, "
-        "coordinamos 15 minutos esta semana?"
+        "cuando toca la proxima. Como llevan hoy el control de las sesiones "
+        "de cada clienta?"
     ),
     "Botox y Rellenos": (
         "Hola, soy Rodrigo de GestionVital. Vi que *{nombre}* en {zona} "
         "realiza botox y rellenos, y trabajo ayudando a centros como el "
         "suyo a mantener las fichas de procedimientos y los consentimientos "
-        "ordenados. Tengo una presentacion breve armada, les acomodaria una "
-        "reunion corta esta semana?"
+        "ordenados. Como estan llevando hoy esas fichas?"
     ),
     "_default": (
         "Hola, soy Rodrigo de GestionVital. Vi el negocio de *{nombre}* en "
         "{zona} y trabajo ayudando a negocios como el suyo a optimizar la "
-        "agenda, las fichas y el control de insumos. Tengo una "
-        "presentacion breve armada, les acomodaria que coordinemos 15 "
-        "minutos esta semana para mostrarsela?"
+        "agenda, las fichas y el control de insumos. Que estan usando hoy "
+        "para agendar?"
     ),
 }
 

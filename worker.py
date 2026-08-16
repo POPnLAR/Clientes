@@ -472,30 +472,36 @@ def enviar_mensaje_texto(numero, mensaje):
     return _evo_enviar_mensaje_texto(EVO_URL, EVO_TOKEN, EVO_INSTANCE, numero, mensaje)
 
 def obtener_mensaje_secuencia(nombre, ubicacion, dia):
+    """
+    Secuencia de 4 mensajes: corta y natural (mismo criterio que los mensajes
+    manuales del dashboard), cerrando con una pregunta sobre un dolor concreto
+    en vez de una oferta directa. Usa *texto* (un solo asterisco) para negrita
+    de WhatsApp — ** (doble asterisco) no es sintaxis válida de WhatsApp y se
+    muestra literal con los asteriscos visibles.
+    """
     nombre = limpiar_acentos(nombre)
     zona = ubicacion if ubicacion else "su zona"
-    
+
     # Textos con Spintax para evitar detección de patrones repetitivos
     if dia == 1:
-        msg = ("{Hola|Buen día|Hola, ¿qué tal?|Hola, ¿cómo están?} 👋 Mi nombre es Rodrigo de **GestiónVital**. "
-               "Les escribo porque sigo de cerca los centros de estética en {zona} y me {gustó mucho|llamó la atención|encantó} la propuesta de *{nombre}*.\n\n"
-               "{Trabajo ayudando a|Apoyo a} centros como el de ustedes a que el día a día sea más fluido. Me encantaría {compartirles|comentarles|mostrarles} algunas ideas sobre:\n\n"
-               "✨ Cómo agilizar las respuestas para que ningún paciente se quede esperando.\n"
-               "📋 Digitalizar las fichas para mayor tranquilidad de todos.\n"
-               "📦 Optimizar el control de insumos de forma simple.\n\n"
-               "{¿Tendrán 5 minutitos|¿Tendrán un espacio|¿Podríamos conversar brevemente} esta semana {para conocernos|de forma relajada}? Me encantaría conocerles.\n\n"
-               "https://gestionvitalpro.cl")
+        msg = ("{Hola,|Buen día,|Hola, ¿qué tal?} soy Rodrigo, de GestiónVital. Vi *{nombre}* en {zona} y "
+               "{trabajo ayudando a|apoyo a} negocios como el suyo a organizar la agenda, las fichas y el "
+               "control de insumos. {¿Cómo están llevando|¿Qué están usando para} la agenda hoy en día?")
     elif dia == 2:
-        msg = ("{Hola de nuevo|Hola nuevamente}. 👋 Solo pasaba a saludar y dejarles un dato: en **GestiónVital** hemos visto que {pequeños ajustes|mejoras simples|cambios sencillos} en la organización pueden liberar mucho tiempo para los dueños de centros en {zona}.\n\n"
-               "En *{nombre}* tienen un potencial tremendo. ¿Les parecería si coordinamos una breve llamada {para presentarnos|esta semana}?")
+        msg = ("{Hola de nuevo|Hola nuevamente}, disculpen si insisto. Sé que en *{nombre}* debe haber "
+               "bastante movimiento — {justo por eso|por lo mismo} creo que les puede servir ordenar la "
+               "agenda y el seguimiento de clientes en un solo lugar. {¿Les interesaría saber más|Vale la "
+               "pena que les cuente cómo funciona}?")
     elif dia == 3:
-        msg = ("{¡Hola!|Buen día} 🏥 ¿Cómo va la semana en *{nombre}*?\n\n"
-               "Les escribía porque estamos invitando a algunos centros {referentes|destacados|importantes} de {zona} a una charla sobre las nuevas tendencias de gestión para este 2026. Me gustaría mucho que ustedes formaran parte. {¿Les interesa|¿Les gustaría} que les cuente más?")
+        msg = ("{Hola|Buen día}, entiendo que estos mensajes se pierden fácil entre el día a día. Solo "
+               "quería preguntarles: {¿cómo están manejando hoy|¿qué usan hoy para} las citas y el "
+               "seguimiento de clientes en *{nombre}*? Tengo algunas ideas que podrían servirles.")
     elif dia == 4:
-        msg = ("Estimados en *{nombre}*, imagino que deben estar con {muchas cositas|mucho trabajo|la agenda a tope}, así que no les quito más tiempo. 👋\n\n"
-               "Solo quería agradecerles por el espacio. Les dejo mi contacto por aquí; si alguna vez sienten que necesitan un apoyo para organizar procesos o crecer, cuenten conmigo. ¡Mucho éxito!")
+        msg = ("Último mensaje de mi parte, no quiero ser inoportuno. Si en algún momento *{nombre}* "
+               "necesita apoyo para organizar la agenda o los procesos del día a día, aquí quedo. "
+               "{¡Mucho éxito!|Éxito con todo!}")
     else: return ""
-    
+
     return aplicar_spintax(msg.replace("{nombre}", nombre).replace("{zona}", zona))
 
 # --- CICLO PRINCIPAL ---

@@ -62,6 +62,82 @@ def _limpiar_alerta():
         except Exception:
             logging.exception("No se pudo limpiar el archivo de alerta.")
 
+
+# --- RESUMEN POR EMAIL ---
+GMAIL_USER = os.getenv("GMAIL_USER")
+GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
+EMAIL_DESTINO = os.getenv("EMAIL_DESTINO") or "rvillegasburgos@gmail.com"
+
+
+def enviar_resumen_email(asunto, cuerpo):
+    """
+    Envía el resumen del ciclo por Gmail SMTP (requiere una 'contraseña de
+    aplicación' de Google, no la contraseña normal de la cuenta). Si no está
+    configurado (GMAIL_USER/GMAIL_APP_PASSWORD), se omite silenciosamente:
+    el email es un extra, nunca debe hacer fallar el ciclo de prospección.
+    """
+    if not GMAIL_USER or not GMAIL_APP_PASSWORD:
+        logging.warning("GMAIL_USER/GMAIL_APP_PASSWORD no configurados, se omite el resumen por email.")
+        return False
+    import smtplib
+    from email.mime.text import MIMEText
+
+    msg = MIMEText(cuerpo, "plain", "utf-8")
+    msg["Subject"] = asunto
+    msg["From"] = GMAIL_USER
+    msg["To"] = EMAIL_DESTINO
+    try:
+        with smtplib.SMTP("smtp.gmail.com", 587, timeout=20) as server:
+            server.starttls()
+            server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+            server.sendmail(GMAIL_USER, [EMAIL_DESTINO], msg.as_string())
+        logging.info("Resumen del ciclo enviado por email a %s.", EMAIL_DESTINO)
+        return True
+    except Exception:
+        logging.exception("No se pudo enviar el resumen del ciclo por email.")
+        return False
+
+
+def _nuevo_resumen():
+    return {"nuevos_leads": [], "mensajes": [], "reciclados": 0, "alertas": []}
+
+
+def _enviar_resumen_si_corresponde(resumen, ahora):
+    """
+    Solo envía el email si pasó algo relevante en el ciclo (leads nuevos,
+    mensajes enviados, alertas, o reciclaje) — si no hubo nada que reportar
+    (ej. fuera de horario o ciclo vacío), no manda correo.
+    """
+    if not (resumen["nuevos_leads"] or resumen["mensajes"] or resumen["reciclados"] or resumen["alertas"]):
+        print("📪 Nada relevante que reportar este ciclo, no se envía resumen por email.")
+        return
+
+    asunto = f"GestiónVital (Clínicas) - Resumen {ahora.strftime('%d/%m %H:%M')}"
+    lineas = []
+
+    if resumen["alertas"]:
+        lineas.append("ALERTAS:")
+        lineas += [f"- {a}" for a in resumen["alertas"]]
+        lineas.append("")
+
+    if resumen["nuevos_leads"]:
+        lineas.append(f"Leads nuevos encontrados ({len(resumen['nuevos_leads'])}):")
+        lineas += [f"- {l['Evento']} ({l['Ubicacion']})" for l in resumen["nuevos_leads"]]
+        lineas.append("")
+
+    if resumen["mensajes"]:
+        exitosos = [m for m in resumen["mensajes"] if m["ok"]]
+        fallidos = [m for m in resumen["mensajes"] if not m["ok"]]
+        lineas.append(f"Mensajes de secuencia enviados ({len(exitosos)} ok, {len(fallidos)} fallidos):")
+        for m in resumen["mensajes"]:
+            lineas.append(f"- [{'OK' if m['ok'] else 'FALLO'}] {m['Evento']} - Día {m['dia']}")
+        lineas.append("")
+
+    if resumen["reciclados"]:
+        lineas.append(f"Leads reciclados para recontacto: {resumen['reciclados']}")
+
+    enviar_resumen_email(asunto, "\n".join(lineas))
+
 # --- UTILIDADES DE HUMANIZACIÓN ---
 def aplicar_spintax(texto):
     """ Selecciona una opción aleatoria entre {opcion1|opcion2} para variar el mensaje """
@@ -425,6 +501,7 @@ def obtener_mensaje_secuencia(nombre, ubicacion, dia):
 # --- CICLO PRINCIPAL ---
 def ejecutar_ciclo():
     ahora = obtener_ahora_chile()
+    resumen = _nuevo_resumen()
 
     # Restricción Lunes-Sábado 10:00 a 18:30 (Horario más conservador)
     if ahora.weekday() > 5 or not (10 <= ahora.hour <= 18):
@@ -436,6 +513,8 @@ def ejecutar_ciclo():
         print(f"🔴 Sesión de WhatsApp no está 'open' (estado: {estado_conexion}). Abortando ciclo sin tocar leads.")
         logging.error("Sesión de WhatsApp caída o desconocida (estado=%s). Deteniendo ciclo.", estado_conexion)
         _escribir_alerta("sesion_whatsapp_caida", f"Estado reportado: {estado_conexion}")
+        resumen["alertas"].append(f"Sesión de WhatsApp caída o desconocida (estado={estado_conexion}).")
+        _enviar_resumen_si_corresponde(resumen, ahora)
         sys.exit(1)
 
     if not os.path.exists(ARCHIVO_LEADS): return
@@ -467,10 +546,17 @@ def ejecutar_ciclo():
 
     if not candidatos:
         print("📭 Nada pendiente. Buscando nuevos leads...")
+        total_antes = len(df)
         df, resultado_busqueda = buscar_y_agregar_nuevos(df)
+        if len(df) > total_antes:
+            nuevos = df.tail(len(df) - total_antes)
+            resumen["nuevos_leads"] = [
+                {"Evento": r["Evento"], "Ubicacion": r["Ubicacion"]} for _, r in nuevos.iterrows()
+            ]
         df.to_csv(ARCHIVO_LEADS, index=False)
         if resultado_busqueda == "cuota_agotada":
             _escribir_alerta("serpapi_cuota_agotada", "SerpAPI devolvió un error (posible cuota agotada o api_key inválida).")
+            resumen["alertas"].append("SerpAPI dejó de responder (posible cuota agotada o api_key inválida).")
             enviar_alerta_whatsapp(
                 EVO_URL, EVO_TOKEN, EVO_INSTANCE, NUMERO_OPERADOR,
                 "⚠️ GestiónVital: SerpAPI dejó de responder (posible cuota agotada). Revisar api_key de clínicas.",
@@ -505,11 +591,13 @@ def ejecutar_ciclo():
             print("📭 Aun así no hay candidatos para enviar después de buscar nuevos leads.")
             print("♻️ Intentando reciclar leads antiguos...")
             df, total_reciclados = reciclar_leads_antiguos(df, ahora)
+            resumen["reciclados"] = total_reciclados
             if total_reciclados > 0:
                 print(f"♻️ Leads reciclados para recontacto: {total_reciclados}")
                 df.to_csv(ARCHIVO_LEADS, index=False)
             else:
                 print("📭 Sin leads reciclables. Conviene ampliar comunas/canales de captación.")
+            _enviar_resumen_si_corresponde(resumen, ahora)
             return
 
     print(f"🚀 Procesando ráfaga de {len(candidatos)} envíos (Hora Chile: {ahora.strftime('%H:%M')})...")
@@ -531,12 +619,14 @@ def ejecutar_ciclo():
             df.at[idx, "Dia_Secuencia"] = dia_obj
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
             print(f"   ✅ Día {dia_obj} enviado.")
+            resumen["mensajes"].append({"Evento": row["Evento"], "dia": dia_obj, "ok": True})
             fallos_seguidos = 0
             _limpiar_alerta()
         else:
             df.at[idx, "Estado"] = "Error"
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
             print(f"   ❌ Fallo técnico.")
+            resumen["mensajes"].append({"Evento": row["Evento"], "dia": dia_obj, "ok": False})
             fallos_seguidos += 1
 
         df.to_csv(ARCHIVO_LEADS, index=False)
@@ -546,6 +636,7 @@ def ejecutar_ciclo():
             print(f"🔴 {motivo} Abortando el resto del ciclo.")
             logging.error(motivo)
             _escribir_alerta("fallos_envio_seguidos", motivo)
+            resumen["alertas"].append(motivo)
             enviar_alerta_whatsapp(
                 EVO_URL, EVO_TOKEN, EVO_INSTANCE, NUMERO_OPERADOR,
                 f"⚠️ GestiónVital (clínicas): {motivo}",
@@ -559,6 +650,7 @@ def ejecutar_ciclo():
             time.sleep(espera)
 
     print("🏁 Ciclo completado.")
+    _enviar_resumen_si_corresponde(resumen, ahora)
 
 if __name__ == "__main__":
     ejecutar_ciclo()

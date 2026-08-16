@@ -40,6 +40,9 @@ jobs:
           EVO_INSTANCE: ${{ secrets.EVO_INSTANCE }}
           SERP_KEY: ${{ secrets.SERP_KEY }}
           NUMERO_OPERADOR: ${{ secrets.NUMERO_OPERADOR }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_DESTINO: ${{ secrets.EMAIL_DESTINO }}
         run: python worker.py
 
       - name: Guardar y Sincronizar cambios (Post-Ejecución)

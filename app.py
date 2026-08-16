@@ -449,6 +449,11 @@ with t1:
     with col_filtro:
         solo_con_email = st.checkbox("Solo con email")
 
+    st.caption(
+        "⚠️ El botón WhatsApp \"Chat Directo\" es para casos puntuales/emergencias — el "
+        "sistema automático ya gestiona el contacto normal de cada lead."
+    )
+
     df_f = df_actual.copy()
     if busqueda:
         df_f = df_f[df_f['Evento'].str.contains(busqueda, case=False, na=False) |
@@ -571,6 +576,11 @@ with t4:
     st.warning(
         "El botón '✉️ Redactar' abre tu cliente de correo (Gmail, Outlook, etc.) con un "
         "borrador precargado. Nada se envía automáticamente: tú revisas y presionas enviar."
+    )
+    st.caption(
+        "⚠️ Uso solo para casos puntuales/emergencias. El sistema automático (worker.py) ya "
+        "gestiona el contacto y el seguimiento normal de cada lead — usar este botón de forma "
+        "rutinaria puede duplicar mensajes a la misma persona."
     )
 
     df_email = df_actual[df_actual["Email"].astype(str).str.contains("@", na=False)].copy()

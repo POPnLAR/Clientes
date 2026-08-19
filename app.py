@@ -121,6 +121,14 @@ def push_to_github(filename, content):
     try:
         token = st.secrets["GITHUB_TOKEN"]
         repo = st.secrets["GITHUB_REPO"]
+    except Exception:
+        st.error(
+            "❌ Faltan `GITHUB_TOKEN` y/o `GITHUB_REPO` en los Secrets de esta app "
+            "(Streamlit Cloud → Settings → Secrets). Sin eso no se puede sincronizar."
+        )
+        return False
+
+    try:
         url = f"https://api.github.com/repos/{repo}/contents/{filename}"
         headers = {
             "Authorization": f"token {token}",
@@ -134,6 +142,11 @@ def push_to_github(filename, content):
         }
         if sha: data["sha"] = sha
         res = requests.put(url, json=data, headers=headers)
+        if res.status_code not in [200, 201]:
+            st.error(
+                f"❌ GitHub respondió HTTP {res.status_code} al intentar subir `{filename}` "
+                f"a `{repo}`: {res.text[:400]}"
+            )
         return res.status_code in [200, 201]
     except Exception as e:
         st.error(f"Error de conexión: {str(e)}")
@@ -521,8 +534,7 @@ with t2:
                 st.success(f"✅ ¡{archivo_actual} actualizado con éxito!")
                 time.sleep(1)
                 st.rerun()
-            else:
-                st.error("❌ Falló la sincronización con GitHub.")
+            # Si falló, push_to_github ya mostró el detalle del error (status HTTP, etc.)
 
 if t3 is not None:
     with t3:
@@ -636,8 +648,7 @@ with t4:
                         st.success("✅ Seguimiento guardado.")
                         time.sleep(1)
                         st.rerun()
-                    else:
-                        st.error("❌ Falló la sincronización con GitHub.")
+                    # Si falló, push_to_github ya mostró el detalle del error (status HTTP, etc.)
 
 st.markdown("---")
 st.caption("ServiGod Pro System - Inteligencia de Negocios Chilena.")

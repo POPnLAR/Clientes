@@ -48,8 +48,14 @@ jobs:
       - name: Guardar y Sincronizar cambios (Post-Ejecución)
         run: |
           # 1. Agregamos los cambios generados por el worker (leads, alerta,
-          # y el estado persistente del barrido exhaustivo + presupuesto SerpAPI)
-          git add prospeccion_gestionvital_pro.csv alert_status.json cobertura_clinicas.json presupuesto_serpapi.json 2>/dev/null || true
+          # y el estado persistente del barrido exhaustivo + presupuesto SerpAPI).
+          # Se agregan uno por uno y solo si existen: si a "git add" se le pasan
+          # varios archivos y UNO no existe (ej. alert_status.json, que solo se
+          # crea si hubo una alerta este ciclo), aborta el comando COMPLETO sin
+          # agregar ninguno — por eso no se pueden agregar todos en una sola línea.
+          for f in prospeccion_gestionvital_pro.csv alert_status.json cobertura_clinicas.json presupuesto_serpapi.json; do
+            [ -f "$f" ] && git add "$f"
+          done
           
           # 2. Verificamos si hay cambios reales para commitear
           if [ -n "$(git status --porcelain)" ]; then

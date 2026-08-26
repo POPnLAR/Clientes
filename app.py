@@ -503,7 +503,7 @@ with t1:
             "Id": None,
             "Evento": st.column_config.TextColumn("Nombre Comercial", width="medium"),
             "Ubicacion": "📍 Comuna",
-            "Estado": st.column_config.SelectboxColumn("Estatus", options=["Nuevo", "Contactado", "Agendado", "Finalizado", "Error"]),
+            "Estado": st.column_config.SelectboxColumn("Estatus", options=["Nuevo", "Contactado", "Agendado", "Rechazado", "Finalizado", "Error"]),
             "Dia_Secuencia": st.column_config.ProgressColumn("Madurez", min_value=0, max_value=max_secuencia, format="%d pasos"),
             "WhatsApp": st.column_config.LinkColumn("WhatsApp", display_text="Chat Directo"),
             "Resultado": st.column_config.SelectboxColumn(

@@ -566,9 +566,23 @@ if t3 is not None:
                         key=f"draft_{b['id']}",
                     )
 
+                    accion_payload = None
+                    if b.get("accion_tipo") == "agendar_cita" and b.get("accion_payload"):
+                        try:
+                            accion_payload = json.loads(b["accion_payload"])
+                        except (TypeError, ValueError):
+                            accion_payload = None
+                    if accion_payload:
+                        st.info(
+                            f"📅 Al aprobar, esto también AGENDARÁ una cita para: "
+                            f"**{accion_payload.get('etiqueta', accion_payload.get('inicio_iso'))}** "
+                            f"(se crea en Google Calendar antes de enviar el WhatsApp)."
+                        )
+
+                    label_aprobar = "✅ Aprobar, agendar y enviar" if accion_payload else "✅ Aprobar y enviar"
                     col_ok, col_no = st.columns(2)
                     with col_ok:
-                        if st.button("✅ Aprobar y enviar", key=f"approve_{b['id']}"):
+                        if st.button(label_aprobar, key=f"approve_{b['id']}"):
                             ok, detalle = aprobar_borrador(b["id"], texto_editado)
                             if ok:
                                 st.success("Enviado.")

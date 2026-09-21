@@ -8,6 +8,7 @@ escrituras en cualquier momento (llegan mensajes de WhatsApp a toda hora), a
 diferencia de los CSV de leads que se actualizan por lotes periódicos desde
 GitHub Actions.
 """
+import json
 import os
 import sqlite3
 from contextlib import contextmanager
@@ -35,11 +36,34 @@ CREATE TABLE IF NOT EXISTS drafts (
     estado TEXT NOT NULL DEFAULT 'pending' CHECK (estado IN ('pending', 'approved', 'rejected', 'sent')),
     created_at TEXT NOT NULL,
     decided_at TEXT,
+    accion_tipo TEXT,
+    accion_payload TEXT,
+    accion_resultado TEXT,
     FOREIGN KEY (mensaje_entrante_id) REFERENCES messages (id)
 );
 
 CREATE INDEX IF NOT EXISTS idx_drafts_estado ON drafts (estado);
+
+CREATE TABLE IF NOT EXISTS citas_agendadas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    draft_id INTEGER NOT NULL,
+    telefono_normalizado TEXT NOT NULL,
+    google_event_id TEXT NOT NULL,
+    inicio_iso TEXT NOT NULL,
+    fin_iso TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (draft_id) REFERENCES drafts (id)
+);
 """
+
+# Migración para bases de datos ya existentes en producción, creadas antes de
+# que 'drafts' tuviera estas columnas (CREATE TABLE IF NOT EXISTS no las
+# agrega a una tabla que ya existe).
+_MIGRACIONES_DRAFTS = {
+    "accion_tipo": "ALTER TABLE drafts ADD COLUMN accion_tipo TEXT",
+    "accion_payload": "ALTER TABLE drafts ADD COLUMN accion_payload TEXT",
+    "accion_resultado": "ALTER TABLE drafts ADD COLUMN accion_resultado TEXT",
+}
 
 
 @contextmanager
@@ -53,9 +77,17 @@ def _conn():
         conn.close()
 
 
+def _migrar_columnas_drafts(conn):
+    columnas_actuales = {row["name"] for row in conn.execute("PRAGMA table_info(drafts)")}
+    for columna, ddl in _MIGRACIONES_DRAFTS.items():
+        if columna not in columnas_actuales:
+            conn.execute(ddl)
+
+
 def inicializar_db():
     with _conn() as conn:
         conn.executescript(SCHEMA)
+        _migrar_columnas_drafts(conn)
 
 
 def _ahora():
@@ -82,12 +114,19 @@ def historial_conversacion(telefono_normalizado, limite=20):
     return list(reversed([dict(r) for r in rows]))
 
 
-def crear_borrador(telefono_normalizado, mensaje_entrante_id, texto_borrador):
+def crear_borrador(telefono_normalizado, mensaje_entrante_id, texto_borrador, accion_tipo=None, accion_payload=None):
     with _conn() as conn:
         cur = conn.execute(
-            "INSERT INTO drafts (telefono_normalizado, mensaje_entrante_id, texto_borrador, estado, created_at) "
-            "VALUES (?, ?, ?, 'pending', ?)",
-            (telefono_normalizado, mensaje_entrante_id, texto_borrador, _ahora()),
+            "INSERT INTO drafts (telefono_normalizado, mensaje_entrante_id, texto_borrador, estado, "
+            "created_at, accion_tipo, accion_payload) VALUES (?, ?, ?, 'pending', ?, ?, ?)",
+            (
+                telefono_normalizado,
+                mensaje_entrante_id,
+                texto_borrador,
+                _ahora(),
+                accion_tipo,
+                json.dumps(accion_payload, ensure_ascii=False) if accion_payload else None,
+            ),
         )
         return cur.lastrowid
 
@@ -96,6 +135,7 @@ def listar_borradores_pendientes():
     with _conn() as conn:
         rows = conn.execute(
             "SELECT d.id, d.telefono_normalizado, d.texto_borrador, d.created_at, "
+            "       d.accion_tipo, d.accion_payload, "
             "       m.texto AS mensaje_entrante, m.timestamp AS mensaje_entrante_timestamp "
             "FROM drafts d "
             "LEFT JOIN messages m ON m.id = d.mensaje_entrante_id "
@@ -117,3 +157,21 @@ def marcar_borrador(draft_id, estado):
             "UPDATE drafts SET estado = ?, decided_at = ? WHERE id = ?",
             (estado, _ahora(), draft_id),
         )
+
+
+def marcar_resultado_accion(draft_id, resultado):
+    with _conn() as conn:
+        conn.execute(
+            "UPDATE drafts SET accion_resultado = ? WHERE id = ?",
+            (resultado, draft_id),
+        )
+
+
+def registrar_cita_agendada(draft_id, telefono_normalizado, google_event_id, inicio_iso, fin_iso):
+    with _conn() as conn:
+        cur = conn.execute(
+            "INSERT INTO citas_agendadas (draft_id, telefono_normalizado, google_event_id, "
+            "inicio_iso, fin_iso, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+            (draft_id, telefono_normalizado, google_event_id, inicio_iso, fin_iso, _ahora()),
+        )
+        return cur.lastrowid

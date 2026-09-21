@@ -2,8 +2,16 @@ name: GestionVital Pro Cron
 
 on:
   schedule:
-    # Corre cada 2 horas, pero en el minuto 15 para no ser tan predecible
-    - cron: '15 */2 * * *'
+    # Corre cada hora, en el minuto 15. La ventana de envío real la controla
+    # worker.py (10:00-18:30 hora Chile, obtener_ahora_chile() ya es DST-aware).
+    # Antes corría cada 2 horas con un cron fijo en UTC: cuando Chile cambia de
+    # horario de verano/invierno, ese horario fijo se desalinea ~1h con la
+    # ventana de Chile, y GitHub retrasa bastante los cron jobs en :00/:15
+    # (horas más congestionadas) — la combinación dejaba la primera corrida
+    # útil del día cayendo bien pasado el mediodía. Correr cada hora da
+    # margen de sobra para absorber ambos problemas sin depender de ajustar
+    # el cron dos veces al año.
+    - cron: '15 * * * *'
   workflow_dispatch:
 
 jobs:

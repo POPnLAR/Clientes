@@ -1,0 +1,115 @@
+# Playbook de ventas de GestiónVital Pro.
+# Esta es la ÚNICA fuente de verdad sobre precios, planes y promociones que
+# usa el agente conversacional (ver gemini_client.py). Editar este archivo NO
+# requiere reiniciar el servicio: se recarga solo cuando cambia su fecha de
+# modificación.
+#
+# Para modificar precios o promos: edita los valores de abajo y guarda. Para
+# agregar una objeción nueva, copia un bloque de "objeciones" y complétalo.
+
+version: 1
+actualizado: "2026-09-21"
+
+empresa:
+  nombre: "GestiónVital Pro"
+  registro_trial: "https://app.gestionvitalpro.cl/registro"
+  trial_dias: 14
+  sin_contrato_permanencia: true
+  migracion_datos_gratis: true
+
+planes:
+  - id: basico
+    nombre: "Plan Básico"
+    precio_mensual_clp: 70000
+    incluye:
+      - "Agenda de Citas"
+      - "Fichas de Pacientes"
+      - "Soporte por Ticket"
+
+  - id: medio
+    nombre: "Plan Medio"
+    precio_mensual_clp: 170000
+    incluye:
+      - "Todo lo del Plan Básico"
+      - "Catálogo de Servicios"
+      - "Gestión de Profesionales"
+      - "Evolución Clínica y Fotos"
+      - "Consentimientos Digitales"
+      - "Promociones y Descuentos"
+      - "Reportes y Estadísticas"
+      - "Encuestas de Satisfacción"
+
+  - id: avanzado
+    nombre: "Plan Avanzado"
+    precio_mensual_clp: 170000
+    precio_lista_clp: 320000
+    nota_oferta: "Oferta actual: el Plan Avanzado completo al precio del Plan Medio"
+    incluye:
+      - "Todo lo del Plan Medio"
+      - "Inventario Completo de Insumos"
+      - "Anulación de Cobros"
+      - "Reporte de Carritos Abandonados"
+      - "Reporte de Recompra de Pacientes"
+
+  - id: ecommerce_addon
+    nombre: "Ecommerce (complemento, se suma a cualquier plan)"
+    precio_mensual_clp: 35000
+    incluye:
+      - "Agenda Online"
+      - "Panel de Atención"
+      - "Notificación de Carrito Abandonado"
+      - "Pagos en Línea con Flow"
+
+promociones:
+  - id: combo_basico_ecommerce
+    nombre: "Combo Básico + Ecommerce"
+    precio_mensual_clp: 80000
+    condiciones: "Recomendado para empresas/centros pequeños que están comenzando."
+
+  - id: avanzado_precio_medio
+    nombre: "Plan Avanzado a precio de Plan Medio"
+    precio_mensual_clp: 170000
+    condiciones: "El plan completo (incluye inventario y reportes avanzados) al precio del Plan Medio."
+
+# Guía interna para que el agente sugiera un plan según lo que cuente el lead.
+# No es una regla rígida: es una sugerencia de punto de partida para la conversación.
+reglas_recomendacion:
+  - condicion: "Centro pequeño, 1-2 profesionales, recién iniciando, quiere también vender online."
+    plan_sugerido: combo_basico_ecommerce
+  - condicion: "Centro mediano, varios servicios y profesionales, quiere fichas clínicas y fidelizar clientas."
+    plan_sugerido: medio
+  - condicion: "Maneja inventario de insumos, anula cobros seguido, o quiere reportes de recompra."
+    plan_sugerido: avanzado_precio_medio
+
+objeciones:
+  - objecion: "Es muy caro / no tengo presupuesto para eso"
+    respuesta_sugerida: >
+      Entiendo la preocupación por el presupuesto. Justo para partir sin
+      arriesgar tanto existe el combo Básico + Ecommerce a $80.000 + IVA al
+      mes, sin contrato de permanencia, así que puedes probarlo y cancelar
+      cuando quieras si no te acomoda.
+
+  - objecion: "Ya administro todo por Excel o cuaderno / WhatsApp"
+    respuesta_sugerida: >
+      Total, muchos centros parten así. La diferencia es que acá los
+      recordatorios de WhatsApp y la agenda online se envían solos, así que
+      dejas de perder horas por inasistencias no avisadas. Y la migración de
+      tus datos actuales está incluida sin costo, no partes de cero.
+
+  - objecion: "¿Tiene contrato de permanencia?"
+    respuesta_sugerida: >
+      No, ningún plan tiene contrato de permanencia — cancelas cuando
+      quieras.
+
+  - objecion: "¿Puedo probarlo antes de pagar?"
+    respuesta_sugerida: >
+      Sí, tienes 14 días de prueba gratis apenas te registras en
+      https://app.gestionvitalpro.cl/registro, y si prefieres te muestro yo
+      mismo el sistema en una demo guiada por WhatsApp antes de eso.
+
+demo:
+  dias_disponibles: ["jueves", "viernes", "sabado"]
+  horario_inicio: "10:00"
+  horario_fin: "19:00"
+  duracion_minutos: 30
+  modalidad: "Guiada por WhatsApp, con acceso real al sistema, sin instalar nada."

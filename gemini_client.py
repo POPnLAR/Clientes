@@ -7,30 +7,49 @@ por aprobación humana (ver agent_service.py).
 """
 import logging
 import os
+import re
 import time
 
 import requests
+import yaml
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 GEMINI_URL = (
     f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
 )
+PLAYBOOK_PATH = os.getenv("PLAYBOOK_PATH", "playbook_ventas.yaml")
 
 # Backoff simple para respetar la capa gratuita (~15 solicitudes/min).
 _ULTIMA_LLAMADA = 0.0
 _INTERVALO_MINIMO_SEG = 4.5
+
+_MARCADOR_AGENDAR_RE = re.compile(r"\[\[AGENDAR:\s*([^\]]+)\]\]\s*$")
+
+# Cache en memoria del playbook, invalidado por mtime del archivo: así Rodrigo
+# puede editar precios/objeciones sin tener que reiniciar el servicio.
+_PLAYBOOK_CACHE = {"mtime": None, "datos": None, "texto": ""}
 
 
 SYSTEM_PROMPT = """Eres el asistente de ventas de Rodrigo, dueño de GestiónVital Pro, una empresa
 chilena que ofrece una app de gestión (para clínicas estéticas o almacenes de barrio, según el
 contexto del lead). Tu tarea es redactar UN borrador de respuesta de WhatsApp para el mensaje
 entrante del prospecto, en español chileno, tono cercano y profesional, breve (máximo 3-4
-oraciones), sin inventar precios ni promesas que no se te dieron como contexto. Si el mensaje
-entrante suena a reclamo fuerte, confusión total, o pide hablar con un humano, responde
-reconociendo eso y ofreciendo que Rodrigo le escriba directamente, sin intentar resolverlo tú
-solo. Nunca reveles que eres una IA a menos que te pregunten explícitamente. Devuelve SOLO el
-texto del mensaje de WhatsApp, sin comillas ni explicaciones adicionales."""
+oraciones). Usa EXCLUSIVAMENTE los precios, planes, promociones y respuestas a objeciones de la
+sección "--- Playbook de ventas ---" de abajo: nunca inventes un precio, plan o promesa que no
+esté ahí. Si el mensaje entrante suena a reclamo fuerte, confusión total, o pide hablar con un
+humano, responde reconociendo eso y ofreciendo que Rodrigo le escriba directamente, sin intentar
+resolverlo tú solo. Nunca reveles que eres una IA a menos que te pregunten explícitamente.
+
+Si en la sección "--- Horarios disponibles para demo ---" hay horarios listados y el prospecto
+CONFIRMA explícitamente e inequívocamente uno de esos horarios (por ejemplo "el jueves a las 10
+me sirve"), agrega como última línea de tu respuesta, en su propia línea, exactamente:
+[[AGENDAR: <inicio_iso_exacto_tal_como_aparece_en_la_lista>]]
+No agregues esa línea si el prospecto no confirmó un horario específico de la lista, y nunca
+inventes un horario que no esté en la lista.
+
+Devuelve SOLO el texto del mensaje de WhatsApp (más la línea [[AGENDAR: ...]] si corresponde),
+sin comillas ni explicaciones adicionales."""
 
 
 def _esperar_rate_limit():
@@ -41,27 +60,135 @@ def _esperar_rate_limit():
     _ULTIMA_LLAMADA = time.time()
 
 
-def generar_borrador(historial, contexto_lead, mensaje_entrante):
+def _cargar_playbook():
+    """
+    Lee playbook_ventas.yaml y cachea el resultado en memoria, recargando solo
+    si el archivo cambió de mtime. Si el archivo no existe o es inválido, se
+    loguea el error y se devuelve texto vacío (el agente sigue funcionando,
+    solo pierde el contexto de precios/promos hasta que se arregle el archivo).
+    """
+    try:
+        mtime = os.path.getmtime(PLAYBOOK_PATH)
+    except OSError:
+        logging.error("No se encontró el playbook de ventas en %s.", PLAYBOOK_PATH)
+        return ""
+
+    if _PLAYBOOK_CACHE["mtime"] == mtime:
+        return _PLAYBOOK_CACHE["texto"]
+
+    try:
+        with open(PLAYBOOK_PATH, "r", encoding="utf-8") as f:
+            datos = yaml.safe_load(f) or {}
+        texto = _formatear_playbook_para_prompt(datos)
+        _PLAYBOOK_CACHE.update({"mtime": mtime, "datos": datos, "texto": texto})
+        return texto
+    except Exception:
+        logging.exception("No se pudo leer/parsear %s.", PLAYBOOK_PATH)
+        return _PLAYBOOK_CACHE["texto"]
+
+
+def _formatear_playbook_para_prompt(playbook):
+    lineas = []
+
+    empresa = playbook.get("empresa", {})
+    if empresa:
+        lineas.append(f"Trial gratis: {empresa.get('trial_dias', '?')} días, registro en {empresa.get('registro_trial', '')}.")
+        if empresa.get("sin_contrato_permanencia"):
+            lineas.append("Sin contrato de permanencia, cancela cuando quiera.")
+        if empresa.get("migracion_datos_gratis"):
+            lineas.append("Migración de datos desde el sistema anterior incluida sin costo.")
+
+    planes = playbook.get("planes", [])
+    if planes:
+        lineas.append("\nPlanes:")
+        for p in planes:
+            precio = f"${p.get('precio_mensual_clp', 0):,}".replace(",", ".") + "/mes + IVA"
+            nota = f" ({p['nota_oferta']})" if p.get("nota_oferta") else ""
+            incluye = ", ".join(p.get("incluye", []))
+            lineas.append(f"- {p.get('nombre')} [{p.get('id')}]: {precio}{nota}. Incluye: {incluye}.")
+
+    promos = playbook.get("promociones", [])
+    if promos:
+        lineas.append("\nPromociones activas:")
+        for promo in promos:
+            precio = f"${promo.get('precio_mensual_clp', 0):,}".replace(",", ".") + "/mes + IVA"
+            lineas.append(f"- {promo.get('nombre')} [{promo.get('id')}]: {precio}. {promo.get('condiciones', '')}")
+
+    reglas = playbook.get("reglas_recomendacion", [])
+    if reglas:
+        lineas.append("\nGuía para recomendar plan según el lead:")
+        for r in reglas:
+            lineas.append(f"- Si {r.get('condicion')} -> sugerir '{r.get('plan_sugerido')}'.")
+
+    objeciones = playbook.get("objeciones", [])
+    if objeciones:
+        lineas.append("\nRespuestas sugeridas a objeciones frecuentes:")
+        for o in objeciones:
+            lineas.append(f"- \"{o.get('objecion')}\" -> {o.get('respuesta_sugerida', '').strip()}")
+
+    demo = playbook.get("demo", {})
+    if demo:
+        dias = ", ".join(demo.get("dias_disponibles", []))
+        lineas.append(
+            f"\nDemo: {demo.get('modalidad', '')} Días disponibles: {dias}, de "
+            f"{demo.get('horario_inicio')} a {demo.get('horario_fin')}, "
+            f"{demo.get('duracion_minutos')} minutos."
+        )
+
+    return "\n".join(lineas)
+
+
+def _formatear_slots_para_prompt(slots_disponibles):
+    return "\n".join(f"- {s['inicio_iso']} ({s.get('etiqueta', s['inicio_iso'])})" for s in slots_disponibles)
+
+
+def _extraer_marcador_agendar(texto_generado):
+    """
+    Busca la línea final [[AGENDAR: <inicio_iso>]] en el texto devuelto por
+    Gemini. Devuelve (texto_visible_sin_el_marcador, accion_o_None), donde
+    accion es {"tipo": "agendar_cita", "inicio_iso": str} si hubo match.
+
+    La validación de que ese inicio_iso corresponda a un slot REAL ofrecido
+    (y no una alucinación) la hace agent_service.py, que es quien conoce la
+    lista real de slots que se ofrecieron.
+    """
+    match = _MARCADOR_AGENDAR_RE.search(texto_generado)
+    if not match:
+        return texto_generado, None
+    inicio_iso = match.group(1).strip()
+    texto_visible = texto_generado[: match.start()].rstrip()
+    return texto_visible, {"tipo": "agendar_cita", "inicio_iso": inicio_iso}
+
+
+def generar_borrador(historial, contexto_lead, mensaje_entrante, slots_disponibles=None):
     """
     historial: lista de dicts [{"direccion": "in"|"out", "texto": str}, ...] (más antiguos primero)
     contexto_lead: dict con campos como Evento, Ubicacion, Estado, Dia_Secuencia (puede venir vacío
                    si el lead no se encontró en el CSV por teléfono)
     mensaje_entrante: texto del último mensaje del prospecto que dispara este borrador
+    slots_disponibles: lista opcional de dicts [{"inicio_iso", "fin_iso", "etiqueta"}, ...] con
+                        horarios de demo realmente libres, para que el agente pueda ofrecerlos y
+                        detectar si el prospecto confirma uno.
 
-    Devuelve el texto del borrador, o una respuesta de fallback si Gemini no está configurado
-    o falla (para que el flujo de aprobación humana nunca se bloquee por completo).
+    Devuelve (texto_borrador, accion_o_None). accion es {"tipo": "agendar_cita", "inicio_iso": str}
+    si el prospecto confirmó un horario, o None en cualquier otro caso (incluido el fallback, para
+    que el flujo de aprobación humana nunca se bloquee por completo).
     """
     if not GEMINI_API_KEY:
         logging.error("GEMINI_API_KEY no configurado; devolviendo borrador de fallback.")
-        return _borrador_fallback(mensaje_entrante)
+        return _borrador_fallback(mensaje_entrante), None
 
+    playbook_txt = _cargar_playbook()
     contexto_txt = "\n".join(f"{k}: {v}" for k, v in (contexto_lead or {}).items() if v)
     historial_txt = "\n".join(
         f"{'Prospecto' if m['direccion'] == 'in' else 'Rodrigo'}: {m['texto']}" for m in historial
     )
+    slots_txt = _formatear_slots_para_prompt(slots_disponibles) if slots_disponibles else ""
 
     prompt = (
         f"{SYSTEM_PROMPT}\n\n"
+        f"--- Playbook de ventas ---\n{playbook_txt or '(playbook no disponible)'}\n\n"
+        f"--- Horarios disponibles para demo ---\n{slots_txt or '(sin horarios disponibles por ahora)'}\n\n"
         f"--- Contexto del lead ---\n{contexto_txt or '(sin datos del lead en la base)'}\n\n"
         f"--- Historial reciente ---\n{historial_txt or '(sin historial previo)'}\n\n"
         f"--- Último mensaje del prospecto ---\n{mensaje_entrante}\n\n"
@@ -80,20 +207,22 @@ def generar_borrador(historial, contexto_lead, mensaje_entrante):
         )
         if res.status_code != 200:
             logging.error("Gemini API error: HTTP %s - %s", res.status_code, res.text[:500])
-            return _borrador_fallback(mensaje_entrante)
+            return _borrador_fallback(mensaje_entrante), None
 
         data = res.json()
         candidatos = data.get("candidates", [])
         if not candidatos:
             logging.error("Gemini no devolvió candidatos: %s", data)
-            return _borrador_fallback(mensaje_entrante)
+            return _borrador_fallback(mensaje_entrante), None
 
         partes = candidatos[0].get("content", {}).get("parts", [])
         texto = "".join(p.get("text", "") for p in partes).strip()
-        return texto or _borrador_fallback(mensaje_entrante)
+        if not texto:
+            return _borrador_fallback(mensaje_entrante), None
+        return _extraer_marcador_agendar(texto)
     except Exception:
         logging.exception("Excepción al llamar a Gemini API.")
-        return _borrador_fallback(mensaje_entrante)
+        return _borrador_fallback(mensaje_entrante), None
 
 
 def _borrador_fallback(mensaje_entrante):

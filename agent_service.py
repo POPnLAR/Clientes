@@ -19,6 +19,7 @@ import asyncio
 import json
 import logging
 import os
+import time
 from datetime import datetime
 from typing import Optional
 
@@ -26,6 +27,7 @@ import pandas as pd
 from fastapi import FastAPI, Header, HTTPException, Request
 from pydantic import BaseModel
 
+import calendar_client
 import conversation_store as store
 from evo_client import (
     enviar_alerta_whatsapp,
@@ -118,6 +120,28 @@ def _buscar_lead_por_telefono(telefono_normalizado):
     return None, None, {}
 
 
+_CACHE_SLOTS = {"slots": None, "timestamp": 0.0}
+_CACHE_SLOTS_TTL_SEG = 120
+
+
+def _obtener_slots_cacheados():
+    """
+    Evita golpear la Calendar API en cada mensaje entrante: refresca la lista
+    de horarios libres como máximo cada _CACHE_SLOTS_TTL_SEG. Si la consulta
+    falla (credenciales no configuradas, error de red, etc.), se devuelve una
+    lista vacía y el agente simplemente no ofrece horarios en ese borrador.
+    """
+    ahora = time.time()
+    if _CACHE_SLOTS["slots"] is None or ahora - _CACHE_SLOTS["timestamp"] > _CACHE_SLOTS_TTL_SEG:
+        try:
+            _CACHE_SLOTS["slots"] = calendar_client.obtener_slots_disponibles()
+        except Exception:
+            logging.exception("No se pudo consultar disponibilidad de Google Calendar.")
+            _CACHE_SLOTS["slots"] = []
+        _CACHE_SLOTS["timestamp"] = ahora
+    return _CACHE_SLOTS["slots"]
+
+
 def _extraer_mensaje_entrante(payload: dict):
     """
     Parser tolerante para el payload del webhook 'messages.upsert' de Evolution API.
@@ -171,9 +195,27 @@ async def webhook_evolution(request: Request):
 
     _linea, _archivo, contexto_lead = _buscar_lead_por_telefono(telefono)
     historial = store.historial_conversacion(telefono, limite=20)
+    slots = _obtener_slots_cacheados()
 
-    borrador = generar_borrador(historial, contexto_lead, texto)
-    draft_id = store.crear_borrador(telefono, msg_id, borrador)
+    texto_borrador, accion = generar_borrador(historial, contexto_lead, texto, slots_disponibles=slots)
+
+    # Defensa anti-alucinación: solo se acepta la acción de agendar si el
+    # inicio_iso que devolvió Gemini coincide EXACTO con un slot realmente
+    # ofrecido en este ciclo (nunca confiar en un horario "inventado").
+    if accion:
+        slot_valido = next((s for s in slots if s["inicio_iso"] == accion["inicio_iso"]), None)
+        if not slot_valido:
+            logging.warning("Gemini marcó agendar con un horario no ofrecido: %s", accion)
+            accion = None
+        else:
+            accion["fin_iso"] = slot_valido["fin_iso"]
+            accion["etiqueta"] = slot_valido["etiqueta"]
+
+    draft_id = store.crear_borrador(
+        telefono, msg_id, texto_borrador,
+        accion_tipo=accion["tipo"] if accion else None,
+        accion_payload=accion,
+    )
 
     return {"status": "ok", "draft_id": draft_id}
 
@@ -204,6 +246,34 @@ def approve_draft(draft_id: int, decision: DecisionBorrador, x_agent_token: Opti
     texto_envio = (decision.texto_final or borrador["texto_borrador"]).strip()
     if not texto_envio:
         raise HTTPException(status_code=400, detail="El texto a enviar no puede estar vacío.")
+
+    if borrador.get("accion_tipo") == "agendar_cita":
+        accion = json.loads(borrador["accion_payload"])
+        _linea, _archivo, contexto_lead = _buscar_lead_por_telefono(borrador["telefono_normalizado"])
+        try:
+            resultado = calendar_client.crear_evento_demo(
+                accion["inicio_iso"],
+                borrador["telefono_normalizado"],
+                nombre_lead=(contexto_lead or {}).get("Evento", ""),
+            )
+        except calendar_client.SlotNoDisponibleError:
+            store.marcar_resultado_accion(draft_id, "slot_no_disponible")
+            enviar_alerta_whatsapp(
+                EVO_URL, EVO_TOKEN, EVO_INSTANCE, NUMERO_OPERADOR,
+                f"⚠️ El horario propuesto a {borrador['telefono_normalizado']} ya no está "
+                f"disponible. Revisa el borrador #{draft_id} y ofrece otro horario manualmente.",
+            )
+            raise HTTPException(status_code=409, detail="El horario ya no está disponible. No se envió el mensaje.")
+        except Exception:
+            logging.exception("Error creando evento de calendario para el draft %s.", draft_id)
+            store.marcar_resultado_accion(draft_id, "error")
+            raise HTTPException(status_code=502, detail="Error al crear el evento en Google Calendar. No se envió el mensaje.")
+        else:
+            store.registrar_cita_agendada(
+                draft_id, borrador["telefono_normalizado"], resultado["event_id"],
+                accion["inicio_iso"], accion["fin_iso"],
+            )
+            store.marcar_resultado_accion(draft_id, "creado")
 
     enviado = _evo_enviar_mensaje_texto(
         EVO_URL, EVO_TOKEN, EVO_INSTANCE, borrador["telefono_normalizado"], texto_envio

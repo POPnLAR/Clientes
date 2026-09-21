@@ -2,9 +2,12 @@ name: Prospeccion Almacenes Cron
 
 on:
   schedule:
-    # Corre cada 3 horas entre las 11:00 AM y las 19:00 PM (Hora Chile aprox)
-    # 14:15, 17:15, 20:15, 23:15 UTC -> 11:15, 14:15, 17:15, 20:15 Chile
-    - cron: '15 14,17,20,23 * * *'
+    # Corre cada hora, en el minuto 15. La ventana real de envío la controla
+    # worker_almacenes.py (10:00-19:00 hora Chile). Antes usaba horas UTC fijas
+    # (14,17,20,23), que se desalinean ~1h cada vez que Chile cambia de horario
+    # de verano/invierno (mismo problema detectado en cron.yml) — correr cada
+    # hora evita depender de ajustar el cron dos veces al año.
+    - cron: '15 * * * *'
   workflow_dispatch: # Permite ejecutarlo manualmente desde el botón de GitHub
 
 jobs:

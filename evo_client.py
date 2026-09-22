@@ -88,6 +88,11 @@ def enviar_mensaje_texto(base_url, token, instance, numero, mensaje, simular_esc
     Envía un mensaje de texto por WhatsApp vía Evolution API, simulando
     presencia "escribiendo..." con una demora aleatoria antes del envío.
     Devuelve True/False según si Evolution aceptó el mensaje.
+
+    Payloads en formato Evolution API v2 (verificado contra v2.3.7): a diferencia
+    de v1, `/chat/sendPresence` exige `delay` en el body y `/message/sendText` ya
+    no acepta el `textMessage.text` anidado de v1 (responde 400 "instance
+    requires property text") — hay que mandar `text` plano.
     """
     if not mensaje or len(mensaje.strip()) < 10:
         return False
@@ -100,7 +105,7 @@ def enviar_mensaje_texto(base_url, token, instance, numero, mensaje, simular_esc
     try:
         requests.post(
             f"{base}/chat/sendPresence/{instance}",
-            json={"number": numero, "presence": "composing"},
+            json={"number": numero, "presence": "composing", "delay": 1000},
             headers=headers,
             timeout=10,
         )
@@ -108,11 +113,7 @@ def enviar_mensaje_texto(base_url, token, instance, numero, mensaje, simular_esc
         if simular_escritura:
             time.sleep(random.randint(15, 35))
 
-        payload = {
-            "number": numero,
-            "options": {"delay": 2000, "presence": "composing"},
-            "textMessage": {"text": mensaje},
-        }
+        payload = {"number": numero, "text": mensaje, "delay": 2000}
         res = requests.post(
             f"{base}/message/sendText/{instance}", json=payload, headers=headers, timeout=20
         )

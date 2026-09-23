@@ -1,0 +1,839 @@
+{
+  "pendientes": [
+    [
+      "Santiago Centro",
+      "Botilleria"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Botilleria"
+    ],
+    [
+      "Maipú",
+      "Minimarket"
+    ],
+    [
+      "Puente Alto",
+      "Botilleria"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Emporio"
+    ],
+    [
+      "Maipú",
+      "Almacen"
+    ],
+    [
+      "Cerro Navia",
+      "Botilleria"
+    ],
+    [
+      "Padre Hurtado",
+      "Almacen"
+    ],
+    [
+      "La Cisterna",
+      "Botilleria"
+    ],
+    [
+      "Estación Central",
+      "Emporio"
+    ],
+    [
+      "Peñalolén",
+      "Botilleria"
+    ],
+    [
+      "Independencia",
+      "Minimarket"
+    ],
+    [
+      "Cerro Navia",
+      "Emporio"
+    ],
+    [
+      "Estación Central",
+      "Almacen"
+    ],
+    [
+      "Vitacura",
+      "Almacen"
+    ],
+    [
+      "Lo Barnechea",
+      "Emporio"
+    ],
+    [
+      "Independencia",
+      "Emporio"
+    ],
+    [
+      "San Joaquín",
+      "Minimarket"
+    ],
+    [
+      "San Miguel",
+      "Emporio"
+    ],
+    [
+      "San Bernardo",
+      "Minimarket"
+    ],
+    [
+      "Isla de Maipo",
+      "Botilleria"
+    ],
+    [
+      "Renca",
+      "Emporio"
+    ],
+    [
+      "Talagante",
+      "Botilleria"
+    ],
+    [
+      "Providencia",
+      "Emporio"
+    ],
+    [
+      "La Pintana",
+      "Almacen"
+    ],
+    [
+      "Puente Alto",
+      "Emporio"
+    ],
+    [
+      "Recoleta",
+      "Emporio"
+    ],
+    [
+      "Paine",
+      "Minimarket"
+    ],
+    [
+      "Quinta Normal",
+      "Minimarket"
+    ],
+    [
+      "Quilicura",
+      "Botilleria"
+    ],
+    [
+      "San José de Maipo",
+      "Botilleria"
+    ],
+    [
+      "Independencia",
+      "Botilleria"
+    ],
+    [
+      "Maipú",
+      "Botilleria"
+    ],
+    [
+      "San Miguel",
+      "Botilleria"
+    ],
+    [
+      "San Bernardo",
+      "Emporio"
+    ],
+    [
+      "Peñaflor",
+      "Almacen"
+    ],
+    [
+      "Renca",
+      "Minimarket"
+    ],
+    [
+      "Calera de Tango",
+      "Almacen"
+    ],
+    [
+      "La Florida",
+      "Botilleria"
+    ],
+    [
+      "Peñaflor",
+      "Minimarket"
+    ],
+    [
+      "Talagante",
+      "Almacen"
+    ],
+    [
+      "Peñalolén",
+      "Emporio"
+    ],
+    [
+      "Melipilla",
+      "Botilleria"
+    ],
+    [
+      "Macul",
+      "Emporio"
+    ],
+    [
+      "Pudahuel",
+      "Emporio"
+    ],
+    [
+      "Melipilla",
+      "Minimarket"
+    ],
+    [
+      "Buin",
+      "Botilleria"
+    ],
+    [
+      "Estación Central",
+      "Minimarket"
+    ],
+    [
+      "La Florida",
+      "Emporio"
+    ],
+    [
+      "Pudahuel",
+      "Almacen"
+    ],
+    [
+      "Vitacura",
+      "Emporio"
+    ],
+    [
+      "Santiago Centro",
+      "Emporio"
+    ],
+    [
+      "Colina",
+      "Botilleria"
+    ],
+    [
+      "Conchalí",
+      "Emporio"
+    ],
+    [
+      "Til Til",
+      "Botilleria"
+    ],
+    [
+      "Recoleta",
+      "Almacen"
+    ],
+    [
+      "Cerrillos",
+      "Minimarket"
+    ],
+    [
+      "Lo Prado",
+      "Emporio"
+    ],
+    [
+      "Providencia",
+      "Minimarket"
+    ],
+    [
+      "San Miguel",
+      "Almacen"
+    ],
+    [
+      "Ñuñoa",
+      "Botilleria"
+    ],
+    [
+      "Cerrillos",
+      "Botilleria"
+    ],
+    [
+      "Alhué",
+      "Botilleria"
+    ],
+    [
+      "Huechuraba",
+      "Almacen"
+    ],
+    [
+      "Santiago Centro",
+      "Minimarket"
+    ],
+    [
+      "San José de Maipo",
+      "Emporio"
+    ],
+    [
+      "Lo Espejo",
+      "Emporio"
+    ],
+    [
+      "Cerro Navia",
+      "Minimarket"
+    ],
+    [
+      "Vitacura",
+      "Botilleria"
+    ],
+    [
+      "María Pinto",
+      "Almacen"
+    ],
+    [
+      "Curacaví",
+      "Almacen"
+    ],
+    [
+      "Alhué",
+      "Minimarket"
+    ],
+    [
+      "Talagante",
+      "Minimarket"
+    ],
+    [
+      "Huechuraba",
+      "Minimarket"
+    ],
+    [
+      "Quilicura",
+      "Minimarket"
+    ],
+    [
+      "Buin",
+      "Almacen"
+    ],
+    [
+      "Alhué",
+      "Emporio"
+    ],
+    [
+      "San Joaquín",
+      "Emporio"
+    ],
+    [
+      "San Joaquín",
+      "Botilleria"
+    ],
+    [
+      "San Pedro",
+      "Minimarket"
+    ],
+    [
+      "San Pedro",
+      "Emporio"
+    ],
+    [
+      "Las Condes",
+      "Almacen"
+    ],
+    [
+      "El Bosque",
+      "Botilleria"
+    ],
+    [
+      "Peñalolén",
+      "Minimarket"
+    ],
+    [
+      "Ñuñoa",
+      "Emporio"
+    ],
+    [
+      "María Pinto",
+      "Botilleria"
+    ],
+    [
+      "Santiago Centro",
+      "Almacen"
+    ],
+    [
+      "Quinta Normal",
+      "Botilleria"
+    ],
+    [
+      "Colina",
+      "Minimarket"
+    ],
+    [
+      "Pirque",
+      "Minimarket"
+    ],
+    [
+      "Pirque",
+      "Emporio"
+    ],
+    [
+      "San Ramón",
+      "Almacen"
+    ],
+    [
+      "Isla de Maipo",
+      "Almacen"
+    ],
+    [
+      "La Reina",
+      "Botilleria"
+    ],
+    [
+      "Lo Prado",
+      "Almacen"
+    ],
+    [
+      "Buin",
+      "Emporio"
+    ],
+    [
+      "Cerrillos",
+      "Almacen"
+    ],
+    [
+      "La Granja",
+      "Almacen"
+    ],
+    [
+      "Talagante",
+      "Emporio"
+    ],
+    [
+      "María Pinto",
+      "Emporio"
+    ],
+    [
+      "La Cisterna",
+      "Emporio"
+    ],
+    [
+      "Til Til",
+      "Almacen"
+    ],
+    [
+      "El Monte",
+      "Emporio"
+    ],
+    [
+      "Providencia",
+      "Almacen"
+    ],
+    [
+      "Macul",
+      "Botilleria"
+    ],
+    [
+      "Maipú",
+      "Emporio"
+    ],
+    [
+      "Ñuñoa",
+      "Almacen"
+    ],
+    [
+      "Curacaví",
+      "Botilleria"
+    ],
+    [
+      "San Ramón",
+      "Botilleria"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Minimarket"
+    ],
+    [
+      "Providencia",
+      "Botilleria"
+    ],
+    [
+      "Conchalí",
+      "Almacen"
+    ],
+    [
+      "Las Condes",
+      "Botilleria"
+    ],
+    [
+      "Las Condes",
+      "Emporio"
+    ],
+    [
+      "La Reina",
+      "Emporio"
+    ],
+    [
+      "Alhué",
+      "Almacen"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Almacen"
+    ],
+    [
+      "Peñalolén",
+      "Almacen"
+    ],
+    [
+      "Paine",
+      "Almacen"
+    ],
+    [
+      "Renca",
+      "Botilleria"
+    ],
+    [
+      "La Pintana",
+      "Emporio"
+    ],
+    [
+      "Curacaví",
+      "Emporio"
+    ],
+    [
+      "Peñaflor",
+      "Botilleria"
+    ],
+    [
+      "Melipilla",
+      "Emporio"
+    ],
+    [
+      "San Pedro",
+      "Botilleria"
+    ],
+    [
+      "San José de Maipo",
+      "Almacen"
+    ],
+    [
+      "San José de Maipo",
+      "Minimarket"
+    ],
+    [
+      "Lampa",
+      "Botilleria"
+    ],
+    [
+      "Padre Hurtado",
+      "Minimarket"
+    ],
+    [
+      "Pirque",
+      "Almacen"
+    ],
+    [
+      "Isla de Maipo",
+      "Emporio"
+    ],
+    [
+      "Lo Prado",
+      "Botilleria"
+    ],
+    [
+      "Curacaví",
+      "Minimarket"
+    ],
+    [
+      "Calera de Tango",
+      "Emporio"
+    ],
+    [
+      "Renca",
+      "Almacen"
+    ],
+    [
+      "Lo Espejo",
+      "Almacen"
+    ],
+    [
+      "El Monte",
+      "Almacen"
+    ],
+    [
+      "Peñaflor",
+      "Emporio"
+    ],
+    [
+      "Estación Central",
+      "Botilleria"
+    ],
+    [
+      "Conchalí",
+      "Botilleria"
+    ],
+    [
+      "Cerro Navia",
+      "Almacen"
+    ],
+    [
+      "Buin",
+      "Minimarket"
+    ],
+    [
+      "Melipilla",
+      "Almacen"
+    ],
+    [
+      "El Bosque",
+      "Emporio"
+    ],
+    [
+      "Quilicura",
+      "Emporio"
+    ],
+    [
+      "Lo Barnechea",
+      "Botilleria"
+    ],
+    [
+      "Pirque",
+      "Botilleria"
+    ],
+    [
+      "La Florida",
+      "Almacen"
+    ],
+    [
+      "Quilicura",
+      "Almacen"
+    ],
+    [
+      "La Granja",
+      "Minimarket"
+    ],
+    [
+      "Conchalí",
+      "Minimarket"
+    ],
+    [
+      "San Bernardo",
+      "Botilleria"
+    ],
+    [
+      "El Bosque",
+      "Almacen"
+    ],
+    [
+      "Padre Hurtado",
+      "Emporio"
+    ],
+    [
+      "San Ramón",
+      "Minimarket"
+    ],
+    [
+      "Til Til",
+      "Minimarket"
+    ],
+    [
+      "Lo Barnechea",
+      "Minimarket"
+    ],
+    [
+      "La Pintana",
+      "Botilleria"
+    ],
+    [
+      "Vitacura",
+      "Minimarket"
+    ],
+    [
+      "San Ramón",
+      "Emporio"
+    ],
+    [
+      "La Florida",
+      "Minimarket"
+    ],
+    [
+      "La Pintana",
+      "Minimarket"
+    ],
+    [
+      "Macul",
+      "Almacen"
+    ],
+    [
+      "Calera de Tango",
+      "Botilleria"
+    ],
+    [
+      "Cerrillos",
+      "Emporio"
+    ],
+    [
+      "Recoleta",
+      "Botilleria"
+    ],
+    [
+      "Lo Espejo",
+      "Botilleria"
+    ],
+    [
+      "Las Condes",
+      "Minimarket"
+    ],
+    [
+      "Macul",
+      "Minimarket"
+    ],
+    [
+      "Puente Alto",
+      "Minimarket"
+    ],
+    [
+      "La Reina",
+      "Almacen"
+    ],
+    [
+      "San Joaquín",
+      "Almacen"
+    ],
+    [
+      "La Reina",
+      "Minimarket"
+    ],
+    [
+      "San Bernardo",
+      "Almacen"
+    ],
+    [
+      "La Cisterna",
+      "Minimarket"
+    ],
+    [
+      "Lo Espejo",
+      "Minimarket"
+    ],
+    [
+      "Lampa",
+      "Almacen"
+    ],
+    [
+      "La Granja",
+      "Botilleria"
+    ],
+    [
+      "El Bosque",
+      "Minimarket"
+    ],
+    [
+      "Puente Alto",
+      "Almacen"
+    ],
+    [
+      "Isla de Maipo",
+      "Minimarket"
+    ],
+    [
+      "Quinta Normal",
+      "Almacen"
+    ],
+    [
+      "Colina",
+      "Almacen"
+    ],
+    [
+      "Paine",
+      "Emporio"
+    ],
+    [
+      "El Monte",
+      "Minimarket"
+    ],
+    [
+      "Huechuraba",
+      "Botilleria"
+    ],
+    [
+      "Lampa",
+      "Emporio"
+    ],
+    [
+      "Pudahuel",
+      "Botilleria"
+    ],
+    [
+      "Til Til",
+      "Emporio"
+    ],
+    [
+      "El Monte",
+      "Botilleria"
+    ],
+    [
+      "Calera de Tango",
+      "Minimarket"
+    ],
+    [
+      "Huechuraba",
+      "Emporio"
+    ],
+    [
+      "Ñuñoa",
+      "Minimarket"
+    ],
+    [
+      "Lo Prado",
+      "Minimarket"
+    ],
+    [
+      "Colina",
+      "Emporio"
+    ],
+    [
+      "Quinta Normal",
+      "Emporio"
+    ],
+    [
+      "Lo Barnechea",
+      "Almacen"
+    ],
+    [
+      "Padre Hurtado",
+      "Botilleria"
+    ],
+    [
+      "La Granja",
+      "Emporio"
+    ],
+    [
+      "María Pinto",
+      "Minimarket"
+    ],
+    [
+      "Paine",
+      "Botilleria"
+    ],
+    [
+      "Pudahuel",
+      "Minimarket"
+    ],
+    [
+      "Recoleta",
+      "Minimarket"
+    ],
+    [
+      "San Miguel",
+      "Minimarket"
+    ],
+    [
+      "San Pedro",
+      "Almacen"
+    ],
+    [
+      "Lampa",
+      "Minimarket"
+    ],
+    [
+      "La Cisterna",
+      "Almacen"
+    ]
+  ],
+  "vuelta": 1,
+  "terminos": [
+    "Minimarket",
+    "Almacen",
+    "Botilleria",
+    "Emporio"
+  ]
+}

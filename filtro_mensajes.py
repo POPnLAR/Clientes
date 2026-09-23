@@ -53,6 +53,12 @@ _DEFAULTS = {
         r"no (respondas|contestes) a este mensaje",
         r"asistente virtual",
         r"\bchatbot\b",
+        # Presentaciones de asistentes de negocios ("soy la asistente de X, me encargo de...")
+        r"\bsoy (la|el|una?) (asistente|secretaria virtual|bot)\b",
+        r"en lo que (pueda|puedo|podamos|podria|podriamos) ayudar",
+        r"me encargo de (ayudar|atender|gestionar)",
+        r"(puedo|podemos) (gestionar|agendar|coordinar) (las |tus |sus )?(reservas|citas)",
+        r"\bque gusto (saludarte|saludarle|saludarlos)\b",
     ],
     # Mensajes que cierran la conversación y no necesitan respuesta.
     "cierres": [

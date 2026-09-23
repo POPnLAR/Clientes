@@ -134,3 +134,11 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 133,23/09/2026,14:00,EmpresasCTM,App Almacen,Independencia,Rechazado,56954614117,0,,,Descartado: rubro no corresponde (no es almacén),
 134,23/09/2026,14:00,Albornoz y Lama,App Almacen,Independencia,Rechazado,56987759597,1,23/09/2026 14:00,,Descartado: rubro no corresponde (no es almacén),A
 135,23/09/2026,14:00,jFraile Insumos para la Confección de Ropa Interior,App Almacen,Independencia,Rechazado,56993430121,0,,,Descartado: rubro no corresponde (no es almacén),
+136,23/09/2026,14:51,Botillería El Oasis,App Almacen,Santiago Centro,Nuevo,56944057593,0,,,,
+137,23/09/2026,14:51,Botilleria Moscu Mac iver,App Almacen,Santiago Centro,Nuevo,56941744611,0,,,,
+138,23/09/2026,14:51,Botilleria Licoreria Nacional,App Almacen,Santiago Centro,Contactado,56999522064,1,23/09/2026 14:51,,,A
+139,23/09/2026,14:51,Botilleria Tu Punto Fijo Concha,App Almacen,Santiago Centro,Contactado,56972579312,1,23/09/2026 14:51,,,B
+140,23/09/2026,14:51,Botilleria ryuu,App Almacen,Santiago Centro,Nuevo,56940474854,0,,,,
+141,23/09/2026,14:51,"Botillería ""Don Jacinto""",App Almacen,Santiago Centro,Nuevo,56962467370,0,,,,
+142,23/09/2026,14:51,Botilleria Don Gato,App Almacen,Santiago Centro,Contactado,56997772625,1,23/09/2026 14:51,,,B
+143,23/09/2026,14:51,Botilleria Basty,App Almacen,Santiago Centro,Nuevo,56962277139,0,,,,

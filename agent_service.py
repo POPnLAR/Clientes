@@ -286,6 +286,13 @@ def filter_report(dias: int = 7, limite: int = 200, x_agent_token: Optional[str]
     }
 
 
+@app.get("/replied-phones")
+def replied_phones(dias: int = 90, x_agent_token: Optional[str] = Header(default=None)):
+    """Teléfonos que ya respondieron: los workers pausan su secuencia automática."""
+    _requerir_token(x_agent_token)
+    return {"telefonos": store.telefonos_que_respondieron(min(max(dias, 1), 365))}
+
+
 @app.get("/pending-drafts")
 def pending_drafts(x_agent_token: Optional[str] = Header(default=None)):
     _requerir_token(x_agent_token)

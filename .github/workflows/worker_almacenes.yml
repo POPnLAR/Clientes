@@ -42,6 +42,9 @@ jobs:
           EVO_TOKEN: ${{ secrets.EVO_TOKEN }}
           EVO_INSTANCE: ${{ secrets.EVO_INSTANCE }}
           SERP_KEY: ${{ secrets.SERP_KEY }}
+          NUMERO_OPERADOR: ${{ secrets.NUMERO_OPERADOR }}
+          AGENT_SERVICE_URL: ${{ secrets.AGENT_SERVICE_URL }}
+          AGENT_SERVICE_TOKEN: ${{ secrets.AGENT_SERVICE_TOKEN }}
         run: python worker_almacenes.py
 
       - name: Guardar y Sincronizar

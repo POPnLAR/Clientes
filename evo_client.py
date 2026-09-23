@@ -143,3 +143,38 @@ def enviar_alerta_whatsapp(base_url, token, instance, numero_operador, texto):
     except Exception:
         logging.exception("Fallo al intentar enviar alerta por WhatsApp.")
         return False
+
+
+def es_movil_chileno(numero):
+    """True solo para celulares chilenos (569XXXXXXXX). Fijos, 600/800 y otros no reciben WhatsApp."""
+    digits = "".join(filter(str.isdigit, str(numero)))
+    return len(digits) == 11 and digits.startswith("569")
+
+
+def verificar_whatsapp(base_url, token, instance, numeros, timeout=30):
+    """
+    Consulta a Evolution qué números tienen WhatsApp. Devuelve {numero: bool}.
+    Si la consulta falla devuelve {} (el llamador debe tratar "sin dato" como
+    "permitir": una caída de Evolution no debe frenar la prospección).
+    """
+    numeros = [n for n in numeros if n]
+    if not numeros or not base_url or not token or not instance:
+        return {}
+    try:
+        res = requests.post(
+            f"{base_url.strip().rstrip('/')}/chat/whatsappNumbers/{instance}",
+            json={"numbers": numeros},
+            headers={"Content-Type": "application/json", "apikey": token},
+            timeout=timeout,
+        )
+        if res.status_code not in (200, 201):
+            logging.warning("Verificación de WhatsApp: HTTP %s %s", res.status_code, res.text[:200])
+            return {}
+        return {
+            "".join(filter(str.isdigit, str(r.get("number", "")))): bool(r.get("exists"))
+            for r in res.json()
+            if isinstance(r, dict)
+        }
+    except Exception:
+        logging.exception("No se pudo verificar qué números tienen WhatsApp.")
+        return {}

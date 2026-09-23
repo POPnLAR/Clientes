@@ -47,6 +47,8 @@ jobs:
           EVO_TOKEN: ${{ secrets.EVO_TOKEN }}
           EVO_INSTANCE: ${{ secrets.EVO_INSTANCE }}
           SERP_KEY: ${{ secrets.SERP_KEY }}
+          AGENT_SERVICE_URL: ${{ secrets.AGENT_SERVICE_URL }}
+          AGENT_SERVICE_TOKEN: ${{ secrets.AGENT_SERVICE_TOKEN }}
           NUMERO_OPERADOR: ${{ secrets.NUMERO_OPERADOR }}
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}

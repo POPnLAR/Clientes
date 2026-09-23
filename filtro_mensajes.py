@@ -6,6 +6,7 @@ Las reglas y sus umbrales se pueden ajustar en la sección `filtros:` de
 playbook_ventas.yaml (se recarga solo al cambiar el archivo, sin reiniciar el
 servicio). Si la sección falta o es inválida se usan los valores por defecto.
 """
+import difflib
 import logging
 import os
 import re
@@ -144,8 +145,46 @@ def nuestro_ultimo_mensaje_ofrecia_horario(ultimo_saliente):
     return bool(ultimo_saliente and _OFERTA_HORARIO.search(_sin_acentos(ultimo_saliente)))
 
 
+# Bots enseñados por el operador (botón "🤖 Es un bot"): coincidencia por texto igual o muy parecido.
+UMBRAL_SIMILITUD_BOT = 0.8
+MIN_PALABRAS_PARA_APROXIMAR = 6  # un mensaje corto ("gracias") solo coincide si es idéntico
+
+
+def normalizar_para_comparar(texto):
+    """Minúsculas, sin acentos, sin links ni números ni signos: deja solo las palabras."""
+    t = _sin_acentos(texto)
+    t = re.sub(r"https?://\S+|www\.\S+", " ", t)
+    t = re.sub(r"\d+", " ", t)
+    t = re.sub(r"[^a-zñ ]", " ", t)
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def _similitud(a, b):
+    """Parecido entre dos textos normalizados: el mayor entre el orden de las palabras y su solapamiento."""
+    # Por palabras y con autojunk desactivado: con textos largos (>200 caracteres) esa heurística
+    # descarta caracteres frecuentes y el resultado cambiaba según el orden de los argumentos.
+    secuencia = difflib.SequenceMatcher(None, a.split(), b.split(), autojunk=False).ratio()
+    pa, pb = set(a.split()), set(b.split())
+    solapamiento = len(pa & pb) / len(pa | pb) if (pa | pb) else 0.0
+    return max(secuencia, solapamiento)
+
+
+def coincide_bot_aprendido(texto, normalizados_aprendidos):
+    """True si el texto es igual o muy parecido a un bot que el operador ya marcó."""
+    n = normalizar_para_comparar(texto)
+    if not n:
+        return False
+    for aprendido in normalizados_aprendidos:
+        if n == aprendido:
+            return True
+        if len(aprendido.split()) >= MIN_PALABRAS_PARA_APROXIMAR and len(n.split()) >= MIN_PALABRAS_PARA_APROXIMAR:
+            if _similitud(n, aprendido) >= UMBRAL_SIMILITUD_BOT:
+                return True
+    return False
+
+
 def evaluar(texto, *, cfg, es_conocido, es_lid, esperando_confirmacion,
-            entrantes_ultima_hora, repeticiones_recientes):
+            entrantes_ultima_hora, repeticiones_recientes, es_bot_aprendido=False):
     """
     Devuelve None si el mensaje debe ir a Gemini, o el motivo (str) por el que se
     descarta. `entrantes_ultima_hora` y `repeticiones_recientes` ya incluyen el
@@ -155,7 +194,7 @@ def evaluar(texto, *, cfg, es_conocido, es_lid, esperando_confirmacion,
         return None
     if cfg["ignorar_desconocidos"] and not es_conocido and not (es_lid and cfg["responder_lid"]):
         return "desconocido"
-    if es_mensaje_de_bot(texto, cfg):
+    if es_bot_aprendido or es_mensaje_de_bot(texto, cfg):
         return "bot"
     if es_cierre(texto, cfg) and not esperando_confirmacion:
         return "cierre"

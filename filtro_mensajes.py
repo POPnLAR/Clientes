@@ -38,7 +38,9 @@ _DEFAULTS = {
         r"auto ?respuesta",
         r"fuera de (nuestro )?horario",
         r"nuestro horario de atencion",
-        r"gracias por (contactar(nos)?|comunicarte con|escribir(nos)?|preferirnos)\b",
+        # Un bot habla en primera persona plural ("contactarnos", "escribirnos"); una persona que
+        # responde dice "gracias por escribir" a secas, y eso NO debe filtrarse.
+        r"gracias por (contactarnos|escribirnos|preferirnos|comunicarte con (nosotros|\w+)|(contactar|escribir) a )",
         r"en breve (te|le|nos)\b",
         r"(te|le) (responderemos|contactaremos|atenderemos)\b",
         r"nos pondremos en contacto",
@@ -59,6 +61,13 @@ _DEFAULTS = {
         r"me encargo de (ayudar|atender|gestionar)",
         r"(puedo|podemos) (gestionar|agendar|coordinar) (las |tus |sus )?(reservas|citas)",
         r"\bque gusto (saludarte|saludarle|saludarlos)\b",
+        # Bots de derivación ("he pasado tu mensaje a nuestro equipo...")
+        r"\b(he|hemos) (pasado|derivado|enviado|reenviado|transferido) (tu|su) (mensaje|consulta|solicitud)",
+        r"\b(pase|derive|envie|reenvie) (tu|su) (mensaje|consulta|solicitud) a (nuestro|el|la) ",
+        r"(tu|su) (mensaje|consulta|solicitud) (ha sido|fue) (recibid|derivad|enviad|transferid)",
+        r"para que puedan revisarl[oa]",
+        r"(nuestro )?equipo (revisara|se pondra en contacto|te contactara|le contactara|te respondera|le respondera)",
+        r"un (ejecutivo|asesor|agente) (te|le) (contactara|respondera|atendera|escribira)",
     ],
     # Mensajes que cierran la conversación y no necesitan respuesta.
     "cierres": [

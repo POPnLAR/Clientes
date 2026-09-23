@@ -17,3 +17,6 @@ alert_status_agente.json
 # QR temporal generado por evo_qr.py
 evo_qr.png
 .env.v2
+
+# Notas locales con datos de infraestructura (repo publico)
+rippling-strolling-diffie.md

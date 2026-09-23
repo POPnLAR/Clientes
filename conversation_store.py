@@ -333,3 +333,26 @@ def reclasificar_como_bot(es_bot, limite=5000):
         ids = [(r["id"],) for r in rows if es_bot(r["texto"])]
         conn.executemany("UPDATE messages SET filtrado_motivo = 'bot' WHERE id = ?", ids)
     return len(ids)
+
+
+def obtener_mensaje(mensaje_id):
+    if mensaje_id is None:
+        return None
+    with _conn() as conn:
+        row = conn.execute("SELECT * FROM messages WHERE id = ?", (mensaje_id,)).fetchone()
+    return dict(row) if row else None
+
+
+def actualizar_borrador(draft_id, texto_borrador, accion_tipo=None, accion_payload=None):
+    """Reemplaza el texto (y la acción) de un borrador pendiente, p. ej. al regenerarlo."""
+    with _conn() as conn:
+        conn.execute(
+            "UPDATE drafts SET texto_borrador = ?, accion_tipo = ?, accion_payload = ? "
+            "WHERE id = ? AND estado = 'pending'",
+            (
+                texto_borrador,
+                accion_tipo,
+                json.dumps(accion_payload, ensure_ascii=False) if accion_payload else None,
+                draft_id,
+            ),
+        )

@@ -160,8 +160,13 @@ def _extraer_marcador_agendar(texto_generado):
     return texto_visible, {"tipo": "agendar_cita", "inicio_iso": inicio_iso}
 
 
-def generar_borrador(historial, contexto_lead, mensaje_entrante, slots_disponibles=None):
+def generar_borrador(historial, contexto_lead, mensaje_entrante, slots_disponibles=None,
+                     instruccion_operador=None, borrador_anterior=None):
     """
+    instruccion_operador / borrador_anterior: solo al regenerar. El operador puede pedir un ajuste
+    ("más corto", "ya tienen asesoría, no insistas") y se le muestra al modelo el borrador que no
+    convenció para que no lo repita.
+
     historial: lista de dicts [{"direccion": "in"|"out", "texto": str}, ...] (más antiguos primero)
     contexto_lead: dict con campos como Evento, Ubicacion, Estado, Dia_Secuencia (puede venir vacío
                    si el lead no se encontró en el CSV por teléfono)
@@ -192,10 +197,13 @@ def generar_borrador(historial, contexto_lead, mensaje_entrante, slots_disponibl
         f"--- Contexto del lead ---\n{contexto_txt or '(sin datos del lead en la base)'}\n\n"
         f"--- Historial reciente ---\n{historial_txt or '(sin historial previo)'}\n\n"
         f"--- Último mensaje del prospecto ---\n{mensaje_entrante}\n\n"
+        f"{_seccion_regeneracion(instruccion_operador, borrador_anterior)}"
         f"Redacta el borrador de respuesta:"
     )
 
     payload = {"contents": [{"parts": [{"text": prompt}]}]}
+    if instruccion_operador or borrador_anterior:
+        payload["generationConfig"] = {"temperature": 0.9}  # más variedad que la primera vez
 
     try:
         _esperar_rate_limit()
@@ -223,6 +231,21 @@ def generar_borrador(historial, contexto_lead, mensaje_entrante, slots_disponibl
     except Exception:
         logging.exception("Excepción al llamar a Gemini API.")
         return _borrador_fallback(mensaje_entrante), None
+
+
+def _seccion_regeneracion(instruccion_operador, borrador_anterior):
+    partes = []
+    if borrador_anterior:
+        partes.append(
+            "--- Borrador anterior (el operador NO quedó conforme: no lo repitas, escribe uno distinto "
+            f"que responda mejor al último mensaje del prospecto) ---\n{borrador_anterior}\n\n"
+        )
+    if instruccion_operador and instruccion_operador.strip():
+        partes.append(
+            "--- Indicación del operador para esta respuesta (síguela; sigue mandando el playbook para "
+            f"precios y condiciones) ---\n{instruccion_operador.strip()}\n\n"
+        )
+    return "".join(partes)
 
 
 def _borrador_fallback(mensaje_entrante):

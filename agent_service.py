@@ -86,6 +86,10 @@ async def _chequeo_salud_periodico():
 @app.on_event("startup")
 def _startup():
     store.inicializar_db()
+    cfg = filtro_mensajes.cargar_config()
+    n = store.reclasificar_como_bot(lambda texto: filtro_mensajes.es_mensaje_de_bot(texto, cfg))
+    if n:
+        logging.info("Reclasificados %s mensajes antiguos como bot con las reglas actuales.", n)
     asyncio.create_task(_chequeo_salud_periodico())
 
 

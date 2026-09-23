@@ -184,6 +184,39 @@ def aprobar_borrador(draft_id, texto_final):
     return res.status_code == 200, res.text
 
 
+def marcar_como_bot(draft_id):
+    """El mensaje del prospecto es de un bot: se descarta el borrador y se enseña al filtro."""
+    res = requests.post(
+        f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/mark-bot",
+        headers=_agent_headers(),
+        timeout=20,
+    )
+    if res.status_code == 200:
+        return True, res.json()
+    try:
+        return False, res.json().get("detail", res.text)
+    except ValueError:
+        return False, res.text
+
+
+def obtener_bots_filtrados():
+    try:
+        res = requests.get(f"{AGENT_SERVICE_URL.rstrip('/')}/bot-filters", headers=_agent_headers(), timeout=15)
+        if res.status_code == 200:
+            return res.json()
+        st.error(f"El agente respondió HTTP {res.status_code}: {res.text[:300]}")
+    except Exception as e:
+        st.error(f"No se pudo conectar con el servicio del agente: {e}")
+    return []
+
+
+def quitar_bot_filtrado(bot_id):
+    res = requests.delete(
+        f"{AGENT_SERVICE_URL.rstrip('/')}/bot-filters/{bot_id}", headers=_agent_headers(), timeout=15
+    )
+    return res.status_code == 200, res.text
+
+
 def regenerar_borrador(draft_id, instruccion):
     res = requests.post(
         f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/regenerate",
@@ -602,6 +635,9 @@ if t3 is not None:
         )
         if st.button("🔄 Actualizar bandeja"):
             st.rerun()
+        aviso_bandeja = st.session_state.pop("bandeja_aviso", None)
+        if aviso_bandeja:
+            st.success(aviso_bandeja)
 
         borradores = obtener_borradores_pendientes()
         if borradores is None:
@@ -657,7 +693,7 @@ if t3 is not None:
                         )
 
                     label_aprobar = "✅ Aprobar, agendar y enviar" if accion_payload else "✅ Aprobar y enviar"
-                    col_ok, col_no = st.columns(2)
+                    col_ok, col_no, col_bot = st.columns(3)
                     with col_ok:
                         if st.button(label_aprobar, key=f"approve_{b['id']}"):
                             ok, detalle = aprobar_borrador(b["id"], texto_editado)
@@ -674,6 +710,24 @@ if t3 is not None:
                                 st.rerun()
                             else:
                                 st.error(f"No se pudo rechazar: {detalle}")
+                    with col_bot:
+                        if st.button(
+                            "🤖 Es un bot: filtrar",
+                            key=f"bot_{b['id']}",
+                            help="Descarta este borrador y enseña al filtro que este mensaje es de un bot: "
+                                 "los iguales o muy parecidos ya no llegarán a Gemini ni a la bandeja. "
+                                 "Puedes deshacerlo en la pestaña Filtros de Mensajes.",
+                        ):
+                            ok, datos = marcar_como_bot(b["id"])
+                            if ok:
+                                extra = datos.get("borradores_descartados", 0)
+                                st.session_state["bandeja_aviso"] = (
+                                    "🤖 Mensaje marcado como bot: no volverá a generar borradores."
+                                    + (f" Además se descartaron {extra} borrador(es) idénticos." if extra else "")
+                                )
+                                st.rerun()
+                            else:
+                                st.error(f"No se pudo marcar como bot: {datos}")
 
 if t_filtros is not None:
     with t_filtros:
@@ -774,6 +828,38 @@ if t_filtros is not None:
                         "Filtro": MOTIVOS_FILTRO.get(m["filtrado_motivo"], (m["filtrado_motivo"], ""))[0],
                     })
                 st.dataframe(pd.DataFrame(filas), hide_index=True, use_container_width=True)
+
+            st.subheader("Bots que enseñaste")
+            st.caption(
+                "Mensajes que marcaste con 🤖 en la bandeja. Los iguales o muy parecidos se filtran solos. "
+                "Si marcaste uno por error, quítalo aquí."
+            )
+            bots_enseñados = obtener_bots_filtrados()
+            if not bots_enseñados:
+                st.info("Todavía no has marcado ningún mensaje como bot.")
+            else:
+                st.dataframe(
+                    pd.DataFrame([{"N°": x["id"], "Mensaje": x["texto"]} for x in bots_enseñados]),
+                    hide_index=True, use_container_width=True,
+                )
+                col_sel, col_quitar = st.columns([4, 1])
+                with col_sel:
+                    elegido = st.selectbox(
+                        "Quitar de la lista",
+                        [x["id"] for x in bots_enseñados],
+                        format_func=lambda i: next(
+                            (f"N° {x['id']}: {x['texto'][:80]}" for x in bots_enseñados if x["id"] == i), str(i)
+                        ),
+                        key="bot_a_quitar",
+                    )
+                with col_quitar:
+                    st.write("")
+                    if st.button("Quitar", key="quitar_bot"):
+                        ok, detalle = quitar_bot_filtrado(elegido)
+                        if ok:
+                            st.rerun()
+                        else:
+                            st.error(f"No se pudo quitar: {detalle}")
 
 with t4:
     st.warning(

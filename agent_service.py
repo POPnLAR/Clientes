@@ -83,11 +83,19 @@ async def _chequeo_salud_periodico():
         await asyncio.sleep(CHEQUEO_SALUD_INTERVALO_SEG)
 
 
+def _bots_aprendidos_normalizados():
+    return [b["texto_normalizado"] for b in store.listar_bots_aprendidos()]
+
+
 @app.on_event("startup")
 def _startup():
     store.inicializar_db()
     cfg = filtro_mensajes.cargar_config()
-    n = store.reclasificar_como_bot(lambda texto: filtro_mensajes.es_mensaje_de_bot(texto, cfg))
+    aprendidos = _bots_aprendidos_normalizados()
+    n = store.reclasificar_como_bot(
+        lambda texto: filtro_mensajes.es_mensaje_de_bot(texto, cfg)
+        or filtro_mensajes.coincide_bot_aprendido(texto, aprendidos)
+    )
     if n:
         logging.info("Reclasificados %s mensajes antiguos como bot con las reglas actuales.", n)
     asyncio.create_task(_chequeo_salud_periodico())
@@ -257,6 +265,7 @@ async def webhook_evolution(request: Request):
         ),
         entrantes_ultima_hora=store.contar_entrantes_desde(telefono, 60),
         repeticiones_recientes=store.contar_texto_repetido(telefono, texto, 10),
+        es_bot_aprendido=filtro_mensajes.coincide_bot_aprendido(texto, _bots_aprendidos_normalizados()),
     )
     if motivo:
         store.marcar_mensaje_filtrado(msg_id, motivo)
@@ -286,6 +295,63 @@ async def webhook_evolution(request: Request):
     )
 
     return {"status": "ok", "draft_id": draft_id}
+
+
+@app.post("/drafts/{draft_id}/mark-bot")
+def mark_draft_as_bot(draft_id: int, x_agent_token: Optional[str] = Header(default=None)):
+    """
+    El operador indica que el mensaje del prospecto es de un bot: se descarta este borrador, el
+    mensaje queda marcado como bot y su texto se guarda para filtrar los iguales o muy parecidos
+    en adelante. También se descartan los demás borradores pendientes que coincidan.
+    """
+    _requerir_token(x_agent_token)
+    borrador = store.obtener_borrador(draft_id)
+    if not borrador:
+        raise HTTPException(status_code=404, detail="Borrador no encontrado.")
+    mensaje = store.obtener_mensaje(borrador["mensaje_entrante_id"])
+    texto = (mensaje or {}).get("texto", "").strip()
+    if not texto:
+        raise HTTPException(status_code=422, detail="El borrador no tiene un mensaje entrante que aprender.")
+
+    normalizado = filtro_mensajes.normalizar_para_comparar(texto)
+    if not normalizado:
+        raise HTTPException(status_code=422, detail="El mensaje no tiene texto que se pueda comparar.")
+    bot_id = store.agregar_bot_aprendido(texto, normalizado)
+
+    if borrador["estado"] == "pending":
+        store.marcar_borrador(draft_id, "rejected")
+    store.marcar_mensaje_filtrado(mensaje["id"], "bot")
+
+    # Limpia de la bandeja los demás borradores pendientes que responden al mismo bot.
+    descartados = 0
+    aprendidos = [normalizado]
+    for otro in store.listar_borradores_pendientes():
+        if otro["id"] == draft_id:
+            continue
+        if filtro_mensajes.coincide_bot_aprendido(otro.get("mensaje_entrante") or "", aprendidos):
+            store.marcar_borrador(otro["id"], "rejected")
+            otro_msg = store.obtener_borrador(otro["id"]) or {}
+            if otro_msg.get("mensaje_entrante_id"):
+                store.marcar_mensaje_filtrado(otro_msg["mensaje_entrante_id"], "bot")
+            descartados += 1
+    logging.info("Bot enseñado (id %s): %r; %s borradores parecidos descartados.", bot_id, texto[:80], descartados)
+    return {"bot_id": bot_id, "borradores_descartados": descartados}
+
+
+@app.get("/bot-filters")
+def bot_filters(x_agent_token: Optional[str] = Header(default=None)):
+    """Mensajes que el operador marcó como bot (para revisarlos o quitarlos)."""
+    _requerir_token(x_agent_token)
+    return [{"id": b["id"], "texto": b["texto"], "created_at": b["created_at"]} for b in store.listar_bots_aprendidos()]
+
+
+@app.delete("/bot-filters/{bot_id}")
+def delete_bot_filter(bot_id: int, x_agent_token: Optional[str] = Header(default=None)):
+    """Quita un bot de la lista (por si se marcó por error): sus mensajes vuelven a llegar a Gemini."""
+    _requerir_token(x_agent_token)
+    if not store.eliminar_bot_aprendido(bot_id):
+        raise HTTPException(status_code=404, detail="No existe ese filtro.")
+    return {"eliminado": bot_id}
 
 
 class RegenerarBorrador(BaseModel):

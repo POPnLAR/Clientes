@@ -45,6 +45,13 @@ CREATE TABLE IF NOT EXISTS drafts (
 
 CREATE INDEX IF NOT EXISTS idx_drafts_estado ON drafts (estado);
 
+CREATE TABLE IF NOT EXISTS bots_aprendidos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    texto TEXT NOT NULL,
+    texto_normalizado TEXT NOT NULL UNIQUE,
+    created_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS citas_agendadas (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     draft_id INTEGER NOT NULL,
@@ -356,3 +363,35 @@ def actualizar_borrador(draft_id, texto_borrador, accion_tipo=None, accion_paylo
                 draft_id,
             ),
         )
+
+
+# --- Bots que el operador enseñó desde el dashboard ("🤖 Es un bot") ---
+
+def agregar_bot_aprendido(texto, texto_normalizado):
+    """Guarda un mensaje como bot conocido. Devuelve su id (el existente si ya estaba)."""
+    with _conn() as conn:
+        row = conn.execute(
+            "SELECT id FROM bots_aprendidos WHERE texto_normalizado = ?", (texto_normalizado,)
+        ).fetchone()
+        if row:
+            return row["id"]
+        cur = conn.execute(
+            "INSERT INTO bots_aprendidos (texto, texto_normalizado, created_at) VALUES (?, ?, ?)",
+            (texto, texto_normalizado, _ahora()),
+        )
+        return cur.lastrowid
+
+
+def listar_bots_aprendidos():
+    with _conn() as conn:
+        rows = conn.execute(
+            "SELECT id, texto, texto_normalizado, created_at FROM bots_aprendidos ORDER BY id DESC"
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def eliminar_bot_aprendido(bot_id):
+    """Quita el bot de la lista. Devuelve True si existía."""
+    with _conn() as conn:
+        cur = conn.execute("DELETE FROM bots_aprendidos WHERE id = ?", (bot_id,))
+        return cur.rowcount > 0

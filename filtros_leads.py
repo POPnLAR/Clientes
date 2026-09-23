@@ -39,7 +39,9 @@ _RUBRO_SI = {
     "almacenes": (
         r"minimarket|mini ?market|mini ?mercado|minimercado|\balmacen(es)?\b|abarrotes|comestibles|"
         r"conveniencia|supermercado|botilleria|licoreria|bebidas alcoholicas|emporio|fruteria|"
-        r"verduleria|despensa|grocery|convenience|liquor|supermarket"
+        r"verduleria|despensa|grocery|convenience|liquor|supermarket|"
+        # Categorías reales que Google Maps usa en Chile para los almacenes de barrio:
+        r"alimentacion|tienda general|mercado"
     ),
     "clinicas": (
         r"estetic|belleza|beauty|\bspa\b|cosmet|depila|laser|\bpiel\b|skin|facial|corporal|masaje|"
@@ -50,7 +52,9 @@ _RUBRO_SI = {
 _RUBRO_NO = {
     "almacenes": (
         r"\btelas?\b|textil|cortina|\bropa\b|cristaleria|bodega|storage|guardamuebles|outlet|"
-        r"mayorista|restaurante|restaurant|ferreteria|muebles|decoracion|tienda de ropa"
+        r"mayorista|restaurante|restaurant|ferreteria|muebles|decoracion|tienda de ropa|"
+        r"grandes almacenes|centro comercial|mall|trasteros|almacenamiento|minibodega|"
+        r"electrodomesticos|perfumeria|jugueteria|zapateria|tienda de moviles|tienda de vinos"
     ),
     "clinicas": r"\bhotel\b|inmobiliaria|ferreteria|restaurante|restaurant",
 }

@@ -13,11 +13,15 @@ from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import logging
 
+import agent_client
+import filtros_leads
 from evo_client import (
     normalizar_telefono_chile as _normalizar_telefono_chile,
     verificar_estado_conexion,
     enviar_mensaje_texto as _evo_enviar_mensaje_texto,
     enviar_alerta_whatsapp,
+    es_movil_chileno,
+    verificar_whatsapp,
 )
 
 # --- CONFIGURACIÓN ---
@@ -173,7 +177,7 @@ def limpiar_acentos(text):
     return "".join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
 
-def reciclar_leads_antiguos(df, ahora):
+def reciclar_leads_antiguos(df, ahora, excluir=frozenset()):
     if df.empty:
         return df, 0
 
@@ -186,6 +190,8 @@ def reciclar_leads_antiguos(df, ahora):
             continue
         if not fecha_contacto:
             continue
+        if agent_client.clave_telefono(row.get("Telefono", "")) in excluir:
+            continue  # ya conversó con nosotros: no se le reinicia la secuencia automática
 
         try:
             ultima_fecha = datetime.strptime(fecha_contacto, "%d/%m/%Y %H:%M")
@@ -283,6 +289,14 @@ TERMINOS_BUSQUEDA = [
     "Spa Facial",
     "Depilacion Laser",
     "Botox y Rellenos",
+    "Centro de Belleza",
+    "Esteticista",
+    "Cosmetologa",
+    "Micropigmentacion",
+    "Cejas y Pestanas",
+    "Estetica Corporal",
+    "Masajes Reductivos",
+    "Tratamientos Faciales",
 ]
 
 
@@ -322,9 +336,26 @@ def obtener_siguiente_combo():
     estado = _cargar_cobertura()
     if not estado or not estado.get("pendientes"):
         estado = _nueva_vuelta(estado.get("vuelta", 0) if estado else 0)
+        estado["terminos"] = list(TERMINOS_BUSQUEDA)
         _guardar_cobertura(estado)
         print(f"🔄 Iniciando vuelta de barrido exhaustivo N°{estado['vuelta']} "
               f"({len(estado['pendientes'])} combinaciones comuna+término).")
+    else:
+        # Si se agregaron rubros nuevos a TERMINOS_BUSQUEDA con una vuelta ya en curso,
+        # se suman sus combinaciones a las pendientes (sin repetir las que ya estaban).
+        conocidos = set(estado.get("terminos") or {t for _, t in estado["pendientes"]} | {
+            "Clinica Estetica", "Centro de Estetica", "Medicina Estetica",
+            "Spa Facial", "Depilacion Laser", "Botox y Rellenos",
+        })
+        nuevos = [t for t in TERMINOS_BUSQUEDA if t not in conocidos]
+        if nuevos:
+            extra = [[c, t] for c in COMUNAS_OBJETIVO for t in nuevos]
+            random.shuffle(extra)
+            estado["pendientes"] = estado["pendientes"] + extra
+            print(f"➕ Rubros nuevos en el barrido: {', '.join(nuevos)} ({len(extra)} combinaciones).")
+        if nuevos or "terminos" not in estado:
+            estado["terminos"] = list(TERMINOS_BUSQUEDA)
+            _guardar_cobertura(estado)
 
     zona, termino = estado["pendientes"][0]
     print(f"📍 Combinación elegida (vuelta {estado['vuelta']}, quedan "
@@ -423,6 +454,13 @@ def buscar_y_agregar_nuevos(df_actual):
         print(f"🔎 SerpAPI status: {response.status_code}")
         data = response.json()
 
+        if "error" in data and "hasn't returned any results" in str(data["error"]).lower():
+            # Búsqueda válida sin resultados (típico de rubros de nicho en comunas chicas):
+            # se da por cubierta para no quedar repitiéndola cada hora.
+            print("📭 SerpAPI: sin resultados para esta combinación, se marca como cubierta.")
+            marcar_combo_cubierto(zona_objetivo, termino_objetivo)
+            return df_actual, "sin_resultados"
+
         if "error" in data:
             # SerpAPI devuelve HTTP 200 con {"error": "..."} en casos de cuota
             # agotada / api_key inválida, distinto de "sin resultados".
@@ -443,19 +481,41 @@ def buscar_y_agregar_nuevos(df_actual):
                 .tolist()
             )
         ultimo_id = int(df_actual['Id'].max()) if not df_actual.empty else 0
+
+        # Filtros de calidad (todos previos a gastar tiempo en scrapear emails):
+        descartes = {"sin_movil": 0, "cadena": 0, "duplicado": 0, "sin_whatsapp": 0}
+        candidatos_place = []
         for place in results:
-            raw_tel = str(place.get("phone", "")).replace(" ", "").replace("-", "")
-            if not place.get("website") or not raw_tel or len(raw_tel) < 8: continue
-            if raw_tel[-9:] not in tels_en_base:
-                ultimo_id += 1
-                nuevos_leads.append({
-                    "Id": int(ultimo_id), "Fecha": ahora_cl.strftime("%d/%m/%Y"),
-                    "Hora": ahora_cl.strftime("%H:%M"), "Evento": place.get("title", "Clinica"),
-                    "Ministerio": f"Prospeccion Automatica - {termino_objetivo}", "Ubicacion": zona_objetivo, "Estado": "Nuevo",
-                    "Telefono": raw_tel, "Email": buscar_email_en_web(place.get("website")),
-                    "Email_Enviado": "No", "Dia_Secuencia": 0, "Fecha_Contacto": ""
-                })
-                tels_en_base.add(raw_tel[-9:])
+            tel_norm = _normalizar_telefono_chile(place.get("phone", ""))
+            if not es_movil_chileno(tel_norm):
+                descartes["sin_movil"] += 1  # fijos, 600/800 y otros no reciben WhatsApp
+                continue
+            if filtros_leads.es_cadena(place.get("title", ""), "clinicas"):
+                descartes["cadena"] += 1
+                continue
+            if tel_norm[-9:] in tels_en_base:
+                descartes["duplicado"] += 1
+                continue
+            tels_en_base.add(tel_norm[-9:])
+            candidatos_place.append((place, tel_norm))
+
+        # Solo se agregan números que realmente tienen WhatsApp (si Evolution no
+        # responde, no se bloquea la búsqueda: se agregan sin verificar).
+        existe = verificar_whatsapp(EVO_URL, EVO_TOKEN, EVO_INSTANCE, [t for _, t in candidatos_place])
+        for place, tel_norm in candidatos_place:
+            if existe.get(tel_norm) is False:
+                descartes["sin_whatsapp"] += 1
+                continue
+            website = place.get("website") or ""
+            ultimo_id += 1
+            nuevos_leads.append({
+                "Id": int(ultimo_id), "Fecha": ahora_cl.strftime("%d/%m/%Y"),
+                "Hora": ahora_cl.strftime("%H:%M"), "Evento": place.get("title", "Clinica"),
+                "Ministerio": f"Prospeccion Automatica - {termino_objetivo}", "Ubicacion": zona_objetivo, "Estado": "Nuevo",
+                "Telefono": tel_norm, "Email": buscar_email_en_web(website) if website else "",
+                "Email_Enviado": "No", "Dia_Secuencia": 0, "Fecha_Contacto": ""
+            })
+        print(f"🧹 Descartados: {descartes}")
         marcar_combo_cubierto(zona_objetivo, termino_objetivo)
         if nuevos_leads:
             print(f"➕ Leads agregados: {len(nuevos_leads)}")
@@ -504,6 +564,46 @@ def obtener_mensaje_secuencia(nombre, ubicacion, dia):
 
     return aplicar_spintax(msg.replace("{nombre}", nombre).replace("{zona}", zona))
 
+def _armar_candidatos(df, ahora, respondieron, estado_resp):
+    """
+    Devuelve hasta 5 envíos [{'idx','dia'}] para este ciclo. Salta a quienes ya
+    respondieron por WhatsApp (su conversación la lleva el agente, no la secuencia
+    automática). Si el agente no respondió (estado_resp == "error") se frenan solo los
+    seguimientos: un lead nuevo (día 1) no puede haber respondido aún.
+    """
+    hoy_str = ahora.strftime("%d/%m/%Y")
+    candidatos = []
+    for idx, row in df.iterrows():
+        if hoy_str in str(row.get("Fecha_Contacto", "")):
+            continue
+        if row["Estado"] in ["Finalizado", "Rechazado", "Cita Agendada", "Agendado", "Error"]:
+            continue
+
+        if agent_client.clave_telefono(row.get("Telefono", "")) in respondieron:
+            if not str(row.get("Notas", "")).strip() or str(row.get("Notas")) == "nan":
+                df.at[idx, "Notas"] = "Respondió por WhatsApp: secuencia automática pausada"
+            continue
+
+        dia_act = int(row.get("Dia_Secuencia", 0))
+        if row["Estado"] == "Contactado":
+            if estado_resp == "error":
+                continue
+            try:
+                ultima_fecha = datetime.strptime(str(row["Fecha_Contacto"]), "%d/%m/%Y %H:%M")
+                if (ahora - ultima_fecha).total_seconds() < 90000:
+                    continue
+            except Exception:
+                pass
+
+        if row["Estado"] == "Contactado" and dia_act < 4:
+            candidatos.append({"idx": idx, "dia": dia_act + 1})
+        elif row["Estado"] == "Nuevo":
+            candidatos.append({"idx": idx, "dia": 1})
+
+    random.shuffle(candidatos)
+    return candidatos[:5]
+
+
 # --- CICLO PRINCIPAL ---
 def ejecutar_ciclo():
     ahora = obtener_ahora_chile()
@@ -527,28 +627,13 @@ def ejecutar_ciclo():
 
     df = pd.read_csv(ARCHIVO_LEADS)
     df["Dia_Secuencia"] = pd.to_numeric(df["Dia_Secuencia"], errors='coerce').fillna(0).astype(int)
-    hoy_str = ahora.strftime("%d/%m/%Y")
-    
-    candidatos = []
-    for idx, row in df.iterrows():
-        if hoy_str in str(row.get('Fecha_Contacto', '')): continue
-        if row["Estado"] in ["Finalizado", "Rechazado", "Cita Agendada", "Error"]: continue
+    respondieron, estado_resp = agent_client.obtener_telefonos_que_respondieron()
+    if respondieron:
+        print(f"💬 {len(respondieron)} contactos ya respondieron: su secuencia automática queda pausada.")
+    if estado_resp == "error":
+        print("⚠️ No se pudo consultar al agente: este ciclo solo se envían primeros mensajes (no seguimientos).")
 
-        dia_act = int(row.get("Dia_Secuencia", 0))
-        if row["Estado"] == "Contactado":
-            try:
-                ultima_fecha = datetime.strptime(str(row['Fecha_Contacto']), "%d/%m/%Y %H:%M")
-                if (ahora - ultima_fecha).total_seconds() < 90000: continue
-            except: pass
-
-        if row["Estado"] == "Contactado" and dia_act < 4:
-            candidatos.append({'idx': idx, 'dia': dia_act + 1})
-        elif row["Estado"] == "Nuevo":
-            candidatos.append({'idx': idx, 'dia': 1})
-
-    # MEZCLAR Y LIMITAR (Máximo 5 envíos por ciclo para seguridad)
-    random.shuffle(candidatos)
-    candidatos = candidatos[:5]
+    candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp)
 
     if not candidatos:
         print("📭 Nada pendiente. Buscando nuevos leads...")
@@ -569,34 +654,12 @@ def ejecutar_ciclo():
             )
 
         # Recalcular candidatos luego de agregar leads nuevos para enviar en el mismo run
-        candidatos = []
-        for idx, row in df.iterrows():
-            if hoy_str in str(row.get("Fecha_Contacto", "")):
-                continue
-            if row["Estado"] in ["Finalizado", "Rechazado", "Cita Agendada", "Error"]:
-                continue
-
-            dia_act = int(row.get("Dia_Secuencia", 0))
-            if row["Estado"] == "Contactado":
-                try:
-                    ultima_fecha = datetime.strptime(str(row["Fecha_Contacto"]), "%d/%m/%Y %H:%M")
-                    if (ahora - ultima_fecha).total_seconds() < 90000:
-                        continue
-                except Exception:
-                    pass
-
-            if row["Estado"] == "Contactado" and dia_act < 4:
-                candidatos.append({"idx": idx, "dia": dia_act + 1})
-            elif row["Estado"] == "Nuevo":
-                candidatos.append({"idx": idx, "dia": 1})
-
-        random.shuffle(candidatos)
-        candidatos = candidatos[:5]
+        candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp)
 
         if not candidatos:
             print("📭 Aun así no hay candidatos para enviar después de buscar nuevos leads.")
             print("♻️ Intentando reciclar leads antiguos...")
-            df, total_reciclados = reciclar_leads_antiguos(df, ahora)
+            df, total_reciclados = reciclar_leads_antiguos(df, ahora, respondieron)
             resumen["reciclados"] = total_reciclados
             if total_reciclados > 0:
                 print(f"♻️ Leads reciclados para recontacto: {total_reciclados}")

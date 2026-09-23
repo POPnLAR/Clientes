@@ -300,3 +300,19 @@ def resumen_filtros(dias=7):
         "por_motivo": por_motivo,
         "por_dia": por_dia,
     }
+
+
+def telefonos_que_respondieron(dias=90):
+    """
+    Teléfonos (no @lid) que escribieron de verdad al WhatsApp de ventas. No cuentan las
+    autorespuestas de bots ni los mensajes repetidos/flood: un bot contestando no es un
+    lead conversando.
+    """
+    with _conn() as conn:
+        rows = conn.execute(
+            "SELECT DISTINCT telefono_normalizado FROM messages "
+            "WHERE direccion = 'in' AND timestamp >= ? AND telefono_normalizado NOT LIKE '%@%' "
+            "AND (filtrado_motivo IS NULL OR filtrado_motivo IN ('cierre', 'rafaga'))",
+            (_hace(dias * 24 * 60),),
+        ).fetchall()
+    return [r["telefono_normalizado"] for r in rows]

@@ -2,17 +2,30 @@ import pandas as pd
 import requests
 import os
 import random
+import sys
 import time
 import unicodedata
 import re
 from datetime import datetime, timedelta
 import logging
 
+import agent_client
+import filtros_leads
+from evo_client import (
+    normalizar_telefono_chile,
+    verificar_estado_conexion,
+    enviar_mensaje_texto as _evo_enviar_mensaje_texto,
+    enviar_alerta_whatsapp,
+    es_movil_chileno,
+    verificar_whatsapp,
+)
+
 # --- CONFIGURACIÓN ---
 EVO_URL = os.getenv("EVO_URL")
 EVO_TOKEN = os.getenv("EVO_TOKEN")
 EVO_INSTANCE = os.getenv("EVO_INSTANCE")
 SERP_KEY = os.getenv("SERP_KEY")
+NUMERO_OPERADOR = os.getenv("NUMERO_OPERADOR", "")
 # Usamos un CSV diferente para no mezclar las bases de datos
 ARCHIVO_ALMACENES = "prospeccion_almacenes_pro.csv"
 # Lista de comunas objetivo (puedes editarla sin tocar el código)
@@ -28,12 +41,13 @@ logging.basicConfig(
 # --- UTILIDADES ---
 def obtener_ahora_chile():
     """
-    Devuelve la hora actual de Chile utilizando zona horaria real si está disponible.
-    Si no se puede usar zoneinfo (por versión de Python), cae a UTC-3.
+    Hora actual de Chile como datetime naive (sin tzinfo), comparable con las fechas
+    naive que se leen del CSV (Fecha_Contacto). Usa la zona real America/Santiago si
+    está disponible y cae a UTC-3 si no.
     """
     try:
         from zoneinfo import ZoneInfo  # Python 3.9+
-        return datetime.now(ZoneInfo("America/Santiago"))
+        return datetime.now(ZoneInfo("America/Santiago")).replace(tzinfo=None)
     except Exception:
         return datetime.utcnow() - timedelta(hours=3)
 
@@ -48,39 +62,6 @@ def limpiar_acentos(text):
         return str(text)
     return "".join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
-
-def normalizar_telefono_chile(raw):
-    """
-    Normaliza distintos formatos de teléfono chileno a un formato consistente.
-    Preferimos devolver '56XXXXXXXXX' cuando es posible.
-    """
-    digits = "".join(filter(str.isdigit, str(raw)))
-    if not digits:
-        return ""
-
-    # Ya viene con código de país
-    if digits.startswith("56") and len(digits) >= 11:
-        return digits
-
-    # Quitar ceros iniciales típicos (09..., 02..., etc.)
-    while digits.startswith("0"):
-        digits = digits[1:]
-
-    # Celular típico 9XXXXXXXX
-    if len(digits) == 9 and digits.startswith("9"):
-        return "56" + digits
-
-    # Fijo típico 2XXXXXXX u otros códigos de área de 1 dígito + 7
-    if len(digits) == 9 and not digits.startswith("9"):
-        return "56" + digits
-
-    # Si hay más de 9 dígitos, intenta con los últimos 9
-    if len(digits) > 9:
-        ultimos = digits[-9:]
-        if len(ultimos) == 9:
-            return "56" + ultimos
-
-    return digits
 
 # --- BÚSQUEDA DE ALMACENES EN GOOGLE MAPS ---
 def buscar_y_agregar_almacenes(df_actual):
@@ -104,9 +85,23 @@ def buscar_y_agregar_almacenes(df_actual):
     try:
         response = requests.get("https://serpapi.com/search", params=params, timeout=30)
         # Nota: no imprimimos la respuesta completa para no saturar logs.
-        # Si SerpAPI falla normalmente retorna JSON con campos de error.
         print(f"🔎 SerpAPI status: {response.status_code}")
-        results = response.json().get("local_results", [])
+        data = response.json()
+
+        if "error" in data:
+            if "hasn't returned any results" in str(data["error"]).lower():
+                print("📭 SerpAPI: sin resultados para esta comuna.")
+                return df_actual
+            # Cuota agotada / api_key inválida: antes se confundía con "sin resultados".
+            print(f"🚫 SerpAPI error: {data['error']}")
+            logging.error("SerpAPI error (almacenes): %s", data["error"])
+            enviar_alerta_whatsapp(
+                EVO_URL, EVO_TOKEN, EVO_INSTANCE, NUMERO_OPERADOR,
+                "⚠️ GestiónVital: SerpAPI dejó de responder en almacenes (posible cuota agotada). Revisar api_key.",
+            )
+            return df_actual
+
+        results = data.get("local_results", [])
         print(f"🔎 SerpAPI local_results: {len(results)}")
         nuevos_leads = []
 
@@ -119,31 +114,45 @@ def buscar_y_agregar_almacenes(df_actual):
 
         ultimo_id = int(df_actual['Id'].max()) if not df_actual.empty and "Id" in df_actual.columns else 0
 
+        descartes = {"sin_movil": 0, "cadena": 0, "duplicado": 0, "sin_whatsapp": 0}
+        candidatos_place = []
         for place in results:
-            raw_tel = place.get("phone", "")
-            tel_norm = normalizar_telefono_chile(raw_tel)
-            if not tel_norm or len(tel_norm) < 8:
+            tel_norm = normalizar_telefono_chile(place.get("phone", ""))
+            if not es_movil_chileno(tel_norm):
+                descartes["sin_movil"] += 1  # fijos, 600/800 y otros no reciben WhatsApp
                 continue
+            if filtros_leads.es_cadena(place.get("title", ""), "almacenes"):
+                descartes["cadena"] += 1
+                continue
+            if tel_norm[-9:] in tels_en_base:
+                descartes["duplicado"] += 1
+                continue
+            tels_en_base.add(tel_norm[-9:])
+            candidatos_place.append((place, tel_norm))
 
-            clave_tel = "".join(filter(str.isdigit, tel_norm))[-9:]
-            if clave_tel not in tels_en_base:
-                ultimo_id += 1
-                nuevos_leads.append({
-                    "Id": int(ultimo_id),
-                    "Fecha": ahora_cl.strftime("%d/%m/%Y"),
-                    "Hora": ahora_cl.strftime("%H:%M"),
-                    "Evento": place.get("title", "Almacen"),
-                    "Ministerio": "App Almacen",
-                    "Ubicacion": zona,
-                    "Estado": "Nuevo",
-                    "Telefono": tel_norm,
-                    "Dia_Secuencia": 0,
-                    "Fecha_Contacto": "",
-                    "Resultado": "",
-                    "Notas": "",
-                    "Version_Mensaje": "",
-                })
-                tels_en_base.add(clave_tel)
+        # Solo números con WhatsApp (si Evolution no responde, se agregan sin verificar).
+        existe = verificar_whatsapp(EVO_URL, EVO_TOKEN, EVO_INSTANCE, [t for _, t in candidatos_place])
+        for place, tel_norm in candidatos_place:
+            if existe.get(tel_norm) is False:
+                descartes["sin_whatsapp"] += 1
+                continue
+            ultimo_id += 1
+            nuevos_leads.append({
+                "Id": int(ultimo_id),
+                "Fecha": ahora_cl.strftime("%d/%m/%Y"),
+                "Hora": ahora_cl.strftime("%H:%M"),
+                "Evento": place.get("title", "Almacen"),
+                "Ministerio": "App Almacen",
+                "Ubicacion": zona,
+                "Estado": "Nuevo",
+                "Telefono": tel_norm,
+                "Dia_Secuencia": 0,
+                "Fecha_Contacto": "",
+                "Resultado": "",
+                "Notas": "",
+                "Version_Mensaje": "",
+            })
+        print(f"🧹 Descartados: {descartes}")
 
         if nuevos_leads:
             return pd.concat([df_actual, pd.DataFrame(nuevos_leads)], ignore_index=True)
@@ -155,39 +164,8 @@ def buscar_y_agregar_almacenes(df_actual):
 
 # --- COMUNICACIONES ---
 def enviar_mensaje_texto(numero, mensaje):
-    if not EVO_URL or not EVO_TOKEN:
-        logging.error("EVO_URL o EVO_TOKEN no configurados; no se puede enviar mensaje.")
-        return False
-    base_url = EVO_URL.strip().rstrip('/')
-    headers = {"Content-Type": "application/json", "apikey": EVO_TOKEN}
-    try:
-        requests.post(
-            f"{base_url}/chat/sendPresence/{EVO_INSTANCE}",
-            json={"number": numero, "presence": "composing", "delay": 1000},
-            headers=headers,
-            timeout=10,
-        )
-        time.sleep(random.randint(15, 30))  # Simular escritura
+    return _evo_enviar_mensaje_texto(EVO_URL, EVO_TOKEN, EVO_INSTANCE, numero, mensaje)
 
-        # Formato Evolution API v2 (verificado contra v2.3.7): v1 usaba
-        # "textMessage": {"text": ...} anidado, v2 exige "text" plano.
-        payload = {"number": numero, "text": mensaje, "delay": 2000}
-        res = requests.post(
-            f"{base_url}/message/sendText/{EVO_INSTANCE}",
-            json=payload,
-            headers=headers,
-            timeout=20,
-        )
-        if res.status_code not in [200, 201]:
-            logging.error(
-                "Error al enviar mensaje. Código HTTP: %s, respuesta: %s",
-                res.status_code,
-                res.text,
-            )
-        return res.status_code in [200, 201]
-    except Exception:
-        logging.exception("Excepción al enviar mensaje de texto.")
-        return False
 
 def obtener_mensaje_almacen(nombre, ubicacion, dia):
     """
@@ -204,9 +182,9 @@ def obtener_mensaje_almacen(nombre, ubicacion, dia):
             # Versión original con link directo
             msg = (
                 "{Hola|Buenas tardes|Hola, ¿qué tal?} 👋 Mi nombre es Rodrigo. "
-                "Paso seguido por {zona} y veo que en **{nombre}** "
+                "Paso seguido por {zona} y veo que en *{nombre}* "
                 "{tienen mucha variedad|siempre tienen movimiento}.\n\n"
-                "Les escribo porque desarrollamos una **app chilena** para dueños de almacenes "
+                "Les escribo porque desarrollamos una *app chilena* para dueños de almacenes "
                 "que quieren {controlar su stock|ver sus ventas diarias|ordenar las cuentas} "
                 "desde el celular de forma fácil. ✨\n\n"
                 "{¿Les gustaría|¿Les interesa} que les envíe un videito de 1 minuto para que vean "
@@ -217,8 +195,8 @@ def obtener_mensaje_almacen(nombre, ubicacion, dia):
             # Versión sin link directo, CTA simple a responder "SI"
             msg = (
                 "{Hola|Buenas tardes|Hola, ¿qué tal?} 👋 Mi nombre es Rodrigo. "
-                "Veo que en **{nombre}** en {zona} siempre hay movimiento.\n\n"
-                "Estoy trabajando con una **app para almacenes** que ayuda a "
+                "Veo que en *{nombre}* en {zona} siempre hay movimiento.\n\n"
+                "Estoy trabajando con una *app para almacenes* que ayuda a "
                 "{controlar el stock|ver las ventas del día} "
                 "desde el celular sin complicarse. ✨\n\n"
                 "Si te interesa que te muestre cómo funciona en 1 minuto, "
@@ -235,12 +213,59 @@ def obtener_mensaje_almacen(nombre, ubicacion, dia):
             "{ver rápido cuánto vendieron en el día|tener claro qué productos se están moviendo más} "
             "y {evitar quedarse sin stock en cosas clave|saber a tiempo qué pedir a los proveedores}. 📊📱\n\n"
             "Si quieren, podemos agendar una mini demo de 10 minutos por WhatsApp para mostrarles "
-            "cómo podría funcionar en **{nombre}** en {zona}. ¿Les tinca?"
+            "cómo podría funcionar en *{nombre}* en {zona}. ¿Les tinca?"
         )
         msg_final = aplicar_spintax(msg.replace("{nombre}", nombre).replace("{zona}", zona))
         return msg_final, variante
 
     return "", ""
+
+RESULTADOS_QUE_CIERRAN = {"interesado", "no interesado", "numero equivocado"}
+
+
+def _armar_candidatos(df, ahora, respondieron, estado_resp):
+    """
+    Hasta 3 envíos [{'idx','dia'}] para este ciclo. Salta a quienes ya respondieron por
+    WhatsApp (los atiende el agente) y a los ya clasificados. Si el agente no respondió
+    (estado_resp == "error") solo se envían primeros mensajes, no seguimientos.
+    """
+    hoy_str = ahora.strftime("%d/%m/%Y")
+    candidatos = []
+    for idx, row in df.iterrows():
+        if hoy_str in str(row.get("Fecha_Contacto", "")):
+            continue
+        if row["Estado"] in ["Finalizado", "Rechazado", "Error", "Cita Agendada", "Agendado"]:
+            continue
+        if str(row.get("Resultado", "")).strip().lower() in RESULTADOS_QUE_CIERRAN:
+            continue
+
+        if agent_client.clave_telefono(row.get("Telefono", "")) in respondieron:
+            if not str(row.get("Notas", "")).strip() or str(row.get("Notas")) == "nan":
+                df.at[idx, "Notas"] = "Respondió por WhatsApp: secuencia automática pausada"
+            continue
+
+        dia_act = int(row.get("Dia_Secuencia", 0))
+        if row["Estado"] == "Contactado":
+            if estado_resp == "error":
+                continue
+            try:
+                ultima_fecha = datetime.strptime(str(row["Fecha_Contacto"]), "%d/%m/%Y %H:%M")
+                if (ahora - ultima_fecha).total_seconds() < 90000:
+                    continue
+            except Exception:
+                logging.warning(
+                    "No se pudo parsear Fecha_Contacto para Id %s: %s", row.get("Id"), row.get("Fecha_Contacto")
+                )
+
+        if row["Estado"] == "Contactado" and dia_act < 2:  # secuencia más corta (2 días)
+            candidatos.append({"idx": idx, "dia": dia_act + 1})
+        elif row["Estado"] == "Nuevo":
+            candidatos.append({"idx": idx, "dia": 1})
+
+    # Límite muy conservador para evitar baneo: solo 3 almacenes por ciclo
+    random.shuffle(candidatos)
+    return candidatos[:3]
+
 
 # --- CICLO PRINCIPAL ---
 def ejecutar_ciclo():
@@ -250,6 +275,12 @@ def ejecutar_ciclo():
     if ahora.weekday() > 5 or not (10 <= ahora.hour <= 19): 
         print(f"🕒 Fuera de horario para almacenes.")
         return 
+
+    estado_conexion = verificar_estado_conexion(EVO_URL, EVO_INSTANCE, EVO_TOKEN)
+    if estado_conexion != "open":
+        print(f"🔴 Sesión de WhatsApp no está 'open' (estado: {estado_conexion}). Abortando ciclo sin tocar leads.")
+        logging.error("Sesión de WhatsApp caída o desconocida (estado=%s). Deteniendo ciclo.", estado_conexion)
+        sys.exit(1)
 
     if not os.path.exists(ARCHIVO_ALMACENES):
         df = pd.DataFrame(columns=[
@@ -285,36 +316,13 @@ def ejecutar_ciclo():
         logging.warning("Límite diario de mensajes alcanzado: %s", MAX_MENSAJES_DIARIOS)
         return
 
-    candidatos = []
-    for idx, row in df.iterrows():
-        if hoy_str in str(row.get('Fecha_Contacto', '')):
-            continue
-        if row["Estado"] in ["Finalizado", "Rechazado", "Error", "Cita Agendada"]:
-            continue
-        # No seguir contactando leads ya clasificados como interesados / no interesados
-        if row.get("Resultado") in ["Interesado", "No interesado", "Numero equivocado"]:
-            continue
+    respondieron, estado_resp = agent_client.obtener_telefonos_que_respondieron()
+    if respondieron:
+        print(f"💬 {len(respondieron)} contactos ya respondieron: su secuencia automática queda pausada.")
+    if estado_resp == "error":
+        print("⚠️ No se pudo consultar al agente: este ciclo solo se envían primeros mensajes (no seguimientos).")
 
-        dia_act = int(row.get("Dia_Secuencia", 0))
-        if row["Estado"] == "Contactado":
-            try:
-                ultima_fecha = datetime.strptime(str(row['Fecha_Contacto']), "%d/%m/%Y %H:%M")
-                if (ahora - ultima_fecha).total_seconds() < 90000: continue
-            except Exception:
-                logging.warning(
-                    "No se pudo parsear Fecha_Contacto para Id %s: %s",
-                    row.get("Id"),
-                    row.get("Fecha_Contacto"),
-                )
-
-        if row["Estado"] == "Contactado" and dia_act < 2: # Secuencia más corta (2 días)
-            candidatos.append({'idx': idx, 'dia': dia_act + 1})
-        elif row["Estado"] == "Nuevo":
-            candidatos.append({'idx': idx, 'dia': 1})
-
-    # Límite muy conservador para evitar baneo
-    random.shuffle(candidatos)
-    candidatos = candidatos[:3] # Solo 3 almacenes por ciclo
+    candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp)
 
     if not candidatos:
         print("📭 Buscando nuevos almacenes...")
@@ -325,35 +333,7 @@ def ejecutar_ciclo():
         print(f"➕ Leads agregados: {max(0, despues-antes)}")
 
         # Si se agregaron leads, intentamos enviar en el mismo ciclo (para no esperar al próximo cron).
-        candidatos = []
-        for idx, row in df.iterrows():
-            if hoy_str in str(row.get("Fecha_Contacto", "")):
-                continue
-            if row["Estado"] in ["Finalizado", "Rechazado", "Error", "Cita Agendada"]:
-                continue
-            if row.get("Resultado") in ["Interesado", "No interesado", "Numero equivocado"]:
-                continue
-
-            dia_act = int(row.get("Dia_Secuencia", 0))
-            if row["Estado"] == "Contactado":
-                try:
-                    ultima_fecha = datetime.strptime(str(row["Fecha_Contacto"]), "%d/%m/%Y %H:%M")
-                    if (ahora - ultima_fecha).total_seconds() < 90000:
-                        continue
-                except Exception:
-                    logging.warning(
-                        "No se pudo parsear Fecha_Contacto para Id %s: %s",
-                        row.get("Id"),
-                        row.get("Fecha_Contacto"),
-                    )
-
-            if row["Estado"] == "Contactado" and dia_act < 2:
-                candidatos.append({"idx": idx, "dia": dia_act + 1})
-            elif row["Estado"] == "Nuevo":
-                candidatos.append({"idx": idx, "dia": 1})
-
-        random.shuffle(candidatos)
-        candidatos = candidatos[:3]
+        candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp)
 
         if not candidatos:
             print("📭 Aún no hay candidatos después de buscar nuevos almacenes.")

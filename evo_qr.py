@@ -7,7 +7,7 @@ Uso:
     python evo_qr.py --crear         # crea la instancia si no existe
     python evo_qr.py --numero 569XXXXXXXX   # pide código de emparejamiento además del QR
 
-Lee EVO_URL, EVO_TOKEN y EVO_INSTANCE del entorno (o de un archivo .env en esta carpeta).
+Lee EVO_URL, EVO_TOKEN y EVO_INSTANCE del entorno (o de un archivo .env en esta carpeta, o el indicado con --env).
 """
 import argparse
 import base64
@@ -74,10 +74,11 @@ def main():
     ap.add_argument("--estado", action="store_true", help="solo consultar estado")
     ap.add_argument("--crear", action="store_true", help="crear la instancia si no existe")
     ap.add_argument("--numero", help="número (569...) para obtener pairing code")
+    ap.add_argument("--env", default=".env", help="archivo con EVO_URL/EVO_TOKEN/EVO_INSTANCE (ej. .env.v2)")
     ap.add_argument("--espera", type=int, default=180, help="segundos máximos esperando el escaneo")
     args = ap.parse_args()
 
-    cargar_env()
+    cargar_env(args.env)
     url, token, instance = (os.getenv(k) for k in ("EVO_URL", "EVO_TOKEN", "EVO_INSTANCE"))
     if not (url and token and instance):
         sys.exit("Faltan EVO_URL, EVO_TOKEN o EVO_INSTANCE (entorno o .env).")
@@ -121,7 +122,7 @@ def main():
         for _ in range(10):
             time.sleep(3)
             if verificar_estado_conexion(base, instance, token) == "open":
-                print("✅ Sesión vinculada (estado: open).")
+                print("OK - Sesión vinculada (estado: open).")
                 return
     sys.exit("Tiempo agotado sin que se escaneara el QR.")
 

@@ -16,3 +16,4 @@ alert_status_agente.json
 .claude/
 # QR temporal generado por evo_qr.py
 evo_qr.png
+.env.v2

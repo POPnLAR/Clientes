@@ -163,17 +163,15 @@ def enviar_mensaje_texto(numero, mensaje):
     try:
         requests.post(
             f"{base_url}/chat/sendPresence/{EVO_INSTANCE}",
-            json={"number": numero, "presence": "composing"},
+            json={"number": numero, "presence": "composing", "delay": 1000},
             headers=headers,
             timeout=10,
         )
         time.sleep(random.randint(15, 30))  # Simular escritura
 
-        payload = {
-            "number": numero, 
-            "options": {"delay": 2000, "presence": "composing"}, 
-            "textMessage": {"text": mensaje}
-        }
+        # Formato Evolution API v2 (verificado contra v2.3.7): v1 usaba
+        # "textMessage": {"text": ...} anidado, v2 exige "text" plano.
+        payload = {"number": numero, "text": mensaje, "delay": 2000}
         res = requests.post(
             f"{base_url}/message/sendText/{EVO_INSTANCE}",
             json=payload,

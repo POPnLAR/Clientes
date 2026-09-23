@@ -14,3 +14,6 @@ alert_status_agente.json
 
 # Config local de Claude Code (no es parte del proyecto para el equipo/CI)
 .claude/
+# QR temporal generado por evo_qr.py
+evo_qr.png
+.env.v2

@@ -97,6 +97,17 @@ def _requerir_token(x_agent_token: Optional[str]):
         raise HTTPException(status_code=401, detail="Token inválido.")
 
 
+def _valor_json(valor):
+    """
+    Convierte un valor leído con pandas a un tipo serializable en JSON: numpy.int64 -> int y
+    celdas vacías (NaN) -> "". Sin esto, /pending-drafts responde 500 en cuanto el borrador es
+    de un teléfono que está en los CSV de leads.
+    """
+    if pd.isna(valor):
+        return ""
+    return valor.item() if hasattr(valor, "item") else valor
+
+
 def _buscar_lead_por_telefono(telefono_normalizado):
     """Busca el lead en cualquiera de los dos CSV por teléfono normalizado."""
     for linea, archivo in CSVS_POR_LINEA.items():
@@ -113,10 +124,8 @@ def _buscar_lead_por_telefono(telefono_normalizado):
         if not coincidencias.empty:
             row = coincidencias.iloc[0]
             return linea, archivo, {
-                "Evento": row.get("Evento", ""),
-                "Ubicacion": row.get("Ubicacion", ""),
-                "Estado": row.get("Estado", ""),
-                "Dia_Secuencia": row.get("Dia_Secuencia", ""),
+                campo: _valor_json(row.get(campo, ""))
+                for campo in ("Evento", "Ubicacion", "Estado", "Dia_Secuencia")
             }
     return None, None, {}
 

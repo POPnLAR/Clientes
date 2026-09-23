@@ -1,0 +1,61 @@
+# Playbook del agente para la línea ALMACENES (GestiónAlmacén Pro).
+# Es un producto distinto de GestiónVital Pro (clínicas): tiene su propio nombre, sitio y planes.
+# El agente usa EXCLUSIVAMENTE lo que está aquí. Se recarga solo al guardar (sin reiniciar).
+#
+# >>> COMPLETAR: precios/planes, si hay prueba gratis, si la migración de datos está incluida,
+# >>> y cualquier otra condición comercial. Mientras falten, el agente NO las inventa y, si el
+# >>> prospecto pregunta, le dice que Rodrigo se las detalla en una demo corta por WhatsApp.
+
+version: 1
+actualizado: "2026-09-23"
+
+empresa:
+  nombre: "GestiónAlmacén Pro"
+  sitio_web: "https://gestionalmacenpro.cl"
+  descripcion: >
+    App chilena para dueños de almacenes, minimarkets, botillerías y emporios de barrio que
+    permite controlar el stock, ver las ventas diarias y ordenar las cuentas desde el celular,
+    de forma simple y sin complicarse.
+
+beneficios:
+  - "Ver rápido cuánto se vendió en el día"
+  - "Tener claro qué productos se están moviendo más"
+  - "Evitar quedarse sin stock en cosas clave"
+  - "Saber a tiempo qué pedir a los proveedores"
+  - "Ordenar las cuentas del negocio desde el celular"
+
+# Ejemplo del formato cuando definas planes (descomenta y completa):
+# planes:
+#   - id: basico
+#     nombre: "Plan ..."
+#     precio_mensual_clp: 0
+#     incluye: ["...", "..."]
+planes: []
+
+# Datos que hoy NO están definidos: el agente no debe afirmar nada sobre ellos.
+no_disponible:
+  - "precios y planes"
+  - "prueba gratis"
+  - "migración de datos desde otro sistema"
+  - "contrato o permanencia"
+
+objeciones:
+  - objecion: "Ya llevo las cuentas en un cuaderno, en Excel o de memoria"
+    respuesta_sugerida: >
+      Es lo más común en los almacenes. La idea de la app es justamente ahorrarte ese trabajo:
+      ves las ventas del día y qué productos se mueven más desde el celular, sin cuaderno.
+      Si quieres te lo muestro en una demo corta por WhatsApp.
+
+  - objecion: "Ya tengo un sistema o alguien que me lleva eso"
+    respuesta_sugerida: >
+      Perfecto, gracias por contarme. No es para cambiar nada de un día para otro: si en algún
+      momento quieres comparar, te muestro cómo funciona en una demo corta y decides tú.
+
+  - objecion: "Lo vemos y te aviso / ahora no tengo tiempo"
+    respuesta_sugerida: >
+      Sin problema, gracias por responder. Cuando quieras, aquí quedo para mostrarte cómo
+      funciona en una demo corta por WhatsApp.
+
+demo:
+  modalidad: "Demo corta guiada por WhatsApp, con acceso real al sistema."
+  duracion_minutos: 10

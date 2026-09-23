@@ -29,6 +29,7 @@ from pydantic import BaseModel
 
 import calendar_client
 import conversation_store as store
+import filtro_mensajes
 from evo_client import (
     enviar_alerta_whatsapp,
     enviar_mensaje_texto as _evo_enviar_mensaje_texto,
@@ -158,6 +159,9 @@ def _extraer_mensaje_entrante(payload: dict):
     if not remote_jid:
         return None, None
     telefono_raw, _, dominio = remote_jid.partition("@")
+    if dominio in ("g.us", "broadcast", "newsletter"):
+        # Grupos, estados y canales: nunca son una conversación 1 a 1 con un lead.
+        return None, None
     if dominio == "lid":
         # JID @lid: no es un teléfono. Se conserva completo para poder responderle
         # (Evolution v2.3.6+ acepta "<lid>@lid" como destino); normalizarlo a
@@ -181,6 +185,12 @@ def _extraer_mensaje_entrante(payload: dict):
     return telefono, texto
 
 
+def _extraer_mensaje_id(payload: dict):
+    data = payload.get("data") or payload
+    key = data.get("key", {}) if isinstance(data, dict) else {}
+    return key.get("id") or None
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
@@ -197,9 +207,40 @@ async def webhook_evolution(request: Request):
         # No es un error: Evolution manda varios tipos de eventos por el mismo webhook.
         return {"status": "ignorado"}
 
-    msg_id = store.guardar_mensaje(telefono, "in", texto)
+    # Duplicados (mismo evento entregado dos veces, p. ej. por dos instancias de Evolution).
+    evo_id = _extraer_mensaje_id(payload)
+    if evo_id and store.existe_mensaje_evolution(evo_id):
+        return {"status": "duplicado"}
+
+    msg_id = store.guardar_mensaje(telefono, "in", texto, evolution_message_id=evo_id)
 
     _linea, _archivo, contexto_lead = _buscar_lead_por_telefono(telefono)
+
+    # Filtro sin costo de tokens: bots, cierres, desconocidos, bucles... (ver filtro_mensajes.py)
+    cfg = filtro_mensajes.cargar_config()
+    motivo = filtro_mensajes.evaluar(
+        texto,
+        cfg=cfg,
+        es_conocido=bool(contexto_lead) or store.tiene_mensajes_salientes(telefono),
+        es_lid=telefono.endswith("@lid"),
+        esperando_confirmacion=filtro_mensajes.nuestro_ultimo_mensaje_ofrecia_horario(
+            store.ultimo_mensaje_saliente(telefono)
+        ),
+        entrantes_ultima_hora=store.contar_entrantes_desde(telefono, 60),
+        repeticiones_recientes=store.contar_texto_repetido(telefono, texto, 10),
+    )
+    if motivo:
+        store.marcar_mensaje_filtrado(msg_id, motivo)
+        logging.info("Mensaje de %s filtrado (%s), sin llamar a Gemini: %r", telefono, motivo, texto[:80])
+        return {"status": "filtrado", "motivo": motivo}
+
+    # Ráfagas: si el contacto escribe varios mensajes seguidos, solo el último genera borrador.
+    if cfg["activo"] and cfg["debounce_segundos"] > 0:
+        await asyncio.sleep(cfg["debounce_segundos"])
+        if store.hay_entrante_posterior(telefono, msg_id):
+            store.marcar_mensaje_filtrado(msg_id, "rafaga")
+            return {"status": "filtrado", "motivo": "rafaga"}
+
     historial = store.historial_conversacion(telefono, limite=20)
     slots = _obtener_slots_cacheados()
 
@@ -224,6 +265,13 @@ async def webhook_evolution(request: Request):
     )
 
     return {"status": "ok", "draft_id": draft_id}
+
+
+@app.get("/filtered-messages")
+def filtered_messages(limite: int = 50, x_agent_token: Optional[str] = Header(default=None)):
+    """Últimos mensajes que NO se enviaron a Gemini y por qué (para auditar/ajustar el filtro)."""
+    _requerir_token(x_agent_token)
+    return store.listar_filtrados(min(max(limite, 1), 200))
 
 
 @app.get("/pending-drafts")

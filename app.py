@@ -7,6 +7,7 @@ import requests
 import unicodedata
 import base64
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from urllib.parse import quote
 
 # --- CONFIGURACIÓN ---
@@ -190,6 +191,35 @@ def rechazar_borrador(draft_id):
         timeout=10,
     )
     return res.status_code == 200, res.text
+
+
+def obtener_reporte_filtros(dias, limite=300):
+    if not AGENT_SERVICE_URL:
+        return None
+    try:
+        res = requests.get(
+            f"{AGENT_SERVICE_URL.rstrip('/')}/filter-report",
+            params={"dias": dias, "limite": limite},
+            headers=_agent_headers(),
+            timeout=15,
+        )
+        if res.status_code == 200:
+            return res.json()
+        st.error(f"El agente respondió HTTP {res.status_code}: {res.text[:300]}")
+    except Exception as e:
+        st.error(f"No se pudo conectar con el servicio del agente: {e}")
+    return None
+
+
+# Motivo interno -> (etiqueta corta, explicación) para la pantalla de filtros.
+MOTIVOS_FILTRO = {
+    "bot": ("🤖 Bot / autorespuesta", "Mensaje automático, bienvenida tipo «¿qué necesitas?» o menú de opciones."),
+    "cierre": ("👋 Cierre", "«ok», «gracias», un emoji suelto: no necesita respuesta."),
+    "desconocido": ("👤 Desconocido", "El número no está en tus leads ni hubo conversación previa."),
+    "repetido": ("🔁 Repetido", "El mismo texto varias veces en 10 minutos (bot en bucle)."),
+    "flood": ("🌊 Demasiados mensajes", "Más mensajes por hora de los permitidos desde un mismo número."),
+    "rafaga": ("⚡ Ráfaga", "Escribió varios mensajes seguidos: solo el último generó respuesta."),
+}
 
 
 # --- CONTACTO POR EMAIL ---
@@ -439,11 +469,13 @@ st.title(f"Panel: {unidad}")
 etiquetas_tabs = ["📊 Dashboard Real-Time", "⚙️ Editor de Base"]
 if AGENT_SERVICE_URL:
     etiquetas_tabs.append("💬 Bandeja de Respuestas IA")
+    etiquetas_tabs.append("🛡️ Filtros de Mensajes")
 etiquetas_tabs.append("📧 Contactar por Email")
 
 tabs = st.tabs(etiquetas_tabs)
 t1, t2 = tabs[0], tabs[1]
 t3 = tabs[2] if AGENT_SERVICE_URL else None
+t_filtros = tabs[3] if AGENT_SERVICE_URL else None
 t4 = tabs[-1]
 
 with t1:
@@ -597,6 +629,106 @@ if t3 is not None:
                                 st.rerun()
                             else:
                                 st.error(f"No se pudo rechazar: {detalle}")
+
+if t_filtros is not None:
+    with t_filtros:
+        st.caption(
+            "Cada mensaje que llega al WhatsApp de ventas pasa por estos filtros ANTES de llamar a Gemini. "
+            "Lo que se descarta no gasta tokens, pero queda guardado aquí para que lo revises."
+        )
+        col_p, col_r = st.columns([3, 1])
+        with col_p:
+            periodo = st.radio(
+                "Período", [1, 7, 30], index=1, horizontal=True,
+                format_func=lambda d: {1: "Hoy (24 h)", 7: "Últimos 7 días", 30: "Últimos 30 días"}[d],
+                key="filtros_periodo",
+            )
+        with col_r:
+            if st.button("🔄 Actualizar", key="filtros_refrescar"):
+                st.rerun()
+
+        reporte = obtener_reporte_filtros(periodo)
+        if reporte:
+            resumen, cfg, mensajes = reporte["resumen"], reporte["config"], reporte["mensajes"]
+            entrantes, filtrados = resumen["entrantes"], resumen["filtrados"]
+            ahorro = round(100 * filtrados / entrantes) if entrantes else 0
+
+            m1, m2, m3, m4 = st.columns(4)
+            m1.metric("📥 Mensajes recibidos", entrantes)
+            m2.metric("🧠 Llegaron a Gemini", resumen["a_gemini"])
+            m3.metric("🛡️ Filtrados (0 tokens)", filtrados)
+            m4.metric("💰 Llamadas ahorradas", f"{ahorro}%")
+
+            if not cfg.get("activo", True):
+                st.error("⚠️ El filtro está DESACTIVADO (`filtros.activo: false` en playbook_ventas.yaml): todo llega a Gemini.")
+
+            st.subheader("¿Por qué se filtró?")
+            por_motivo = resumen["por_motivo"]
+            if por_motivo:
+                df_motivos = pd.DataFrame(
+                    [
+                        {"Filtro": MOTIVOS_FILTRO.get(m, (m, ""))[0], "Mensajes": n}
+                        for m, n in sorted(por_motivo.items(), key=lambda x: -x[1])
+                    ]
+                ).set_index("Filtro")
+                st.bar_chart(df_motivos, horizontal=True)
+            else:
+                st.info("Todavía no se ha filtrado ningún mensaje en este período.")
+
+            if periodo > 1 and resumen["por_dia"]:
+                df_dia = pd.DataFrame(resumen["por_dia"]).set_index("dia")
+                df_dia["A Gemini"] = df_dia["entrantes"] - df_dia["filtrados"]
+                df_dia = df_dia.rename(columns={"filtrados": "Filtrados"})[["A Gemini", "Filtrados"]]
+                st.caption("Mensajes por día")
+                st.bar_chart(df_dia)
+
+            st.subheader("Reglas activas")
+
+            def _si(v):
+                return "✅ Activo" if v else "⛔ Desactivado"
+
+            reglas = [
+                ("🤖 Bot / autorespuesta", MOTIVOS_FILTRO["bot"][1], f"{len(cfg.get('patrones_bot', []))} patrones"),
+                ("👋 Cierre", MOTIVOS_FILTRO["cierre"][1] + " Si esperamos confirmación de un horario, sí se responde.", f"{len(cfg.get('cierres', []))} palabras"),
+                ("👤 Desconocido", MOTIVOS_FILTRO["desconocido"][1] + f" Los @lid {'se responden' if cfg.get('responder_lid') else 'también se ignoran'}.", _si(cfg.get("ignorar_desconocidos"))),
+                ("🔁 Repetido", MOTIVOS_FILTRO["repetido"][1], f"más de {cfg.get('repetidos_max')} veces"),
+                ("🌊 Demasiados mensajes", MOTIVOS_FILTRO["flood"][1], f"más de {cfg.get('max_entrantes_por_hora')} por hora"),
+                ("⚡ Ráfaga", MOTIVOS_FILTRO["rafaga"][1], f"espera {cfg.get('debounce_segundos')} s" if cfg.get("debounce_segundos") else "⛔ Desactivado"),
+            ]
+            st.dataframe(
+                pd.DataFrame(reglas, columns=["Filtro", "Qué detecta", "Ajuste actual"]),
+                hide_index=True, use_container_width=True,
+            )
+            st.caption("Los ajustes se cambian en la sección `filtros:` de `playbook_ventas.yaml` (se aplican sin reiniciar).")
+            with st.expander("Ver patrones de bot y palabras de cierre"):
+                st.markdown("**Patrones de bot** (regex, sin acentos):")
+                st.code("\n".join(cfg.get("patrones_bot", [])) or "(ninguno)")
+                st.markdown("**Cierres:** " + ", ".join(f"`{c}`" for c in cfg.get("cierres", [])))
+
+            st.subheader("Mensajes descartados")
+            if not mensajes:
+                st.success("No hay mensajes descartados en este período.")
+            else:
+                st.caption("Revisa que no haya mensajes legítimos aquí: si ves uno, avísame y se ajusta el patrón.")
+                opciones = sorted({m["filtrado_motivo"] for m in mensajes})
+                elegidos = st.multiselect(
+                    "Filtrar por motivo", opciones, default=opciones,
+                    format_func=lambda m: MOTIVOS_FILTRO.get(m, (m, ""))[0],
+                    key="filtros_motivos",
+                )
+                tz = ZoneInfo("America/Santiago")
+                filas = []
+                for m in mensajes:
+                    if m["filtrado_motivo"] not in elegidos:
+                        continue
+                    hora = datetime.fromisoformat(m["timestamp"]).replace(tzinfo=ZoneInfo("UTC")).astimezone(tz)
+                    filas.append({
+                        "Hora (Chile)": hora.strftime("%d/%m %H:%M"),
+                        "Contacto": m["telefono_normalizado"],
+                        "Mensaje": m["texto"],
+                        "Filtro": MOTIVOS_FILTRO.get(m["filtrado_motivo"], (m["filtrado_motivo"], ""))[0],
+                    })
+                st.dataframe(pd.DataFrame(filas), hide_index=True, use_container_width=True)
 
 with t4:
     st.warning(

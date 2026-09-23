@@ -251,11 +251,52 @@ def hay_entrante_posterior(telefono_normalizado, mensaje_id):
     return row is not None
 
 
-def listar_filtrados(limite=50):
+def listar_filtrados(limite=50, dias=None):
+    where = "filtrado_motivo IS NOT NULL"
+    params = []
+    if dias:
+        where += " AND timestamp >= ?"
+        params.append(_hace(dias * 24 * 60))
     with _conn() as conn:
         rows = conn.execute(
             "SELECT id, telefono_normalizado, texto, timestamp, filtrado_motivo FROM messages "
-            "WHERE filtrado_motivo IS NOT NULL ORDER BY id DESC LIMIT ?",
-            (limite,),
+            f"WHERE {where} ORDER BY id DESC LIMIT ?",
+            (*params, limite),
         ).fetchall()
     return [dict(r) for r in rows]
+
+
+def resumen_filtros(dias=7):
+    """Entrantes del período, cuántos se filtraron (y por qué) y el detalle por día."""
+    desde = _hace(dias * 24 * 60)
+    with _conn() as conn:
+        total = conn.execute(
+            "SELECT COUNT(*) FROM messages WHERE direccion = 'in' AND timestamp >= ?", (desde,)
+        ).fetchone()[0]
+        por_motivo = {
+            r["filtrado_motivo"]: r["n"]
+            for r in conn.execute(
+                "SELECT filtrado_motivo, COUNT(*) AS n FROM messages WHERE direccion = 'in' "
+                "AND filtrado_motivo IS NOT NULL AND timestamp >= ? GROUP BY filtrado_motivo",
+                (desde,),
+            )
+        }
+        por_dia = [
+            dict(r)
+            for r in conn.execute(
+                "SELECT substr(timestamp, 1, 10) AS dia, COUNT(*) AS entrantes, "
+                "SUM(CASE WHEN filtrado_motivo IS NOT NULL THEN 1 ELSE 0 END) AS filtrados "
+                "FROM messages WHERE direccion = 'in' AND timestamp >= ? "
+                "GROUP BY dia ORDER BY dia",
+                (desde,),
+            )
+        ]
+    filtrados = sum(por_motivo.values())
+    return {
+        "dias": dias,
+        "entrantes": total,
+        "filtrados": filtrados,
+        "a_gemini": total - filtrados,
+        "por_motivo": por_motivo,
+        "por_dia": por_dia,
+    }

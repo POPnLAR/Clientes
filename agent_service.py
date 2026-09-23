@@ -274,6 +274,18 @@ def filtered_messages(limite: int = 50, x_agent_token: Optional[str] = Header(de
     return store.listar_filtrados(min(max(limite, 1), 200))
 
 
+@app.get("/filter-report")
+def filter_report(dias: int = 7, limite: int = 200, x_agent_token: Optional[str] = Header(default=None)):
+    """Resumen para la pantalla de filtros del dashboard: métricas, config vigente y mensajes descartados."""
+    _requerir_token(x_agent_token)
+    dias = min(max(dias, 1), 90)
+    return {
+        "config": filtro_mensajes.cargar_config(),
+        "resumen": store.resumen_filtros(dias),
+        "mensajes": store.listar_filtrados(min(max(limite, 1), 500), dias),
+    }
+
+
 @app.get("/pending-drafts")
 def pending_drafts(x_agent_token: Optional[str] = Header(default=None)):
     _requerir_token(x_agent_token)

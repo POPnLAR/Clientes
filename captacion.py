@@ -30,6 +30,12 @@ def preparar_candidatos(resultados, tels_en_base, linea, descartes, necesita_ema
             descartes["cadena"] += 1
             continue
 
+        if not filtros_leads.categoria_relevante(place, linea):
+            descartes["rubro"] = descartes.get("rubro", 0) + 1
+            if descartes["rubro"] <= 5:  # ejemplos en el log para afinar las listas de rubro
+                print(f"🚫 Fuera de rubro: {place.get('title', '?')} [{filtros_leads.texto_categoria(place) or 'sin categoría'}]")
+            continue
+
         tel_google = normalizar_telefono_chile(place.get("phone", ""))
         website = place.get("website") or ""
         telefonos, origen, email = [], "google", ""

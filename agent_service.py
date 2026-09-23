@@ -157,8 +157,14 @@ def _extraer_mensaje_entrante(payload: dict):
     remote_jid = key.get("remoteJid", "")
     if not remote_jid:
         return None, None
-    telefono_raw = remote_jid.split("@")[0]
-    telefono = normalizar_telefono_chile(telefono_raw)
+    telefono_raw, _, dominio = remote_jid.partition("@")
+    if dominio == "lid":
+        # JID @lid: no es un teléfono. Se conserva completo para poder responderle
+        # (Evolution v2.3.6+ acepta "<lid>@lid" como destino); normalizarlo a
+        # teléfono chileno lo convertiría en un número inexistente.
+        telefono = remote_jid
+    else:
+        telefono = normalizar_telefono_chile(telefono_raw)
     if not telefono:
         return None, None
 

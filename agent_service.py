@@ -243,7 +243,7 @@ async def webhook_evolution(request: Request):
 
     msg_id = store.guardar_mensaje(telefono, "in", texto, evolution_message_id=evo_id)
 
-    _linea, _archivo, contexto_lead = _buscar_lead_por_telefono(telefono)
+    linea, _archivo, contexto_lead = _buscar_lead_por_telefono(telefono)
 
     # Filtro sin costo de tokens: bots, cierres, desconocidos, bucles... (ver filtro_mensajes.py)
     cfg = filtro_mensajes.cargar_config()
@@ -273,7 +273,9 @@ async def webhook_evolution(request: Request):
     historial = store.historial_conversacion(telefono, limite=20)
     slots = _obtener_slots_cacheados()
 
-    texto_borrador, accion = generar_borrador(historial, contexto_lead, texto, slots_disponibles=slots)
+    texto_borrador, accion = generar_borrador(
+        historial, contexto_lead, texto, slots_disponibles=slots, linea=linea
+    )
 
     accion = _validar_accion(accion, slots)
 
@@ -308,13 +310,14 @@ def regenerate_draft(draft_id: int, body: RegenerarBorrador, x_agent_token: Opti
     entrantes = [m for m in store.historial_conversacion(telefono, limite=20) if m["direccion"] == "in"]
     texto_entrante = (mensaje or {}).get("texto") or (entrantes[-1]["texto"] if entrantes else "")
 
-    _linea, _archivo, contexto_lead = _buscar_lead_por_telefono(telefono)
+    linea, _archivo, contexto_lead = _buscar_lead_por_telefono(telefono)
     historial = store.historial_conversacion(telefono, limite=20)
     slots = _obtener_slots_cacheados()
 
     texto, accion = generar_borrador(
         historial, contexto_lead, texto_entrante, slots_disponibles=slots,
         instruccion_operador=body.instruccion, borrador_anterior=borrador["texto_borrador"],
+        linea=linea,
     )
     if texto == _borrador_fallback(texto_entrante):
         raise HTTPException(status_code=502, detail="Gemini no respondió: el borrador no se modificó. Reintenta en un momento.")

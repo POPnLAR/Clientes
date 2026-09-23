@@ -149,58 +149,82 @@ def enviar_mensaje_texto(numero, mensaje):
     return _evo_enviar_mensaje_texto(EVO_URL, EVO_TOKEN, EVO_INSTANCE, numero, mensaje)
 
 
+def _rubro_en_plural(nombre):
+    """
+    Rubro del negocio, deducido de su nombre, para que el mensaje hable de "botillerías" con una
+    botillería y no de "almacenes". Si el nombre no lo dice, se usa una fórmula neutra.
+    """
+    n = limpiar_acentos(nombre).lower()
+    if re.search(r"botiller|licorer", n):
+        return "botillerías"
+    if re.search(r"mini ?market|minimercado", n):
+        return "minimarkets"
+    if "emporio" in n:
+        return "emporios"
+    if re.search(r"\balmacen", n):
+        return "almacenes"
+    return "negocios de barrio"
+
+
 def obtener_mensaje_almacen(nombre, ubicacion, dia):
     """
-    Genera el mensaje para el almacén y una etiqueta de versión para A/B testing.
-    Devuelve (mensaje_texto, version).
+    Genera el mensaje para el negocio y una etiqueta de versión para A/B testing.
+    Devuelve (mensaje_texto, version). Habla del rubro real del negocio (botillería, minimarket...)
+    y cierra con una pregunta simple, sin ofrecer enviar videos.
     """
+    rubro = _rubro_en_plural(nombre)
     nombre = limpiar_acentos(nombre)
     zona = ubicacion if ubicacion else "el sector"
+
+    def armar(msg):
+        # Los marcadores propios se reemplazan ANTES del spintax: {plural} sin "|" sería
+        # tomado como una opción única y quedaría escrito literalmente.
+        return aplicar_spintax(
+            msg.replace("{nombre}", nombre).replace("{zona}", zona).replace("{plural}", rubro)
+        )
 
     if dia == 1:
         # A/B testing sencillo: dos variantes del mensaje inicial
         variante = random.choice(["A", "B"])
         if variante == "A":
-            # Versión original con link directo
+            # Con link directo
             msg = (
                 "{Hola|Buenas tardes|Hola, ¿qué tal?} 👋 Mi nombre es Rodrigo. "
                 "Paso seguido por {zona} y veo que en *{nombre}* "
                 "{tienen mucha variedad|siempre tienen movimiento}.\n\n"
-                "Les escribo porque desarrollamos una *app chilena* para dueños de almacenes "
+                "Les escribo porque desarrollamos una *app chilena* para dueños de {plural} "
                 "que quieren {controlar su stock|ver sus ventas diarias|ordenar las cuentas} "
                 "desde el celular de forma fácil. ✨\n\n"
-                "{¿Les gustaría|¿Les interesa} que les envíe un videito de 1 minuto para que vean "
-                "cómo les puede ayudar a ganar tiempo? ¡Saludos!\n\n"
+                "{¿Les interesaría que les cuente cómo funciona?|¿Les gustaría saber cómo funciona?|"
+                "¿Les hace sentido que conversemos un momento?} ¡Saludos!\n\n"
                 "https://gestionalmacenpro.cl"
             )
         else:
-            # Versión sin link directo, CTA simple a responder "SI"
+            # Sin link directo, CTA simple a responder "SI"
             msg = (
                 "{Hola|Buenas tardes|Hola, ¿qué tal?} 👋 Mi nombre es Rodrigo. "
                 "Veo que en *{nombre}* en {zona} siempre hay movimiento.\n\n"
-                "Estoy trabajando con una *app para almacenes* que ayuda a "
+                "Estoy trabajando con una *app para {plural}* que ayuda a "
                 "{controlar el stock|ver las ventas del día} "
                 "desde el celular sin complicarse. ✨\n\n"
-                "Si te interesa que te muestre cómo funciona en 1 minuto, "
-                "respóndeme solo con un *SI*. 👍"
+                "Si te interesa saber cómo funciona, respóndeme solo con un *SI*. 👍"
             )
-        msg_final = aplicar_spintax(msg.replace("{nombre}", nombre).replace("{zona}", zona))
-        return msg_final, variante
+        return armar(msg), variante
 
     elif dia == 2:
         variante = "D2"
         msg = (
             "{Hola de nuevo|Hola nuevamente} 👋 Solo para complementar lo que les comenté antes: "
-            "varios almacenes que usan la app nos dicen que lo que más valoran es "
+            "varios {plural} que usan la app nos dicen que lo que más valoran es "
             "{ver rápido cuánto vendieron en el día|tener claro qué productos se están moviendo más} "
             "y {evitar quedarse sin stock en cosas clave|saber a tiempo qué pedir a los proveedores}. 📊📱\n\n"
             "Si quieren, podemos agendar una mini demo de 10 minutos por WhatsApp para mostrarles "
             "cómo podría funcionar en *{nombre}* en {zona}. ¿Les tinca?"
         )
-        msg_final = aplicar_spintax(msg.replace("{nombre}", nombre).replace("{zona}", zona))
-        return msg_final, variante
+        return armar(msg), variante
 
     return "", ""
+
 
 RESULTADOS_QUE_CIERRAN = {"interesado", "no interesado", "numero equivocado"}
 

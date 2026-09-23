@@ -360,7 +360,7 @@ def obtener_mensaje_secuencia(nombre, ubicacion, dia):
 
     return aplicar_spintax(msg.replace("{nombre}", nombre).replace("{zona}", zona))
 
-def _armar_candidatos(df, ahora, respondieron, estado_resp):
+def _armar_candidatos(df, ahora, respondieron, estado_resp, bots=frozenset()):
     """
     Devuelve hasta 5 envíos [{'idx','dia'}] para este ciclo. Salta a quienes ya
     respondieron por WhatsApp (su conversación la lleva el agente, no la secuencia
@@ -368,11 +368,21 @@ def _armar_candidatos(df, ahora, respondieron, estado_resp):
     seguimientos: un lead nuevo (día 1) no puede haber respondido aún.
     """
     hoy_str = ahora.strftime("%d/%m/%Y")
+    if "Notas" in df.columns:
+        df["Notas"] = df["Notas"].astype("object")
     candidatos = []
     for idx, row in df.iterrows():
         if hoy_str in str(row.get("Fecha_Contacto", "")):
             continue
         if row["Estado"] in ["Finalizado", "Rechazado", "Cita Agendada", "Agendado", "Error"]:
+            continue
+
+        clave = agent_client.clave_telefono(row.get("Telefono", ""))
+        if clave in bots and clave not in respondieron:
+            # Solo le contesta un chatbot/autorespuesta: seguir escribiéndole no sirve, nadie lo lee.
+            df.at[idx, "Estado"] = "Finalizado"
+            df.at[idx, "Notas"] = "Responde un bot: secuencia cerrada"
+            print(f"🤖 {row.get('Evento', clave)}: responde un bot, secuencia cerrada.")
             continue
 
         if agent_client.clave_telefono(row.get("Telefono", "")) in respondieron:
@@ -423,13 +433,16 @@ def ejecutar_ciclo():
 
     df = pd.read_csv(ARCHIVO_LEADS)
     df["Dia_Secuencia"] = pd.to_numeric(df["Dia_Secuencia"], errors='coerce').fillna(0).astype(int)
-    respondieron, estado_resp = agent_client.obtener_telefonos_que_respondieron()
+    respuestas = agent_client.obtener_respuestas()
+    respondieron, bots, estado_resp = respuestas["humanos"], respuestas["bots"], respuestas["estado"]
+    if bots:
+        print(f"🤖 {len(bots)} contactos solo responden con un bot: se cierra su secuencia.")
     if respondieron:
         print(f"💬 {len(respondieron)} contactos ya respondieron: su secuencia automática queda pausada.")
     if estado_resp == "error":
         print("⚠️ No se pudo consultar al agente: este ciclo solo se envían primeros mensajes (no seguimientos).")
 
-    candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp)
+    candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp, bots)
 
     if not candidatos:
         print("📭 Nada pendiente. Buscando nuevos leads...")
@@ -450,12 +463,12 @@ def ejecutar_ciclo():
             )
 
         # Recalcular candidatos luego de agregar leads nuevos para enviar en el mismo run
-        candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp)
+        candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp, bots)
 
         if not candidatos:
             print("📭 Aun así no hay candidatos para enviar después de buscar nuevos leads.")
             print("♻️ Intentando reciclar leads antiguos...")
-            df, total_reciclados = reciclar_leads_antiguos(df, ahora, respondieron)
+            df, total_reciclados = reciclar_leads_antiguos(df, ahora, respondieron | bots)
             resumen["reciclados"] = total_reciclados
             if total_reciclados > 0:
                 print(f"♻️ Leads reciclados para recontacto: {total_reciclados}")

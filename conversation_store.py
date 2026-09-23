@@ -316,3 +316,32 @@ def telefonos_que_respondieron(dias=90):
             (_hace(dias * 24 * 60),),
         ).fetchall()
     return [r["telefono_normalizado"] for r in rows]
+
+
+def telefonos_que_responden_bot(dias=90):
+    """Teléfonos (no @lid) cuyos mensajes entrantes fueron clasificados como bot/autorespuesta."""
+    with _conn() as conn:
+        rows = conn.execute(
+            "SELECT DISTINCT telefono_normalizado FROM messages "
+            "WHERE direccion = 'in' AND timestamp >= ? AND telefono_normalizado NOT LIKE '%@%' "
+            "AND filtrado_motivo = 'bot'",
+            (_hace(dias * 24 * 60),),
+        ).fetchall()
+    return [r["telefono_normalizado"] for r in rows]
+
+
+def reclasificar_como_bot(es_bot, limite=5000):
+    """
+    Marca como 'bot' los mensajes entrantes antiguos (sin motivo) que las reglas actuales ya
+    reconocen como bot. Se ejecuta al iniciar el servicio: los patrones mejoran con el tiempo y
+    así los mensajes anteriores a una mejora también quedan bien clasificados. Idempotente.
+    """
+    with _conn() as conn:
+        rows = conn.execute(
+            "SELECT id, texto FROM messages WHERE direccion = 'in' AND filtrado_motivo IS NULL "
+            "ORDER BY id DESC LIMIT ?",
+            (limite,),
+        ).fetchall()
+        ids = [(r["id"],) for r in rows if es_bot(r["texto"])]
+        conn.executemany("UPDATE messages SET filtrado_motivo = 'bot' WHERE id = ?", ids)
+    return len(ids)

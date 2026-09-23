@@ -86,6 +86,10 @@ async def _chequeo_salud_periodico():
 @app.on_event("startup")
 def _startup():
     store.inicializar_db()
+    cfg = filtro_mensajes.cargar_config()
+    n = store.reclasificar_como_bot(lambda texto: filtro_mensajes.es_mensaje_de_bot(texto, cfg))
+    if n:
+        logging.info("Reclasificados %s mensajes antiguos como bot con las reglas actuales.", n)
     asyncio.create_task(_chequeo_salud_periodico())
 
 
@@ -299,7 +303,12 @@ def filter_report(dias: int = 7, limite: int = 200, x_agent_token: Optional[str]
 def replied_phones(dias: int = 90, x_agent_token: Optional[str] = Header(default=None)):
     """Teléfonos que ya respondieron: los workers pausan su secuencia automática."""
     _requerir_token(x_agent_token)
-    return {"telefonos": store.telefonos_que_respondieron(min(max(dias, 1), 365))}
+    dias = min(max(dias, 1), 365)
+    humanos = store.telefonos_que_respondieron(dias)
+    # Solo cuentan como "bot" los que nunca respondió una persona: si alguien escribió de verdad,
+    # la conversación sigue su curso (pausa) y no se cierra.
+    bots = sorted(set(store.telefonos_que_responden_bot(dias)) - set(humanos))
+    return {"telefonos": humanos, "bots": bots}
 
 
 @app.get("/pending-drafts")

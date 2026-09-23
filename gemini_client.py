@@ -62,8 +62,8 @@ _PROMPT_CLINICAS = (
 
 _PROMPT_ALMACENES = (
     "Eres el asistente de ventas de Rodrigo, dueño de GestiónAlmacén Pro (https://gestionalmacenpro.cl), "
-    "una app chilena para dueños de almacenes, minimarkets, botillerías y emporios de barrio que "
-    "permite controlar el stock, ver las ventas diarias y ordenar las cuentas desde el celular. "
+    "un sistema de punto de venta (POS) chileno para almacenes, minimarkets y botillerías de barrio que "
+    "convierte el celular en caja: permite vender, controlar el stock y llevar la caja desde el celular. "
     "IMPORTANTE: este prospecto es un negocio de barrio, NO una clínica. GestiónVital Pro es OTRO "
     "producto (para clínicas estéticas): nunca lo menciones ni uses sus planes, precios, prueba "
     "gratis, registro o características. Si te preguntan algo que no figura en el playbook (precios, "
@@ -133,6 +133,11 @@ def _formatear_playbook_para_prompt(playbook):
         if empresa.get("migracion_datos_gratis"):
             lineas.append("Migración de datos desde el sistema anterior incluida sin costo.")
 
+    hechos = playbook.get("hechos", [])
+    if hechos:
+        lineas.append("\nDatos confirmados del producto (puedes afirmarlos):")
+        lineas += [f"- {h}" for h in hechos]
+
     beneficios = playbook.get("beneficios", [])
     if beneficios:
         lineas.append("\nQué valoran los dueños de negocios que usan la app:")
@@ -149,7 +154,10 @@ def _formatear_playbook_para_prompt(playbook):
     if planes:
         lineas.append("\nPlanes:")
         for p in planes:
-            precio = f"${p.get('precio_mensual_clp', 0):,}".replace(",", ".") + "/mes + IVA"
+            # Por defecto los precios de clínicas se informan "+ IVA"; un plan puede indicar otro sufijo
+            # (p. ej. "/mes" cuando el precio publicado no aclara el IVA).
+            sufijo = p.get("sufijo_precio", "/mes + IVA")
+            precio = f"${p.get('precio_mensual_clp', 0):,}".replace(",", ".") + sufijo
             nota = f" ({p['nota_oferta']})" if p.get("nota_oferta") else ""
             incluye = ", ".join(p.get("incluye", []))
             lineas.append(f"- {p.get('nombre')} [{p.get('id')}]: {precio}{nota}. Incluye: {incluye}.")

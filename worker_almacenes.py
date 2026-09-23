@@ -205,15 +205,13 @@ def obtener_mensaje_almacen(nombre, ubicacion, dia):
 RESULTADOS_QUE_CIERRAN = {"interesado", "no interesado", "numero equivocado"}
 
 
-def _armar_candidatos(df, ahora, respondieron, estado_resp, bots=frozenset()):
+def _armar_candidatos(df, ahora, respondieron, estado_resp):
     """
     Hasta 3 envíos [{'idx','dia'}] para este ciclo. Salta a quienes ya respondieron por
     WhatsApp (los atiende el agente) y a los ya clasificados. Si el agente no respondió
     (estado_resp == "error") solo se envían primeros mensajes, no seguimientos.
     """
     hoy_str = ahora.strftime("%d/%m/%Y")
-    if "Notas" in df.columns:
-        df["Notas"] = df["Notas"].astype("object")
     candidatos = []
     for idx, row in df.iterrows():
         if hoy_str in str(row.get("Fecha_Contacto", "")):
@@ -221,14 +219,6 @@ def _armar_candidatos(df, ahora, respondieron, estado_resp, bots=frozenset()):
         if row["Estado"] in ["Finalizado", "Rechazado", "Error", "Cita Agendada", "Agendado"]:
             continue
         if str(row.get("Resultado", "")).strip().lower() in RESULTADOS_QUE_CIERRAN:
-            continue
-
-        clave = agent_client.clave_telefono(row.get("Telefono", ""))
-        if clave in bots and clave not in respondieron:
-            # Solo le contesta un chatbot/autorespuesta: seguir escribiéndole no sirve, nadie lo lee.
-            df.at[idx, "Estado"] = "Finalizado"
-            df.at[idx, "Notas"] = "Responde un bot: secuencia cerrada"
-            print(f"🤖 {row.get('Evento', clave)}: responde un bot, secuencia cerrada.")
             continue
 
         if agent_client.clave_telefono(row.get("Telefono", "")) in respondieron:
@@ -308,16 +298,13 @@ def ejecutar_ciclo():
         logging.warning("Límite diario de mensajes alcanzado: %s", MAX_MENSAJES_DIARIOS)
         return
 
-    respuestas = agent_client.obtener_respuestas()
-    respondieron, bots, estado_resp = respuestas["humanos"], respuestas["bots"], respuestas["estado"]
-    if bots:
-        print(f"🤖 {len(bots)} contactos solo responden con un bot: se cierra su secuencia.")
+    respondieron, estado_resp = agent_client.obtener_telefonos_que_respondieron()
     if respondieron:
         print(f"💬 {len(respondieron)} contactos ya respondieron: su secuencia automática queda pausada.")
     if estado_resp == "error":
         print("⚠️ No se pudo consultar al agente: este ciclo solo se envían primeros mensajes (no seguimientos).")
 
-    candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp, bots)
+    candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp)
 
     if not candidatos:
         print("📭 Buscando nuevos almacenes...")
@@ -328,7 +315,7 @@ def ejecutar_ciclo():
         print(f"➕ Leads agregados: {max(0, despues-antes)}")
 
         # Si se agregaron leads, intentamos enviar en el mismo ciclo (para no esperar al próximo cron).
-        candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp, bots)
+        candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp)
 
         if not candidatos:
             print("📭 Aún no hay candidatos después de buscar nuevos almacenes.")

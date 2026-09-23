@@ -49,7 +49,9 @@ jobs:
 
       - name: Guardar y Sincronizar
         run: |
-          git add prospeccion_almacenes_pro.csv
+          for f in prospeccion_almacenes_pro.csv cobertura_almacenes.json presupuesto_serpapi_almacenes.json; do
+            [ -f "$f" ] && git add "$f"
+          done
           if [ -n "$(git status --porcelain)" ]; then
             git commit -m "Worker Almacenes: Actualización [Skip CI]"
             # Resolvemos conflictos priorizando el trabajo del worker

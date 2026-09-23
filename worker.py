@@ -14,7 +14,10 @@ from datetime import datetime, timedelta
 import logging
 
 import agent_client
-import filtros_leads
+import captacion
+import cobertura
+import serp_client
+import web_scraper
 from evo_client import (
     normalizar_telefono_chile as _normalizar_telefono_chile,
     verificar_estado_conexion,
@@ -34,7 +37,7 @@ ARCHIVO_LEADS = "prospeccion_gestionvital_pro.csv"
 ARCHIVO_ALERTA = "alert_status.json"
 ARCHIVO_COBERTURA = "cobertura_clinicas.json"
 ARCHIVO_PRESUPUESTO_SERP = "presupuesto_serpapi.json"
-LIMITE_MENSUAL_SERPAPI = int(os.getenv("LIMITE_MENSUAL_SERPAPI", "250"))
+LIMITE_MENSUAL_SERPAPI = int(os.getenv("LIMITE_MENSUAL_SERPAPI", "150"))  # de 250 totales; almacenes usa 100
 RECONTACTO_DIAS = int(os.getenv("RECONTACTO_DIAS", "21"))
 MAX_RECICLADOS_POR_CICLO = int(os.getenv("MAX_RECICLADOS_POR_CICLO", "8"))
 MAX_FALLOS_SEGUIDOS = 3
@@ -213,72 +216,14 @@ def reciclar_leads_antiguos(df, ahora, excluir=frozenset()):
     return df, len(reciclados)
 
 # --- EXTRACTOR DE CORREOS ---
-PAGINAS_CONTACTO = ["/contacto", "/contact", "/contactenos", "/nosotros", "/about", "/sobre-nosotros"]
-
-
-def _extraer_emails_de_html(html):
-    emails = re.findall(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', html)
-    filtrados = [e for e in emails if not e.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'))]
-    if not filtrados:
-        return ""
-    prioritarios = [e for e in filtrados if any(p in e.lower() for p in ['contacto', 'info', 'ventas'])]
-    return (prioritarios[0] if prioritarios else filtrados[0]).lower()
-
-
 def buscar_email_en_web(url):
-    """
-    Busca un email en la home del sitio; si no encuentra nada, intenta un par de
-    páginas de contacto típicas antes de rendirse (mejora la tasa de captura de
-    email sin disparar más búsquedas de SerpAPI, ya que son requests directos).
-    """
-    if not url or not url.startswith("http"):
-        return ""
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    base = url.rstrip('/')
+    """Busca un email en la home del sitio y, si no hay, en páginas de contacto típicas."""
+    return web_scraper.obtener_contactos(url, necesita_email=True, necesita_movil=False)["email"]
 
-    try:
-        response = requests.get(url, headers=headers, timeout=12)
-        email = _extraer_emails_de_html(response.text)
-        if email:
-            return email
-    except Exception:
-        pass
-
-    for pagina in PAGINAS_CONTACTO:
-        try:
-            response = requests.get(base + pagina, headers=headers, timeout=8)
-            if response.status_code != 200:
-                continue
-            email = _extraer_emails_de_html(response.text)
-            if email:
-                return email
-        except Exception:
-            continue
-
-    return ""
 
 # --- BÚSQUEDA AUTOMÁTICA ---
-# Las 52 comunas de la Región Metropolitana, para cobertura exhaustiva.
-COMUNAS_OBJETIVO = [
-    # Provincia de Santiago (32)
-    "Santiago Centro", "Cerrillos", "Cerro Navia", "Conchalí", "El Bosque",
-    "Estación Central", "Huechuraba", "Independencia", "La Cisterna", "La Florida",
-    "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea",
-    "Lo Espejo", "Lo Prado", "Macul", "Maipú", "Ñuñoa",
-    "Pedro Aguirre Cerda", "Peñalolén", "Providencia", "Pudahuel", "Quilicura",
-    "Quinta Normal", "Recoleta", "Renca", "San Joaquín", "San Miguel",
-    "San Ramón", "Vitacura",
-    # Provincia Cordillera (3)
-    "Puente Alto", "Pirque", "San José de Maipo",
-    # Provincia Chacabuco (3)
-    "Colina", "Lampa", "Til Til",
-    # Provincia Maipo (4)
-    "San Bernardo", "Buin", "Paine", "Calera de Tango",
-    # Provincia Melipilla (5)
-    "Melipilla", "Alhué", "Curacaví", "María Pinto", "San Pedro",
-    # Provincia Talagante (5)
-    "Talagante", "El Monte", "Isla de Maipo", "Padre Hurtado", "Peñaflor",
-]
+# Barrido sistemático de las 52 comunas de la Región Metropolitana (ver cobertura.py).
+COMUNAS_OBJETIVO = cobertura.COMUNAS_RM
 
 # Variantes del rubro para capturar negocios que no se autodescriben como
 # "clínica estética" pero pertenecen al mismo mercado objetivo.
@@ -298,234 +243,85 @@ TERMINOS_BUSQUEDA = [
     "Masajes Reductivos",
     "Tratamientos Faciales",
 ]
-
-
-def _cargar_cobertura():
-    if os.path.exists(ARCHIVO_COBERTURA):
-        try:
-            with open(ARCHIVO_COBERTURA, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            logging.exception("No se pudo leer %s, se reconstruye desde cero.", ARCHIVO_COBERTURA)
-    return None
-
-
-def _guardar_cobertura(estado):
-    try:
-        with open(ARCHIVO_COBERTURA, "w", encoding="utf-8") as f:
-            json.dump(estado, f, ensure_ascii=False, indent=2)
-    except Exception:
-        logging.exception("No se pudo escribir %s.", ARCHIVO_COBERTURA)
-
-
-def _nueva_vuelta(vuelta_anterior=0):
-    combos = [[comuna, termino] for comuna in COMUNAS_OBJETIVO for termino in TERMINOS_BUSQUEDA]
-    random.shuffle(combos)
-    return {"pendientes": combos, "vuelta": vuelta_anterior + 1}
+# Rubros que existían antes de que el estado de cobertura guardara su lista de rubros.
+TERMINOS_PREVIOS = TERMINOS_BUSQUEDA[:6]
 
 
 def obtener_siguiente_combo():
-    """
-    Devuelve (zona, termino) siguiente a buscar, sin marcarla aún como cubierta
-    (eso lo hace marcar_combo_cubierto una vez que la búsqueda efectivamente
-    corrió). Lleva un registro persistente de qué combinaciones comuna+término
-    ya se cubrieron en esta "vuelta" de barrido exhaustivo (52 comunas x N
-    términos). Al agotar todas las combinaciones, comienza una vuelta nueva
-    (re-mezclada) automáticamente.
-    """
-    estado = _cargar_cobertura()
-    if not estado or not estado.get("pendientes"):
-        estado = _nueva_vuelta(estado.get("vuelta", 0) if estado else 0)
-        estado["terminos"] = list(TERMINOS_BUSQUEDA)
-        _guardar_cobertura(estado)
-        print(f"🔄 Iniciando vuelta de barrido exhaustivo N°{estado['vuelta']} "
-              f"({len(estado['pendientes'])} combinaciones comuna+término).")
-    else:
-        # Si se agregaron rubros nuevos a TERMINOS_BUSQUEDA con una vuelta ya en curso,
-        # se suman sus combinaciones a las pendientes (sin repetir las que ya estaban).
-        conocidos = set(estado.get("terminos") or {t for _, t in estado["pendientes"]} | {
-            "Clinica Estetica", "Centro de Estetica", "Medicina Estetica",
-            "Spa Facial", "Depilacion Laser", "Botox y Rellenos",
-        })
-        nuevos = [t for t in TERMINOS_BUSQUEDA if t not in conocidos]
-        if nuevos:
-            extra = [[c, t] for c in COMUNAS_OBJETIVO for t in nuevos]
-            random.shuffle(extra)
-            estado["pendientes"] = estado["pendientes"] + extra
-            print(f"➕ Rubros nuevos en el barrido: {', '.join(nuevos)} ({len(extra)} combinaciones).")
-        if nuevos or "terminos" not in estado:
-            estado["terminos"] = list(TERMINOS_BUSQUEDA)
-            _guardar_cobertura(estado)
-
-    zona, termino = estado["pendientes"][0]
-    print(f"📍 Combinación elegida (vuelta {estado['vuelta']}, quedan "
-          f"{len(estado['pendientes'])} por cubrir): {termino} en {zona}")
-    return zona, termino
+    return cobertura.siguiente(ARCHIVO_COBERTURA, COMUNAS_OBJETIVO, TERMINOS_BUSQUEDA, TERMINOS_PREVIOS)
 
 
 def marcar_combo_cubierto(zona, termino):
-    """
-    Confirma que la combinación se buscó de verdad y la saca de pendientes.
-    Se llama solo cuando SerpAPI respondió (ok o sin_resultados) — si hubo
-    cuota agotada o error de red, la combinación se deja pendiente para
-    reintentarla en el próximo ciclo, en vez de darla por cubierta sin haberla
-    buscado realmente.
-    """
-    estado = _cargar_cobertura()
-    if not estado or not estado.get("pendientes"):
-        return
-    if estado["pendientes"][0] == [zona, termino]:
-        estado["pendientes"].pop(0)
-        _guardar_cobertura(estado)
-
-
-def _cargar_presupuesto_serp():
-    if os.path.exists(ARCHIVO_PRESUPUESTO_SERP):
-        try:
-            with open(ARCHIVO_PRESUPUESTO_SERP, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            logging.exception("No se pudo leer %s, se reinicia el contador.", ARCHIVO_PRESUPUESTO_SERP)
-    return {"mes": None, "usadas": 0}
-
-
-def _guardar_presupuesto_serp(estado):
-    try:
-        with open(ARCHIVO_PRESUPUESTO_SERP, "w", encoding="utf-8") as f:
-            json.dump(estado, f, ensure_ascii=False, indent=2)
-    except Exception:
-        logging.exception("No se pudo escribir %s.", ARCHIVO_PRESUPUESTO_SERP)
-
-
-def _reservar_busqueda_serp(ahora):
-    """
-    Reparte el cupo mensual de SerpAPI (LIMITE_MENSUAL_SERPAPI, por defecto 250)
-    de forma pareja a lo largo del mes, en vez de dejar que un cron por hora
-    queme todo el cupo en los primeros días. Si hay cupo disponible para el día
-    de hoy, lo reserva (incrementa el contador) y devuelve True; si no, False.
-    """
-    mes_actual = ahora.strftime("%Y-%m")
-    estado = _cargar_presupuesto_serp()
-    if estado.get("mes") != mes_actual:
-        estado = {"mes": mes_actual, "usadas": 0}
-
-    dias_en_mes = calendar.monthrange(ahora.year, ahora.month)[1]
-    permitido_hasta_hoy = min(
-        LIMITE_MENSUAL_SERPAPI,
-        math.ceil(ahora.day * LIMITE_MENSUAL_SERPAPI / dias_en_mes),
-    )
-
-    if estado["usadas"] >= permitido_hasta_hoy:
-        _guardar_presupuesto_serp(estado)
-        print(f"💸 Cupo de SerpAPI del día agotado ({estado['usadas']}/{permitido_hasta_hoy} "
-              f"permitidas a esta altura del mes, límite mensual {LIMITE_MENSUAL_SERPAPI}). "
-              f"Se omite la búsqueda de este ciclo.")
-        return False
-
-    estado["usadas"] += 1
-    _guardar_presupuesto_serp(estado)
-    print(f"💳 Presupuesto SerpAPI: {estado['usadas']}/{LIMITE_MENSUAL_SERPAPI} usadas este mes "
-          f"({permitido_hasta_hoy} permitidas a esta altura del mes).")
-    return True
+    """Solo se llama cuando SerpAPI respondió (ok o sin resultados); si hubo cuota agotada o
+    error de red la combinación queda pendiente para reintentarla en el próximo ciclo."""
+    cobertura.marcar_cubierto(ARCHIVO_COBERTURA, zona, termino)
 
 
 def buscar_y_agregar_nuevos(df_actual):
     """
-    Busca nuevos leads en SerpAPI para la siguiente combinación comuna+término
-    pendiente del barrido exhaustivo (ver obtener_siguiente_combo), respetando
-    el cupo mensual configurado en LIMITE_MENSUAL_SERPAPI.
-    Devuelve (df_actualizado, resultado) donde resultado es uno de:
+    Busca nuevos leads para la siguiente combinación comuna+término del barrido, pidiendo
+    varias páginas de resultados mientras rindan, dentro del cupo mensual de SerpAPI.
+    Solo agrega celulares con WhatsApp verificado (si el teléfono de Google es un fijo, intenta
+    rescatar un celular desde el sitio web del negocio).
+    Devuelve (df_actualizado, resultado) con resultado en:
     "ok", "sin_resultados", "cuota_agotada", "error_api", "presupuesto_agotado".
     """
     ahora_cl = obtener_ahora_chile()
-    if not _reservar_busqueda_serp(ahora_cl):
-        return df_actual, "presupuesto_agotado"
-
     zona_objetivo, termino_objetivo = obtener_siguiente_combo()
     print(f"🔍 Buscando nuevos leads: '{termino_objetivo}' en {zona_objetivo}...")
-    params = {
-        "engine": "google_maps",
-        "q": f"{termino_objetivo} {zona_objetivo} Chile",
-        "api_key": SERP_KEY,
-        "num": 15,
-    }
-    try:
-        response = requests.get("https://serpapi.com/search", params=params, timeout=30)
-        print(f"🔎 SerpAPI status: {response.status_code}")
-        data = response.json()
 
-        if "error" in data and "hasn't returned any results" in str(data["error"]).lower():
-            # Búsqueda válida sin resultados (típico de rubros de nicho en comunas chicas):
-            # se da por cubierta para no quedar repitiéndola cada hora.
-            print("📭 SerpAPI: sin resultados para esta combinación, se marca como cubierta.")
-            marcar_combo_cubierto(zona_objetivo, termino_objetivo)
-            return df_actual, "sin_resultados"
+    tels_en_base = set()
+    if not df_actual.empty and "Telefono" in df_actual.columns:
+        tels_en_base = set(
+            df_actual["Telefono"].astype(str).str.replace(".0", "", regex=False).str[-9:].tolist()
+        )
+    ultimo_id = int(df_actual["Id"].max()) if not df_actual.empty else 0
+    nuevos_leads = []
+    descartes = {"sin_movil": 0, "cadena": 0, "duplicado": 0, "sin_whatsapp": 0}
 
-        if "error" in data:
-            # SerpAPI devuelve HTTP 200 con {"error": "..."} en casos de cuota
-            # agotada / api_key inválida, distinto de "sin resultados".
-            print(f"🚫 SerpAPI error: {data['error']}")
-            logging.error("SerpAPI error (clínicas): %s", data["error"])
-            return df_actual, "cuota_agotada"
-
-        results = data.get("local_results", [])
-        print(f"🔎 SerpAPI local_results: {len(results)}")
-        nuevos_leads = []
-        tels_en_base = set()
-        if not df_actual.empty and "Telefono" in df_actual.columns:
-            tels_en_base = set(
-                df_actual["Telefono"]
-                .astype(str)
-                .str.replace(".0", "", regex=False)
-                .str[-9:]
-                .tolist()
-            )
-        ultimo_id = int(df_actual['Id'].max()) if not df_actual.empty else 0
-
-        # Filtros de calidad (todos previos a gastar tiempo en scrapear emails):
-        descartes = {"sin_movil": 0, "cadena": 0, "duplicado": 0, "sin_whatsapp": 0}
-        candidatos_place = []
-        for place in results:
-            tel_norm = _normalizar_telefono_chile(place.get("phone", ""))
-            if not es_movil_chileno(tel_norm):
-                descartes["sin_movil"] += 1  # fijos, 600/800 y otros no reciben WhatsApp
-                continue
-            if filtros_leads.es_cadena(place.get("title", ""), "clinicas"):
-                descartes["cadena"] += 1
-                continue
-            if tel_norm[-9:] in tels_en_base:
-                descartes["duplicado"] += 1
-                continue
-            tels_en_base.add(tel_norm[-9:])
-            candidatos_place.append((place, tel_norm))
-
-        # Solo se agregan números que realmente tienen WhatsApp (si Evolution no
-        # responde, no se bloquea la búsqueda: se agregan sin verificar).
-        existe = verificar_whatsapp(EVO_URL, EVO_TOKEN, EVO_INSTANCE, [t for _, t in candidatos_place])
-        for place, tel_norm in candidatos_place:
-            if existe.get(tel_norm) is False:
-                descartes["sin_whatsapp"] += 1
-                continue
+    def procesar_pagina(resultados):
+        nonlocal ultimo_id
+        candidatos = captacion.preparar_candidatos(
+            resultados, tels_en_base, "clinicas", descartes, necesita_email=True
+        )
+        confirmados = captacion.confirmar_con_whatsapp(candidatos, EVO_URL, EVO_TOKEN, EVO_INSTANCE, descartes)
+        for cand, tel in confirmados:
+            place = cand["place"]
             website = place.get("website") or ""
+            if cand["origen"] == "web":
+                email = cand["email"]  # ya se revisó el sitio al rescatar el celular
+            else:
+                email = buscar_email_en_web(website) if website else ""
             ultimo_id += 1
             nuevos_leads.append({
                 "Id": int(ultimo_id), "Fecha": ahora_cl.strftime("%d/%m/%Y"),
                 "Hora": ahora_cl.strftime("%H:%M"), "Evento": place.get("title", "Clinica"),
-                "Ministerio": f"Prospeccion Automatica - {termino_objetivo}", "Ubicacion": zona_objetivo, "Estado": "Nuevo",
-                "Telefono": tel_norm, "Email": buscar_email_en_web(website) if website else "",
-                "Email_Enviado": "No", "Dia_Secuencia": 0, "Fecha_Contacto": ""
+                "Ministerio": f"Prospeccion Automatica - {termino_objetivo}", "Ubicacion": zona_objetivo,
+                "Estado": "Nuevo", "Telefono": tel, "Email": email,
+                "Email_Enviado": "No", "Dia_Secuencia": 0, "Fecha_Contacto": "",
+                "Notas": "WhatsApp obtenido de su sitio web" if cand["origen"] == "web" else "",
             })
-        print(f"🧹 Descartados: {descartes}")
+        return len(confirmados)
+
+    estado, paginas = serp_client.buscar_paginas(
+        f"{termino_objetivo} {zona_objetivo} Chile", SERP_KEY,
+        ARCHIVO_PRESUPUESTO_SERP, LIMITE_MENSUAL_SERPAPI, ahora_cl, procesar_pagina,
+    )
+    if estado == "presupuesto_agotado":
+        return df_actual, estado
+
+    print(f"🧹 Descartados: {descartes} ({paginas} página(s) consultada(s))")
+    if estado in ("ok", "sin_resultados"):
         marcar_combo_cubierto(zona_objetivo, termino_objetivo)
-        if nuevos_leads:
-            print(f"➕ Leads agregados: {len(nuevos_leads)}")
-            return pd.concat([df_actual, pd.DataFrame(nuevos_leads)], ignore_index=True), "ok"
-        print("📭 SerpAPI no devolvió leads nuevos (duplicados o sin teléfono/web válido).")
-        return df_actual, "sin_resultados"
-    except Exception as e:
-        print(f"❌ Error búsqueda: {e}")
-        logging.exception("Error al buscar nuevos leads (clínicas).")
-        return df_actual, "error_api"
+    if estado == "cuota_agotada":
+        logging.error("SerpAPI error (clínicas): posible cuota agotada o api_key inválida.")
+    if nuevos_leads:
+        print(f"➕ Leads agregados: {len(nuevos_leads)}")
+        return pd.concat([df_actual, pd.DataFrame(nuevos_leads)], ignore_index=True), "ok"
+    if estado == "ok":
+        estado = "sin_resultados"
+    print("📭 La búsqueda no dejó leads nuevos (duplicados, sin celular o sin WhatsApp).")
+    return df_actual, estado
 
 # --- COMUNICACIONES ---
 def enviar_mensaje_texto(numero, mensaje):

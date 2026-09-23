@@ -113,3 +113,16 @@ demo:
   horario_fin: "19:00"
   duracion_minutos: 30
   modalidad: "Guiada por WhatsApp, con acceso real al sistema, sin instalar nada."
+
+# Filtro de mensajes entrantes: decide qué mensajes NO llegan a Gemini (ahorra tokens).
+# Todo es opcional; los valores por defecto están en filtro_mensajes.py. Se recarga solo.
+filtros:
+  activo: true
+  ignorar_desconocidos: true   # solo responde a leads de los CSV o con quien ya hubo conversación
+  responder_lid: true          # los @lid no traen teléfono (links wa.me): se responden igual
+  debounce_segundos: 6         # ráfaga de mensajes seguidos -> una sola respuesta (0 = desactivar)
+  max_entrantes_por_hora: 8    # más que esto de un mismo número = bot en bucle
+  repetidos_max: 2             # el mismo texto más de N veces en 10 min = bot repitiendo
+  # Se SUMAN a los patrones/cierres por defecto (regex sin acentos, en minúsculas):
+  patrones_bot: []
+  cierres: []

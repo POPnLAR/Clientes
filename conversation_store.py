@@ -12,7 +12,7 @@ import json
 import os
 import sqlite3
 from contextlib import contextmanager
-from datetime import datetime
+from datetime import datetime, timedelta
 
 DB_PATH = os.getenv("AGENT_DB_PATH", "agent.db")
 
@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS messages (
     direccion TEXT NOT NULL CHECK (direccion IN ('in', 'out')),
     texto TEXT NOT NULL,
     evolution_message_id TEXT,
-    timestamp TEXT NOT NULL
+    timestamp TEXT NOT NULL,
+    filtrado_motivo TEXT
 );
 
 CREATE INDEX IF NOT EXISTS idx_messages_telefono ON messages (telefono_normalizado);
@@ -66,6 +67,11 @@ _MIGRACIONES_DRAFTS = {
 }
 
 
+_MIGRACIONES_MESSAGES = {
+    "filtrado_motivo": "ALTER TABLE messages ADD COLUMN filtrado_motivo TEXT",
+}
+
+
 @contextmanager
 def _conn():
     conn = sqlite3.connect(DB_PATH)
@@ -77,9 +83,9 @@ def _conn():
         conn.close()
 
 
-def _migrar_columnas_drafts(conn):
-    columnas_actuales = {row["name"] for row in conn.execute("PRAGMA table_info(drafts)")}
-    for columna, ddl in _MIGRACIONES_DRAFTS.items():
+def _migrar_columnas(conn, tabla, migraciones):
+    columnas_actuales = {row["name"] for row in conn.execute(f"PRAGMA table_info({tabla})")}
+    for columna, ddl in migraciones.items():
         if columna not in columnas_actuales:
             conn.execute(ddl)
 
@@ -87,7 +93,8 @@ def _migrar_columnas_drafts(conn):
 def inicializar_db():
     with _conn() as conn:
         conn.executescript(SCHEMA)
-        _migrar_columnas_drafts(conn)
+        _migrar_columnas(conn, "drafts", _MIGRACIONES_DRAFTS)
+        _migrar_columnas(conn, "messages", _MIGRACIONES_MESSAGES)
 
 
 def _ahora():
@@ -175,3 +182,80 @@ def registrar_cita_agendada(draft_id, telefono_normalizado, google_event_id, ini
             (draft_id, telefono_normalizado, google_event_id, inicio_iso, fin_iso, _ahora()),
         )
         return cur.lastrowid
+
+
+# --- Consultas del filtro de mensajes (ver filtro_mensajes.py) ---
+
+def _hace(minutos):
+    return (datetime.utcnow() - timedelta(minutes=minutos)).isoformat()
+
+
+def existe_mensaje_evolution(evolution_message_id):
+    with _conn() as conn:
+        row = conn.execute(
+            "SELECT 1 FROM messages WHERE evolution_message_id = ? LIMIT 1",
+            (evolution_message_id,),
+        ).fetchone()
+    return row is not None
+
+
+def marcar_mensaje_filtrado(mensaje_id, motivo):
+    with _conn() as conn:
+        conn.execute("UPDATE messages SET filtrado_motivo = ? WHERE id = ?", (motivo, mensaje_id))
+
+
+def tiene_mensajes_salientes(telefono_normalizado):
+    with _conn() as conn:
+        row = conn.execute(
+            "SELECT 1 FROM messages WHERE telefono_normalizado = ? AND direccion = 'out' LIMIT 1",
+            (telefono_normalizado,),
+        ).fetchone()
+    return row is not None
+
+
+def ultimo_mensaje_saliente(telefono_normalizado):
+    with _conn() as conn:
+        row = conn.execute(
+            "SELECT texto FROM messages WHERE telefono_normalizado = ? AND direccion = 'out' "
+            "ORDER BY id DESC LIMIT 1",
+            (telefono_normalizado,),
+        ).fetchone()
+    return row["texto"] if row else None
+
+
+def contar_entrantes_desde(telefono_normalizado, minutos):
+    with _conn() as conn:
+        return conn.execute(
+            "SELECT COUNT(*) FROM messages WHERE telefono_normalizado = ? AND direccion = 'in' "
+            "AND timestamp >= ?",
+            (telefono_normalizado, _hace(minutos)),
+        ).fetchone()[0]
+
+
+def contar_texto_repetido(telefono_normalizado, texto, minutos):
+    with _conn() as conn:
+        return conn.execute(
+            "SELECT COUNT(*) FROM messages WHERE telefono_normalizado = ? AND direccion = 'in' "
+            "AND lower(trim(texto)) = lower(trim(?)) AND timestamp >= ?",
+            (telefono_normalizado, texto, _hace(minutos)),
+        ).fetchone()[0]
+
+
+def hay_entrante_posterior(telefono_normalizado, mensaje_id):
+    with _conn() as conn:
+        row = conn.execute(
+            "SELECT 1 FROM messages WHERE telefono_normalizado = ? AND direccion = 'in' "
+            "AND id > ? LIMIT 1",
+            (telefono_normalizado, mensaje_id),
+        ).fetchone()
+    return row is not None
+
+
+def listar_filtrados(limite=50):
+    with _conn() as conn:
+        rows = conn.execute(
+            "SELECT id, telefono_normalizado, texto, timestamp, filtrado_motivo FROM messages "
+            "WHERE filtrado_motivo IS NOT NULL ORDER BY id DESC LIMIT ?",
+            (limite,),
+        ).fetchall()
+    return [dict(r) for r in rows]

@@ -10,7 +10,9 @@ from datetime import datetime, timedelta
 import logging
 
 import agent_client
-import filtros_leads
+import captacion
+import cobertura
+import serp_client
 from evo_client import (
     normalizar_telefono_chile,
     verificar_estado_conexion,
@@ -28,8 +30,13 @@ SERP_KEY = os.getenv("SERP_KEY")
 NUMERO_OPERADOR = os.getenv("NUMERO_OPERADOR", "")
 # Usamos un CSV diferente para no mezclar las bases de datos
 ARCHIVO_ALMACENES = "prospeccion_almacenes_pro.csv"
-# Lista de comunas objetivo (puedes editarla sin tocar el código)
-COMUNAS_OBJETIVO = ["Providencia", "Las Condes", "La Florida", "San Miguel", "El Bosque", "San Bernardo"]
+# Barrido sistemático de las 52 comunas de la Región Metropolitana x rubros (ver cobertura.py)
+COMUNAS_OBJETIVO = cobertura.COMUNAS_RM
+TERMINOS_BUSQUEDA = ["Minimarket", "Almacen", "Botilleria", "Emporio"]
+ARCHIVO_COBERTURA = "cobertura_almacenes.json"
+# Cupo mensual de SerpAPI de esta línea (clínicas usa otros 150 de los 250 totales)
+ARCHIVO_PRESUPUESTO_SERP = "presupuesto_serpapi_almacenes.json"
+LIMITE_MENSUAL_SERPAPI = int(os.getenv("LIMITE_MENSUAL_SERPAPI_ALMACENES", "100"))
 # Límite diario de mensajes enviados para evitar baneos
 MAX_MENSAJES_DIARIOS = int(os.getenv("MAX_MENSAJES_DIARIOS", "30"))
 
@@ -65,101 +72,76 @@ def limpiar_acentos(text):
 
 # --- BÚSQUEDA DE ALMACENES EN GOOGLE MAPS ---
 def buscar_y_agregar_almacenes(df_actual):
+    """
+    Busca almacenes para la siguiente combinación comuna+rubro del barrido, pidiendo varias
+    páginas mientras rindan. Solo agrega celulares con WhatsApp verificado; si el teléfono de
+    Google es un fijo, intenta rescatar un celular desde el sitio web del negocio.
+    """
     if not SERP_KEY:
         print("❌ SERP_KEY no configurado, no se buscarán nuevos almacenes.")
         logging.error("SERP_KEY no configurado; omitiendo búsqueda de almacenes.")
         return df_actual
 
-    comunas = COMUNAS_OBJETIVO
-    zona = random.choice(comunas)
     ahora_cl = obtener_ahora_chile()
+    zona, termino = cobertura.siguiente(ARCHIVO_COBERTURA, COMUNAS_OBJETIVO, TERMINOS_BUSQUEDA)
+    print(f"🏪 Buscando '{termino}' en: {zona}...")
 
-    print(f"🏪 Buscando Minimarkets y Almacenes en: {zona}...")
-    params = {
-        "engine": "google_maps",
-        "q": f"Minimarket o Almacen en {zona} Chile",
-        "api_key": SERP_KEY,
-        "num": 20,
-    }
+    tels_en_base = set()
+    if not df_actual.empty and "Telefono" in df_actual.columns:
+        for t in df_actual["Telefono"]:
+            digits = "".join(filter(str.isdigit, str(t)))
+            if len(digits) >= 8:
+                tels_en_base.add(digits[-9:])
+    ultimo_id = int(df_actual["Id"].max()) if not df_actual.empty and "Id" in df_actual.columns else 0
+    nuevos_leads = []
+    descartes = {"sin_movil": 0, "cadena": 0, "duplicado": 0, "sin_whatsapp": 0}
 
-    try:
-        response = requests.get("https://serpapi.com/search", params=params, timeout=30)
-        # Nota: no imprimimos la respuesta completa para no saturar logs.
-        print(f"🔎 SerpAPI status: {response.status_code}")
-        data = response.json()
-
-        if "error" in data:
-            if "hasn't returned any results" in str(data["error"]).lower():
-                print("📭 SerpAPI: sin resultados para esta comuna.")
-                return df_actual
-            # Cuota agotada / api_key inválida: antes se confundía con "sin resultados".
-            print(f"🚫 SerpAPI error: {data['error']}")
-            logging.error("SerpAPI error (almacenes): %s", data["error"])
-            enviar_alerta_whatsapp(
-                EVO_URL, EVO_TOKEN, EVO_INSTANCE, NUMERO_OPERADOR,
-                "⚠️ GestiónVital: SerpAPI dejó de responder en almacenes (posible cuota agotada). Revisar api_key.",
-            )
-            return df_actual
-
-        results = data.get("local_results", [])
-        print(f"🔎 SerpAPI local_results: {len(results)}")
-        nuevos_leads = []
-
-        tels_en_base = set()
-        if not df_actual.empty and "Telefono" in df_actual.columns:
-            for t in df_actual["Telefono"]:
-                digits = "".join(filter(str.isdigit, str(t)))
-                if len(digits) >= 8:
-                    tels_en_base.add(digits[-9:])
-
-        ultimo_id = int(df_actual['Id'].max()) if not df_actual.empty and "Id" in df_actual.columns else 0
-
-        descartes = {"sin_movil": 0, "cadena": 0, "duplicado": 0, "sin_whatsapp": 0}
-        candidatos_place = []
-        for place in results:
-            tel_norm = normalizar_telefono_chile(place.get("phone", ""))
-            if not es_movil_chileno(tel_norm):
-                descartes["sin_movil"] += 1  # fijos, 600/800 y otros no reciben WhatsApp
-                continue
-            if filtros_leads.es_cadena(place.get("title", ""), "almacenes"):
-                descartes["cadena"] += 1
-                continue
-            if tel_norm[-9:] in tels_en_base:
-                descartes["duplicado"] += 1
-                continue
-            tels_en_base.add(tel_norm[-9:])
-            candidatos_place.append((place, tel_norm))
-
-        # Solo números con WhatsApp (si Evolution no responde, se agregan sin verificar).
-        existe = verificar_whatsapp(EVO_URL, EVO_TOKEN, EVO_INSTANCE, [t for _, t in candidatos_place])
-        for place, tel_norm in candidatos_place:
-            if existe.get(tel_norm) is False:
-                descartes["sin_whatsapp"] += 1
-                continue
+    def procesar_pagina(resultados):
+        nonlocal ultimo_id
+        candidatos = captacion.preparar_candidatos(resultados, tels_en_base, "almacenes", descartes)
+        confirmados = captacion.confirmar_con_whatsapp(candidatos, EVO_URL, EVO_TOKEN, EVO_INSTANCE, descartes)
+        for cand, tel in confirmados:
             ultimo_id += 1
             nuevos_leads.append({
                 "Id": int(ultimo_id),
                 "Fecha": ahora_cl.strftime("%d/%m/%Y"),
                 "Hora": ahora_cl.strftime("%H:%M"),
-                "Evento": place.get("title", "Almacen"),
+                "Evento": cand["place"].get("title", "Almacen"),
                 "Ministerio": "App Almacen",
                 "Ubicacion": zona,
                 "Estado": "Nuevo",
-                "Telefono": tel_norm,
+                "Telefono": tel,
                 "Dia_Secuencia": 0,
                 "Fecha_Contacto": "",
                 "Resultado": "",
-                "Notas": "",
+                "Notas": "WhatsApp obtenido de su sitio web" if cand["origen"] == "web" else "",
                 "Version_Mensaje": "",
             })
-        print(f"🧹 Descartados: {descartes}")
+        return len(confirmados)
 
-        if nuevos_leads:
-            return pd.concat([df_actual, pd.DataFrame(nuevos_leads)], ignore_index=True)
-        print("📭 SerpAPI no devolvió leads nuevos (por duplicados o sin teléfonos válidos).")
+    try:
+        estado, paginas = serp_client.buscar_paginas(
+            f"{termino} {zona} Chile", SERP_KEY,
+            ARCHIVO_PRESUPUESTO_SERP, LIMITE_MENSUAL_SERPAPI, ahora_cl, procesar_pagina,
+        )
     except Exception:
         logging.exception("❌ Error en búsqueda de almacenes")
         print("❌ Error en búsqueda de almacenes (ver logs).")
+        return df_actual
+
+    if estado == "presupuesto_agotado":
+        return df_actual
+    print(f"🧹 Descartados: {descartes} ({paginas} página(s) consultada(s))")
+    if estado in ("ok", "sin_resultados"):
+        cobertura.marcar_cubierto(ARCHIVO_COBERTURA, zona, termino)
+    if estado == "cuota_agotada":
+        enviar_alerta_whatsapp(
+            EVO_URL, EVO_TOKEN, EVO_INSTANCE, NUMERO_OPERADOR,
+            "⚠️ GestiónVital: SerpAPI dejó de responder en almacenes (posible cuota agotada). Revisar api_key.",
+        )
+    if nuevos_leads:
+        return pd.concat([df_actual, pd.DataFrame(nuevos_leads)], ignore_index=True)
+    print("📭 La búsqueda no dejó leads nuevos (duplicados, sin celular o sin WhatsApp).")
     return df_actual
 
 # --- COMUNICACIONES ---

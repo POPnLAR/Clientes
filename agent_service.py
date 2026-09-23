@@ -36,7 +36,7 @@ from evo_client import (
     normalizar_telefono_chile,
     verificar_estado_conexion,
 )
-from gemini_client import generar_borrador
+from gemini_client import _borrador_fallback, generar_borrador
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
@@ -209,6 +209,22 @@ def health():
     return {"status": "ok"}
 
 
+def _validar_accion(accion, slots):
+    """
+    Defensa anti-alucinación: solo se acepta la acción de agendar si el inicio_iso que devolvió
+    Gemini coincide EXACTO con un slot realmente ofrecido (nunca confiar en un horario "inventado").
+    """
+    if not accion:
+        return None
+    slot_valido = next((s for s in slots if s["inicio_iso"] == accion["inicio_iso"]), None)
+    if not slot_valido:
+        logging.warning("Gemini marcó agendar con un horario no ofrecido: %s", accion)
+        return None
+    accion["fin_iso"] = slot_valido["fin_iso"]
+    accion["etiqueta"] = slot_valido["etiqueta"]
+    return accion
+
+
 @app.post("/webhook/evolution")
 async def webhook_evolution(request: Request):
     payload = await request.json()
@@ -259,17 +275,7 @@ async def webhook_evolution(request: Request):
 
     texto_borrador, accion = generar_borrador(historial, contexto_lead, texto, slots_disponibles=slots)
 
-    # Defensa anti-alucinación: solo se acepta la acción de agendar si el
-    # inicio_iso que devolvió Gemini coincide EXACTO con un slot realmente
-    # ofrecido en este ciclo (nunca confiar en un horario "inventado").
-    if accion:
-        slot_valido = next((s for s in slots if s["inicio_iso"] == accion["inicio_iso"]), None)
-        if not slot_valido:
-            logging.warning("Gemini marcó agendar con un horario no ofrecido: %s", accion)
-            accion = None
-        else:
-            accion["fin_iso"] = slot_valido["fin_iso"]
-            accion["etiqueta"] = slot_valido["etiqueta"]
+    accion = _validar_accion(accion, slots)
 
     draft_id = store.crear_borrador(
         telefono, msg_id, texto_borrador,
@@ -278,6 +284,52 @@ async def webhook_evolution(request: Request):
     )
 
     return {"status": "ok", "draft_id": draft_id}
+
+
+class RegenerarBorrador(BaseModel):
+    instruccion: Optional[str] = None  # ajuste opcional del operador ("más corto", "no insistas"...)
+
+
+@app.post("/drafts/{draft_id}/regenerate")
+def regenerate_draft(draft_id: int, body: RegenerarBorrador, x_agent_token: Optional[str] = Header(default=None)):
+    """
+    Vuelve a redactar un borrador pendiente con Gemini, opcionalmente siguiendo una indicación del
+    operador. Si Gemini no responde, el borrador actual NO se pisa con el texto de emergencia.
+    """
+    _requerir_token(x_agent_token)
+    borrador = store.obtener_borrador(draft_id)
+    if not borrador:
+        raise HTTPException(status_code=404, detail="Borrador no encontrado.")
+    if borrador["estado"] != "pending":
+        raise HTTPException(status_code=409, detail=f"El borrador ya está en estado '{borrador['estado']}'.")
+
+    telefono = borrador["telefono_normalizado"]
+    mensaje = store.obtener_mensaje(borrador["mensaje_entrante_id"])
+    entrantes = [m for m in store.historial_conversacion(telefono, limite=20) if m["direccion"] == "in"]
+    texto_entrante = (mensaje or {}).get("texto") or (entrantes[-1]["texto"] if entrantes else "")
+
+    _linea, _archivo, contexto_lead = _buscar_lead_por_telefono(telefono)
+    historial = store.historial_conversacion(telefono, limite=20)
+    slots = _obtener_slots_cacheados()
+
+    texto, accion = generar_borrador(
+        historial, contexto_lead, texto_entrante, slots_disponibles=slots,
+        instruccion_operador=body.instruccion, borrador_anterior=borrador["texto_borrador"],
+    )
+    if texto == _borrador_fallback(texto_entrante):
+        raise HTTPException(status_code=502, detail="Gemini no respondió: el borrador no se modificó. Reintenta en un momento.")
+
+    accion = _validar_accion(accion, slots)
+    store.actualizar_borrador(
+        draft_id, texto,
+        accion_tipo=accion["tipo"] if accion else None,
+        accion_payload=accion,
+    )
+    return {
+        "texto_borrador": texto,
+        "accion_tipo": accion["tipo"] if accion else None,
+        "accion_payload": accion,
+    }
 
 
 @app.get("/filtered-messages")

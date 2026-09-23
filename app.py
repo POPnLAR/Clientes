@@ -184,6 +184,32 @@ def aprobar_borrador(draft_id, texto_final):
     return res.status_code == 200, res.text
 
 
+def regenerar_borrador(draft_id, instruccion):
+    res = requests.post(
+        f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/regenerate",
+        json={"instruccion": instruccion or None},
+        headers=_agent_headers(),
+        timeout=60,
+    )
+    if res.status_code == 200:
+        return True, res.json()
+    try:
+        return False, res.json().get("detail", res.text)
+    except ValueError:
+        return False, res.text
+
+
+def _al_regenerar(draft_id):
+    """Callback del botón 🔄: se ejecuta antes de redibujar, así puede reemplazar el texto del cuadro."""
+    instruccion = (st.session_state.get(f"inst_{draft_id}") or "").strip()
+    ok, datos = regenerar_borrador(draft_id, instruccion)
+    if ok:
+        st.session_state[f"draft_{draft_id}"] = datos["texto_borrador"]
+        st.session_state[f"regen_ok_{draft_id}"] = True
+    else:
+        st.session_state[f"regen_err_{draft_id}"] = str(datos)[:300]
+
+
 def rechazar_borrador(draft_id):
     res = requests.post(
         f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/reject",
@@ -597,6 +623,25 @@ if t3 is not None:
                         value=b["texto_borrador"],
                         key=f"draft_{b['id']}",
                     )
+
+                    st.text_input(
+                        "¿No te convence? Indica cómo quieres el mensaje (opcional):",
+                        key=f"inst_{b['id']}",
+                        placeholder='Ej: "más corto", "ya tienen asesoría, no insistas", "ofrece la demo"',
+                    )
+                    st.button(
+                        "🔄 Regenerar mensaje",
+                        key=f"regen_{b['id']}",
+                        on_click=_al_regenerar,
+                        args=(b["id"],),
+                        help="Vuelve a redactar el borrador con IA, siguiendo tu indicación si escribes una. "
+                             "Reemplaza el texto del cuadro (se pierde lo que hayas editado a mano).",
+                    )
+                    if st.session_state.pop(f"regen_ok_{b['id']}", False):
+                        st.success("Mensaje regenerado. Revísalo antes de aprobar.")
+                    error_regen = st.session_state.pop(f"regen_err_{b['id']}", None)
+                    if error_regen:
+                        st.error(f"No se pudo regenerar: {error_regen}")
 
                     accion_payload = None
                     if b.get("accion_tipo") == "agendar_cita" and b.get("accion_payload"):

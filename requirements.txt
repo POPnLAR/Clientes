@@ -3,3 +3,4 @@ pandas
 requests
 beautifulsoup4
 fpdf
+Authlib>=1.3.2

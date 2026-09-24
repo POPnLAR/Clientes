@@ -54,6 +54,11 @@ AGENT_SERVICE_TOKEN = st.secrets.get("AGENT_SERVICE_TOKEN", "")
 
 st.set_page_config(page_title="GestiónVital Pro Multi-SaaS", layout="wide", page_icon="📈")
 
+# Control de acceso: nada de lo que sigue (datos, secretos, acciones) se ejecuta sin una sesión
+# autorizada. Si el login no está configurado, la app se niega a mostrar contenido.
+import acceso
+acceso.exigir_login()
+
 # --- UTILIDADES ---
 def limpiar_acentos(text):
     if not isinstance(text, str):

@@ -4,3 +4,5 @@ requests
 beautifulsoup4
 fpdf
 Authlib>=1.3.2
+# Authlib (st.login) lo necesita para el servidor de Streamlit; no viene incluido.
+httpx

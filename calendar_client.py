@@ -1,6 +1,6 @@
 """
 Cliente delgado sobre Google Calendar API para ofrecer y agendar horarios de
-demo de GestiónVital Pro.
+demo (GestiónVital Pro o GestiónAlmacén Pro, según la línea del lead).
 
 Autenticación vía Service Account (sin flujo OAuth interactivo, apto para un
 servicio 24/7 sin navegador): Rodrigo comparte su Google Calendar personal con
@@ -148,7 +148,16 @@ def crear_evento(inicio_iso, fin_iso, titulo, descripcion):
     return {"event_id": creado["id"], "html_link": creado.get("htmlLink", "")}
 
 
-def crear_evento_demo(inicio_iso, telefono, nombre_lead, duracion_min=None):
+# Producto de cada línea de negocio: el evento debe llevar el nombre del producto de la demo.
+PRODUCTOS = {"clinicas": "GestiónVital Pro", "almacenes": "GestiónAlmacén Pro"}
+
+
+def nombre_producto(linea):
+    """Producto de la línea; si no se conoce (contacto que no está en los CSV) se usa el de clínicas."""
+    return PRODUCTOS.get(linea, PRODUCTOS["clinicas"])
+
+
+def crear_evento_demo(inicio_iso, telefono, nombre_lead, duracion_min=None, linea=None):
     """
     Revalida que el slot siga libre y, si es así, crea el evento de demo.
     Lanza SlotNoDisponibleError si el horario ya no está disponible: quien
@@ -161,6 +170,7 @@ def crear_evento_demo(inicio_iso, telefono, nombre_lead, duracion_min=None):
     if not slot_esta_libre(inicio_iso, fin_iso):
         raise SlotNoDisponibleError(f"El horario {inicio_iso} ya no está disponible.")
 
-    titulo = f"Demo GestiónVital - {nombre_lead}" if nombre_lead else "Demo GestiónVital"
-    descripcion = f"Demo agendada automáticamente vía WhatsApp. Teléfono: {telefono}."
+    producto = nombre_producto(linea)
+    titulo = f"Demo {producto} - {nombre_lead}" if nombre_lead else f"Demo {producto}"
+    descripcion = f"Demo de {producto} agendada automáticamente vía WhatsApp. Teléfono: {telefono}."
     return crear_evento(inicio_iso, fin_iso, titulo, descripcion)

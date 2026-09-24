@@ -287,6 +287,8 @@ async def webhook_evolution(request: Request):
     )
 
     accion = _validar_accion(accion, slots)
+    if accion:
+        accion["linea"] = linea or "clinicas"   # el evento del calendario debe llevar el producto del que se habló
 
     draft_id = store.crear_borrador(
         telefono, msg_id, texto_borrador,
@@ -389,6 +391,8 @@ def regenerate_draft(draft_id: int, body: RegenerarBorrador, x_agent_token: Opti
         raise HTTPException(status_code=502, detail="Gemini no respondió: el borrador no se modificó. Reintenta en un momento.")
 
     accion = _validar_accion(accion, slots)
+    if accion:
+        accion["linea"] = linea or "clinicas"   # el evento del calendario debe llevar el producto del que se habló
     store.actualizar_borrador(
         draft_id, texto,
         accion_tipo=accion["tipo"] if accion else None,
@@ -456,12 +460,13 @@ def approve_draft(draft_id: int, decision: DecisionBorrador, x_agent_token: Opti
 
     if borrador.get("accion_tipo") == "agendar_cita":
         accion = json.loads(borrador["accion_payload"])
-        _linea, _archivo, contexto_lead = _buscar_lead_por_telefono(borrador["telefono_normalizado"])
+        linea_actual, _archivo, contexto_lead = _buscar_lead_por_telefono(borrador["telefono_normalizado"])
         try:
             resultado = calendar_client.crear_evento_demo(
                 accion["inicio_iso"],
                 borrador["telefono_normalizado"],
                 nombre_lead=(contexto_lead or {}).get("Evento", ""),
+                linea=accion.get("linea") or linea_actual,
             )
         except calendar_client.SlotNoDisponibleError:
             store.marcar_resultado_accion(draft_id, "slot_no_disponible")

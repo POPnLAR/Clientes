@@ -14,6 +14,7 @@ from datetime import datetime, timedelta
 import logging
 
 import agent_client
+import asignaciones
 import captacion
 import cobertura
 import serp_client
@@ -363,7 +364,7 @@ def obtener_mensaje_secuencia(nombre, ubicacion, dia):
 
     return aplicar_spintax(msg.replace("{nombre}", nombre).replace("{zona}", zona))
 
-def _armar_candidatos(df, ahora, respondieron, estado_resp):
+def _armar_candidatos(df, ahora, respondieron, estado_resp, asignados=frozenset()):
     """
     Devuelve hasta 5 envíos [{'idx','dia'}] para este ciclo. Salta a quienes ya
     respondieron por WhatsApp (su conversación la lleva el agente, no la secuencia
@@ -377,6 +378,9 @@ def _armar_candidatos(df, ahora, respondieron, estado_resp):
             continue
         if row["Estado"] in ["Finalizado", "Rechazado", "Cita Agendada", "Agendado", "Error"]:
             continue
+
+        if asignaciones.clave_telefono(row.get("Telefono", "")) in asignados:
+            continue  # lo atiende el vendedor: no se le escribe desde la secuencia automática
 
         if agent_client.clave_telefono(row.get("Telefono", "")) in respondieron:
             if not str(row.get("Notas", "")).strip() or str(row.get("Notas")) == "nan":
@@ -428,12 +432,13 @@ def ejecutar_ciclo():
     df = pd.read_csv(ARCHIVO_LEADS)
     df["Dia_Secuencia"] = pd.to_numeric(df["Dia_Secuencia"], errors='coerce').fillna(0).astype(int)
     respondieron, estado_resp = agent_client.obtener_telefonos_que_respondieron()
+    asignados = asignaciones.cargar_asignados()
     if respondieron:
         print(f"💬 {len(respondieron)} contactos ya respondieron: su secuencia automática queda pausada.")
     if estado_resp == "error":
         print("⚠️ No se pudo consultar al agente: este ciclo solo se envían primeros mensajes (no seguimientos).")
 
-    candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp)
+    candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp, asignados)
 
     if not candidatos:
         print("📭 Nada pendiente. Buscando nuevos leads...")
@@ -454,12 +459,12 @@ def ejecutar_ciclo():
             )
 
         # Recalcular candidatos luego de agregar leads nuevos para enviar en el mismo run
-        candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp)
+        candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp, asignados)
 
         if not candidatos:
             print("📭 Aun así no hay candidatos para enviar después de buscar nuevos leads.")
             print("♻️ Intentando reciclar leads antiguos...")
-            df, total_reciclados = reciclar_leads_antiguos(df, ahora, respondieron)
+            df, total_reciclados = reciclar_leads_antiguos(df, ahora, respondieron | asignados)
             resumen["reciclados"] = total_reciclados
             if total_reciclados > 0:
                 print(f"♻️ Leads reciclados para recontacto: {total_reciclados}")

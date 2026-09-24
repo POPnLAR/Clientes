@@ -21,3 +21,7 @@ evo_qr.png
 # Notas locales con datos de infraestructura (repo publico)
 rippling-strolling-diffie.md
 .env.serp
+
+# Entregas semanales al vendedor (datos personales de prospectos) y credenciales de esa herramienta
+entregas/
+.env.entrega

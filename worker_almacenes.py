@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 import logging
 
 import agent_client
+import asignaciones
 import captacion
 import cobertura
 import serp_client
@@ -232,7 +233,7 @@ def obtener_mensaje_almacen(nombre, ubicacion, dia):
 RESULTADOS_QUE_CIERRAN = {"interesado", "no interesado", "numero equivocado"}
 
 
-def _armar_candidatos(df, ahora, respondieron, estado_resp):
+def _armar_candidatos(df, ahora, respondieron, estado_resp, asignados=frozenset()):
     """
     Hasta 3 envíos [{'idx','dia'}] para este ciclo. Salta a quienes ya respondieron por
     WhatsApp (los atiende el agente) y a los ya clasificados. Si el agente no respondió
@@ -247,6 +248,9 @@ def _armar_candidatos(df, ahora, respondieron, estado_resp):
             continue
         if str(row.get("Resultado", "")).strip().lower() in RESULTADOS_QUE_CIERRAN:
             continue
+
+        if asignaciones.clave_telefono(row.get("Telefono", "")) in asignados:
+            continue  # lo atiende el vendedor: no se le escribe desde la secuencia automática
 
         if agent_client.clave_telefono(row.get("Telefono", "")) in respondieron:
             if not str(row.get("Notas", "")).strip() or str(row.get("Notas")) == "nan":
@@ -327,12 +331,13 @@ def ejecutar_ciclo():
         return
 
     respondieron, estado_resp = agent_client.obtener_telefonos_que_respondieron()
+    asignados = asignaciones.cargar_asignados()
     if respondieron:
         print(f"💬 {len(respondieron)} contactos ya respondieron: su secuencia automática queda pausada.")
     if estado_resp == "error":
         print("⚠️ No se pudo consultar al agente: este ciclo solo se envían primeros mensajes (no seguimientos).")
 
-    candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp)
+    candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp, asignados)
 
     if not candidatos:
         print("📭 Buscando nuevos almacenes...")
@@ -343,7 +348,7 @@ def ejecutar_ciclo():
         print(f"➕ Leads agregados: {max(0, despues-antes)}")
 
         # Si se agregaron leads, intentamos enviar en el mismo ciclo (para no esperar al próximo cron).
-        candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp)
+        candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp, asignados)
 
         if not candidatos:
             print("📭 Aún no hay candidatos después de buscar nuevos almacenes.")

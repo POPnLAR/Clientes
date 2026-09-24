@@ -110,8 +110,8 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 109,10/04/2026,19:53,Mi Market Marco Polo,App Almacen,Las Condes,Error,56931946772,0,10/04/2026 19:53,,,
 110,11/04/2026,16:52,Minimarket del Sur,App Almacen,La Florida,Error,56223142896,0,11/04/2026 16:52,,,
 111,14/04/2026,14:18,Minimarket El Gueñe,App Almacen,La Florida,Error,56225640900,0,14/04/2026 14:18,,,
-112,23/09/2026,13:35,Minimarket Condell,App Almacen,La Florida,Contactado,56933124201,1,23/09/2026 13:35,,,B
-113,23/09/2026,13:35,MINIMARKET f&c,App Almacen,La Florida,Contactado,56979610021,1,23/09/2026 13:35,,,A
+112,23/09/2026,13:35,Minimarket Condell,App Almacen,La Florida,Finalizado,56933124201,2,24/09/2026 17:31,,,B
+113,23/09/2026,13:35,MINIMARKET f&c,App Almacen,La Florida,Finalizado,56979610021,2,24/09/2026 17:31,,,A
 114,23/09/2026,13:35,Minimarket El Gueñe,App Almacen,La Florida,Contactado,56976226879,1,23/09/2026 13:35,,Respondió por WhatsApp: secuencia automática pausada,A
 115,23/09/2026,14:00,Las Pipas de Einstein,App Almacen,Independencia,Rechazado,56934566003,0,,,Descartado: rubro no corresponde (no es almacén),
 116,23/09/2026,14:00,Guardatodo Minibodegas,App Almacen,Independencia,Rechazado,56956726911,0,,,Descartado: rubro no corresponde (no es almacén),
@@ -140,7 +140,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 139,23/09/2026,14:51,Botilleria Tu Punto Fijo Concha,App Almacen,Santiago Centro,Contactado,56972579312,1,23/09/2026 14:51,,,B
 140,23/09/2026,14:51,Botilleria ryuu,App Almacen,Santiago Centro,Contactado,56940474854,1,23/09/2026 18:30,,,A
 141,23/09/2026,14:51,"Botillería ""Don Jacinto""",App Almacen,Santiago Centro,Contactado,56962467370,1,23/09/2026 18:30,,,A
-142,23/09/2026,14:51,Botilleria Don Gato,App Almacen,Santiago Centro,Contactado,56997772625,1,23/09/2026 14:51,,,B
+142,23/09/2026,14:51,Botilleria Don Gato,App Almacen,Santiago Centro,Finalizado,56997772625,2,24/09/2026 17:31,,,B
 143,23/09/2026,14:51,Botilleria Basty,App Almacen,Santiago Centro,Contactado,56962277139,1,24/09/2026 09:33,,,B
 144,24/09/2026,14:12,Botilleria 7 Liras 2,App Almacen,Pedro Aguirre Cerda,Nuevo,56955305577,0,,,,
 145,24/09/2026,14:12,Botilleria la clinica,App Almacen,Pedro Aguirre Cerda,Contactado,56978909354,1,24/09/2026 14:12,,,A

@@ -56,7 +56,11 @@ _RUBRO_NO = {
         r"grandes almacenes|centro comercial|mall|trasteros|almacenamiento|minibodega|"
         r"electrodomesticos|perfumeria|jugueteria|zapateria|tienda de moviles|tienda de vinos"
     ),
-    "clinicas": r"\bhotel\b|inmobiliaria|ferreteria|restaurante|restaurant",
+    # Rubros ajenos que suelen colarse en las búsquedas de estética (p. ej. "Clínica Veterinaria").
+    "clinicas": (
+        r"\bhotel\b|inmobiliaria|ferreteria|restaurante|restaurant|"
+        r"veterin|mascota|optica|farmacia|panaderia|supermercado|abogad|contab|mecanic"
+    ),
 }
 
 

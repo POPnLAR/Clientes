@@ -3,7 +3,7 @@ name: Prospeccion Almacenes Cron
 on:
   schedule:
     # Corre cada hora, en el minuto 15. La ventana real de envío la controla
-    # worker_almacenes.py (10:00-19:00 hora Chile). Antes usaba horas UTC fijas
+    # worker_almacenes.py (lunes a sábado, 9:00-19:59 hora Chile; se ajusta con HORA_INICIO_ENVIO/HORA_FIN_ENVIO). Antes usaba horas UTC fijas
     # (14,17,20,23), que se desalinean ~1h cada vez que Chile cambia de horario
     # de verano/invierno (mismo problema detectado en cron.yml) — correr cada
     # hora evita depender de ajustar el cron dos veces al año.

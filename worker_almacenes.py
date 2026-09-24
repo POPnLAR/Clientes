@@ -37,6 +37,9 @@ ARCHIVO_COBERTURA = "cobertura_almacenes.json"
 # Cupo mensual de SerpAPI de esta línea (clínicas usa otros 150 de los 250 totales)
 ARCHIVO_PRESUPUESTO_SERP = "presupuesto_serpapi_almacenes.json"
 LIMITE_MENSUAL_SERPAPI = int(os.getenv("LIMITE_MENSUAL_SERPAPI_ALMACENES", "100"))
+# Ventana de envío (hora de Chile, lunes a sábado): desde HORA_INICIO_ENVIO:00 hasta HORA_FIN_ENVIO:59.
+HORA_INICIO_ENVIO = int(os.getenv("HORA_INICIO_ENVIO", "9"))
+HORA_FIN_ENVIO = int(os.getenv("HORA_FIN_ENVIO", "19"))
 # Límite diario de mensajes enviados para evitar baneos
 MAX_MENSAJES_DIARIOS = int(os.getenv("MAX_MENSAJES_DIARIOS", "30"))
 
@@ -277,10 +280,11 @@ def _armar_candidatos(df, ahora, respondieron, estado_resp):
 def ejecutar_ciclo():
     ahora = obtener_ahora_chile()
     
-    # Horario Almacenero: 10 AM a 19 PM (Lunes a Sábado)
-    if ahora.weekday() > 5 or not (10 <= ahora.hour <= 19): 
-        print(f"🕒 Fuera de horario para almacenes.")
-        return 
+    # Horario Almacenero: lunes a sábado, de HORA_INICIO_ENVIO:00 a HORA_FIN_ENVIO:59 (hora de Chile)
+    if ahora.weekday() > 5 or not (HORA_INICIO_ENVIO <= ahora.hour <= HORA_FIN_ENVIO):
+        print(f"🕒 Fuera de horario para almacenes (Hora Chile: {ahora.strftime('%A %H:%M')}; "
+              f"se opera de lunes a sábado, {HORA_INICIO_ENVIO}:00 a {HORA_FIN_ENVIO}:59).")
+        return
 
     estado_conexion = verificar_estado_conexion(EVO_URL, EVO_INSTANCE, EVO_TOKEN)
     if estado_conexion != "open":

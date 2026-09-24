@@ -11,7 +11,7 @@ import os
 import pandas as pd
 
 ARCHIVO = "asignaciones_vendedor.csv"
-COLUMNAS = ["Telefono", "Linea", "Nombre", "Asignado_A", "Fecha_Asignacion", "Semana"]
+COLUMNAS = ["Telefono", "Linea", "Nombre", "Asignado_A", "Fecha_Asignacion", "Semana", "Grupo"]
 
 
 def clave_telefono(tel):

@@ -41,6 +41,9 @@ LIMITE_MENSUAL_SERPAPI = int(os.getenv("LIMITE_MENSUAL_SERPAPI", "150"))  # de 2
 RECONTACTO_DIAS = int(os.getenv("RECONTACTO_DIAS", "21"))
 MAX_RECICLADOS_POR_CICLO = int(os.getenv("MAX_RECICLADOS_POR_CICLO", "8"))
 MAX_FALLOS_SEGUIDOS = 3
+# Ventana de envío (hora de Chile, lunes a sábado): desde HORA_INICIO_ENVIO:00 hasta HORA_FIN_ENVIO:59.
+HORA_INICIO_ENVIO = int(os.getenv("HORA_INICIO_ENVIO", "9"))
+HORA_FIN_ENVIO = int(os.getenv("HORA_FIN_ENVIO", "18"))
 
 logging.basicConfig(
     level=logging.INFO,
@@ -405,9 +408,10 @@ def ejecutar_ciclo():
     ahora = obtener_ahora_chile()
     resumen = _nuevo_resumen()
 
-    # Restricción Lunes-Sábado 10:00 a 18:30 (Horario más conservador)
-    if ahora.weekday() > 5 or not (10 <= ahora.hour <= 18):
-        print(f"🕒 Fuera de horario de envío (Hora Chile: {ahora.strftime('%H:%M')}).")
+    # Restricción Lunes-Sábado, de HORA_INICIO_ENVIO:00 a HORA_FIN_ENVIO:59 (hora de Chile)
+    if ahora.weekday() > 5 or not (HORA_INICIO_ENVIO <= ahora.hour <= HORA_FIN_ENVIO):
+        print(f"🕒 Fuera de horario de envío (Hora Chile: {ahora.strftime('%A %H:%M')}; "
+              f"se opera de lunes a sábado, {HORA_INICIO_ENVIO}:00 a {HORA_FIN_ENVIO}:59).")
         return
 
     estado_conexion = verificar_estado_conexion(EVO_URL, EVO_INSTANCE, EVO_TOKEN)

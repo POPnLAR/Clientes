@@ -1,6 +1,6 @@
 """
 Prepara la entrega semanal de leads de CLÍNICAS para el vendedor: selecciona los que recibieron la
-secuencia automática completa y no respondieron, los limpia y los deja en un Excel listo para enviar.
+secuencia automática completa y no respondieron, los limpia y los deja en un Excel listo para que el vendedor los llame por teléfono.
 
 Funciona en DOS pasos, para no equivocarse:
 
@@ -34,7 +34,7 @@ ARCHIVO_LEADS = "prospeccion_gestionvital_pro.csv"
 CARPETA = "entregas"
 LINEA = "clinicas"
 RUBROS_PREFERIDOS = {"Clinica Estetica", "Medicina Estetica"}
-ESTADOS_VENDEDOR = "Sin contactar,Contactado - sin respuesta,Interesado,Demo agendada,No interesado,Número incorrecto"
+ESTADOS_VENDEDOR = "Sin llamar,No contesta,Llamar de nuevo,Interesado,Demo agendada,No interesado,Número incorrecto"
 
 # El nombre debe sugerir estética/salud; si no, va a revisión manual en vez de al vendedor.
 _RE_RUBRO_OK = re.compile(
@@ -49,7 +49,6 @@ _RE_OTRO_RUBRO = re.compile(
     r"veterin|mascota|optic|farmac|inmobil|hotel|ferreter|restaurant|panader|supermerc|abogad|contab|mecanic",
     re.IGNORECASE,
 )
-_RE_EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
 def _sin_acentos(t):
@@ -124,14 +123,8 @@ def seleccionar(df, respondieron, asignados, hoy, min_dias=3):
         motivos["nombre que no parece de estética (para revisar)"] = len(revisar)
     df = df[~dudoso]
 
-    df["_email"] = df.apply(
-        lambda r: r["Email"].strip().lower()
-        if _RE_EMAIL.match(r["Email"].strip()) and "invalido" not in r["Notas"].lower() else "",
-        axis=1,
-    )
     df["_pref"] = df["Ministerio"].map(rubro_de).isin(RUBROS_PREFERIDOS)
-    df = df.sort_values(["_email", "_pref", "_ultimo"], key=lambda c: c.map(bool) if c.name == "_email" else c,
-                        ascending=[False, False, False])
+    df = df.sort_values(["_pref", "_ultimo"], ascending=[False, False])
     return df, motivos, revisar
 
 
@@ -140,20 +133,16 @@ def construir_filas(sel):
     for i, (_, r) in enumerate(sel.iterrows(), start=1):
         enviados = int(float(r.get("Dia_Secuencia") or 0))
         ultimo = r["_ultimo"].strftime("%d/%m/%Y")
-        digitos = "".join(filter(str.isdigit, r["_tel"]))
         filas.append({
             "N°": i,
-            "Prioridad": "A" if r["_email"] else "B",
             "Negocio": limpiar_nombre(r["Evento"]),
             "Rubro": rubro_de(r["Ministerio"]),
             "Zona de búsqueda": str(r["Ubicacion"]).strip(),
             "Teléfono": formatear_telefono(r["Telefono"]),
-            "WhatsApp": f"https://wa.me/{digitos}",
-            "Email": r["_email"],
-            "Último contacto": ultimo,
-            "Contexto": f"Recibió {enviados} mensajes automáticos por WhatsApp (último el {ultimo}); no ha respondido.",
-            "Estado": "Sin contactar",
-            "Fecha de contacto": "",
+            "Último WhatsApp enviado": ultimo,
+            "Contexto": f"Ya recibió {enviados} mensajes de WhatsApp de GestiónVital (el último el {ultimo}) y no respondió.",
+            "Estado": "Sin llamar",
+            "Fecha de llamada": "",
             "Comentarios": "",
             "_telefono_crudo": r["Telefono"],
         })
@@ -178,23 +167,20 @@ def escribir_excel(filas, ruta, vendedor, hoy):
         c.font = Font(bold=True, color="FFFFFF")
         c.fill = relleno
         c.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
-    anchos = {"N°": 5, "Prioridad": 10, "Negocio": 34, "Rubro": 20, "Zona de búsqueda": 18, "Teléfono": 17, "WhatsApp": 14,
-              "Email": 30, "Último contacto": 14, "Contexto": 52, "Estado": 24, "Fecha de contacto": 16, "Comentarios": 44}
+    anchos = {"N°": 5, "Negocio": 36, "Rubro": 20, "Zona de búsqueda": 18, "Teléfono": 18,
+              "Último WhatsApp enviado": 16, "Contexto": 54, "Estado": 20, "Fecha de llamada": 16, "Comentarios": 46}
     for i, nombre in enumerate(columnas, start=1):
         ws.column_dimensions[ws.cell(1, i).column_letter].width = anchos.get(nombre, 16)
         for celda in ws.iter_rows(min_row=2, min_col=i, max_col=i):
             celda[0].alignment = Alignment(vertical="top", wrap_text=nombre in ("Contexto", "Comentarios", "Negocio"))
-    col_wa = columnas.index("WhatsApp") + 1
+    col_tel = columnas.index("Teléfono") + 1
     for fila in range(2, len(filas) + 2):
-        c = ws.cell(fila, col_wa)
-        c.hyperlink = c.value
-        c.value = "Abrir chat"
-        c.font = Font(color="0563C1", underline="single")
+        ws.cell(fila, col_tel).font = Font(bold=True, size=12)   # el dato principal: se lee de un vistazo
     dv = DataValidation(type="list", formula1=f'"{ESTADOS_VENDEDOR}"', allow_blank=True)
     ws.add_data_validation(dv)
     col_estado = columnas.index("Estado") + 1
     dv.add(f"{ws.cell(2, col_estado).coordinate}:{ws.cell(len(filas) + 1, col_estado).coordinate}")
-    ws.freeze_panes = "D2"
+    ws.freeze_panes = "C2"
     ws.auto_filter.ref = ws.dimensions
     ws.row_dimensions[1].height = 30
 
@@ -204,17 +190,20 @@ def escribir_excel(filas, ruta, vendedor, hoy):
         "",
         "Qué es esta lista:",
         "  Negocios de estética de la Región Metropolitana que ya recibieron mensajes automáticos de GestiónVital Pro por WhatsApp y NO han respondido.",
+        "  Puedes mencionarlo al llamar: ya conocen el nombre, aunque no hayan contestado.",
         "",
-        "Prioridad:",
-        "  A = tiene email además de teléfono (dos vías de contacto).   B = solo teléfono/WhatsApp.",
+        "Orden de la lista:",
+        "  Primero clínicas y medicina estética; dentro de cada grupo, los que recibieron el último mensaje más recientemente.",
         "",
-        "Cómo trabajarla:",
-        "  1. Contacta a cada negocio (el link de la columna WhatsApp abre el chat).",
-        "  2. Actualiza la columna Estado (lista desplegable), la fecha de contacto y los comentarios.",
-        "  3. Si el negocio dice que no le interesa, márcalo 'No interesado' y no insistas.",
-        "  4. Devuelve el archivo actualizado al final de la semana.",
+        "Cómo trabajarla (todo por teléfono):",
+        "  1. Llama a cada negocio, en el orden de la lista.",
+        "  2. Anota el resultado en la columna Estado (lista desplegable), la fecha de la llamada y los comentarios.",
+        "  3. Si no contesta, márcalo 'No contesta' y vuelve a intentar otro día u horario ('Llamar de nuevo').",
+        "  4. Si dice que no le interesa, márcalo 'No interesado' y no insistas.",
+        "  5. Si le interesa, márcalo 'Interesado' o 'Demo agendada' y deja el detalle en Comentarios.",
+        "  6. Devuelve el archivo actualizado al final de la semana.",
         "",
-        "No contactes a negocios que no estén en tu lista: pueden estar siendo atendidos por otra vía.",
+        "No llames a negocios que no estén en tu lista: pueden estar siendo atendidos por otra vía.",
         "",
         "Ojo con la 'Zona de búsqueda': es la comuna en la que se buscó el negocio, NO su dirección exacta (Google a veces",
         "devuelve negocios de zonas cercanas). Confirma la ubicación al hablar con ellos.",
@@ -305,9 +294,9 @@ def main():
     if elegidos.empty:
         sys.exit("\nNo hay leads disponibles para entregar con estas reglas.")
     filas = construir_filas(elegidos)
-    print(f"\nEntrega propuesta: {len(filas)} leads  (A = con email: {sum(f['Prioridad'] == 'A' for f in filas)}, B: {sum(f['Prioridad'] == 'B' for f in filas)})")
+    print(f"\nEntrega propuesta: {len(filas)} leads")
     for f in filas[:8]:
-        print(f"    {f['N°']:2} [{f['Prioridad']}] {f['Negocio'][:36]:36} {f['Zona de búsqueda'][:14]:14} {f['Teléfono']}  {f['Rubro']}")
+        print(f"    {f['N°']:2} {f['Negocio'][:36]:36} {f['Zona de búsqueda'][:14]:14} {f['Teléfono']}  {f['Rubro']}")
     if len(filas) > 8:
         print(f"    ... y {len(filas) - 8} más")
 

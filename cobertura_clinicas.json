@@ -1,10 +1,6 @@
 {
   "pendientes": [
     [
-      "Padre Hurtado",
-      "Clinica Estetica"
-    ],
-    [
       "San Pedro",
       "Centro de Estetica"
     ],
@@ -1199,7 +1195,1687 @@
     [
       "Las Condes",
       "Depilacion Laser"
+    ],
+    [
+      "San José de Maipo",
+      "Estetica Corporal"
+    ],
+    [
+      "Alhué",
+      "Estetica Corporal"
+    ],
+    [
+      "Independencia",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Til Til",
+      "Micropigmentacion"
+    ],
+    [
+      "María Pinto",
+      "Micropigmentacion"
+    ],
+    [
+      "Lo Barnechea",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Maipú",
+      "Centro de Belleza"
+    ],
+    [
+      "Lampa",
+      "Tratamientos Faciales"
+    ],
+    [
+      "San Joaquín",
+      "Esteticista"
+    ],
+    [
+      "Quinta Normal",
+      "Estetica Corporal"
+    ],
+    [
+      "Colina",
+      "Cosmetologa"
+    ],
+    [
+      "Providencia",
+      "Esteticista"
+    ],
+    [
+      "Talagante",
+      "Cejas y Pestanas"
+    ],
+    [
+      "San Ramón",
+      "Masajes Reductivos"
+    ],
+    [
+      "La Reina",
+      "Esteticista"
+    ],
+    [
+      "Paine",
+      "Cosmetologa"
+    ],
+    [
+      "La Florida",
+      "Cejas y Pestanas"
+    ],
+    [
+      "San Miguel",
+      "Cosmetologa"
+    ],
+    [
+      "Calera de Tango",
+      "Centro de Belleza"
+    ],
+    [
+      "Calera de Tango",
+      "Cosmetologa"
+    ],
+    [
+      "Quinta Normal",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Puente Alto",
+      "Micropigmentacion"
+    ],
+    [
+      "Lo Barnechea",
+      "Esteticista"
+    ],
+    [
+      "Talagante",
+      "Esteticista"
+    ],
+    [
+      "Quinta Normal",
+      "Micropigmentacion"
+    ],
+    [
+      "Recoleta",
+      "Micropigmentacion"
+    ],
+    [
+      "Alhué",
+      "Masajes Reductivos"
+    ],
+    [
+      "La Reina",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Til Til",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Lo Prado",
+      "Centro de Belleza"
+    ],
+    [
+      "Lo Prado",
+      "Cosmetologa"
+    ],
+    [
+      "Buin",
+      "Micropigmentacion"
+    ],
+    [
+      "Cerrillos",
+      "Cosmetologa"
+    ],
+    [
+      "La Reina",
+      "Cosmetologa"
+    ],
+    [
+      "Providencia",
+      "Masajes Reductivos"
+    ],
+    [
+      "Lo Barnechea",
+      "Micropigmentacion"
+    ],
+    [
+      "Las Condes",
+      "Centro de Belleza"
+    ],
+    [
+      "El Monte",
+      "Cosmetologa"
+    ],
+    [
+      "Santiago Centro",
+      "Cosmetologa"
+    ],
+    [
+      "Cerrillos",
+      "Estetica Corporal"
+    ],
+    [
+      "Macul",
+      "Masajes Reductivos"
+    ],
+    [
+      "Alhué",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Curacaví",
+      "Estetica Corporal"
+    ],
+    [
+      "Ñuñoa",
+      "Micropigmentacion"
+    ],
+    [
+      "Conchalí",
+      "Cosmetologa"
+    ],
+    [
+      "Peñalolén",
+      "Masajes Reductivos"
+    ],
+    [
+      "La Granja",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Quilicura",
+      "Esteticista"
+    ],
+    [
+      "La Reina",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Ñuñoa",
+      "Masajes Reductivos"
+    ],
+    [
+      "Maipú",
+      "Cosmetologa"
+    ],
+    [
+      "San Bernardo",
+      "Esteticista"
+    ],
+    [
+      "Lo Espejo",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Curacaví",
+      "Masajes Reductivos"
+    ],
+    [
+      "Independencia",
+      "Estetica Corporal"
+    ],
+    [
+      "La Granja",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Estación Central",
+      "Cosmetologa"
+    ],
+    [
+      "Cerro Navia",
+      "Estetica Corporal"
+    ],
+    [
+      "El Monte",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Maipú",
+      "Tratamientos Faciales"
+    ],
+    [
+      "El Bosque",
+      "Tratamientos Faciales"
+    ],
+    [
+      "El Bosque",
+      "Esteticista"
+    ],
+    [
+      "San Miguel",
+      "Micropigmentacion"
+    ],
+    [
+      "Macul",
+      "Esteticista"
+    ],
+    [
+      "María Pinto",
+      "Cejas y Pestanas"
+    ],
+    [
+      "San Joaquín",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Las Condes",
+      "Estetica Corporal"
+    ],
+    [
+      "San José de Maipo",
+      "Masajes Reductivos"
+    ],
+    [
+      "Cerrillos",
+      "Esteticista"
+    ],
+    [
+      "San Joaquín",
+      "Centro de Belleza"
+    ],
+    [
+      "Recoleta",
+      "Cosmetologa"
+    ],
+    [
+      "Independencia",
+      "Esteticista"
+    ],
+    [
+      "La Reina",
+      "Micropigmentacion"
+    ],
+    [
+      "Maipú",
+      "Micropigmentacion"
+    ],
+    [
+      "Huechuraba",
+      "Masajes Reductivos"
+    ],
+    [
+      "Conchalí",
+      "Esteticista"
+    ],
+    [
+      "Santiago Centro",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Quilicura",
+      "Cejas y Pestanas"
+    ],
+    [
+      "La Florida",
+      "Esteticista"
+    ],
+    [
+      "Macul",
+      "Micropigmentacion"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Estetica Corporal"
+    ],
+    [
+      "Renca",
+      "Masajes Reductivos"
+    ],
+    [
+      "Colina",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Pudahuel",
+      "Micropigmentacion"
+    ],
+    [
+      "Pudahuel",
+      "Masajes Reductivos"
+    ],
+    [
+      "El Bosque",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Lampa",
+      "Centro de Belleza"
+    ],
+    [
+      "Independencia",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Lo Prado",
+      "Masajes Reductivos"
+    ],
+    [
+      "Cerrillos",
+      "Masajes Reductivos"
+    ],
+    [
+      "Huechuraba",
+      "Micropigmentacion"
+    ],
+    [
+      "La Cisterna",
+      "Cosmetologa"
+    ],
+    [
+      "Buin",
+      "Cosmetologa"
+    ],
+    [
+      "La Florida",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Til Til",
+      "Centro de Belleza"
+    ],
+    [
+      "Puente Alto",
+      "Estetica Corporal"
+    ],
+    [
+      "El Monte",
+      "Esteticista"
+    ],
+    [
+      "Buin",
+      "Estetica Corporal"
+    ],
+    [
+      "Las Condes",
+      "Cosmetologa"
+    ],
+    [
+      "Conchalí",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Isla de Maipo",
+      "Estetica Corporal"
+    ],
+    [
+      "Padre Hurtado",
+      "Micropigmentacion"
+    ],
+    [
+      "Vitacura",
+      "Cosmetologa"
+    ],
+    [
+      "La Cisterna",
+      "Estetica Corporal"
+    ],
+    [
+      "Calera de Tango",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Paine",
+      "Esteticista"
+    ],
+    [
+      "Curacaví",
+      "Esteticista"
+    ],
+    [
+      "San Ramón",
+      "Micropigmentacion"
+    ],
+    [
+      "San Miguel",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Renca",
+      "Micropigmentacion"
+    ],
+    [
+      "Huechuraba",
+      "Cosmetologa"
+    ],
+    [
+      "Renca",
+      "Cosmetologa"
+    ],
+    [
+      "Renca",
+      "Tratamientos Faciales"
+    ],
+    [
+      "La Cisterna",
+      "Masajes Reductivos"
+    ],
+    [
+      "San Pedro",
+      "Masajes Reductivos"
+    ],
+    [
+      "San Pedro",
+      "Cosmetologa"
+    ],
+    [
+      "San Joaquín",
+      "Cosmetologa"
+    ],
+    [
+      "Quilicura",
+      "Centro de Belleza"
+    ],
+    [
+      "San Pedro",
+      "Micropigmentacion"
+    ],
+    [
+      "La Florida",
+      "Micropigmentacion"
+    ],
+    [
+      "Curacaví",
+      "Micropigmentacion"
+    ],
+    [
+      "Padre Hurtado",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Huechuraba",
+      "Tratamientos Faciales"
+    ],
+    [
+      "La Cisterna",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Providencia",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Melipilla",
+      "Esteticista"
+    ],
+    [
+      "Vitacura",
+      "Masajes Reductivos"
+    ],
+    [
+      "Peñalolén",
+      "Estetica Corporal"
+    ],
+    [
+      "Ñuñoa",
+      "Esteticista"
+    ],
+    [
+      "El Bosque",
+      "Cosmetologa"
+    ],
+    [
+      "Pudahuel",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Calera de Tango",
+      "Masajes Reductivos"
+    ],
+    [
+      "Maipú",
+      "Esteticista"
+    ],
+    [
+      "San José de Maipo",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Peñaflor",
+      "Masajes Reductivos"
+    ],
+    [
+      "Melipilla",
+      "Centro de Belleza"
+    ],
+    [
+      "La Florida",
+      "Estetica Corporal"
+    ],
+    [
+      "Pudahuel",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Esteticista"
+    ],
+    [
+      "La Florida",
+      "Masajes Reductivos"
+    ],
+    [
+      "San Joaquín",
+      "Micropigmentacion"
+    ],
+    [
+      "Quinta Normal",
+      "Centro de Belleza"
+    ],
+    [
+      "Lo Espejo",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Puente Alto",
+      "Centro de Belleza"
+    ],
+    [
+      "Alhué",
+      "Cosmetologa"
+    ],
+    [
+      "Melipilla",
+      "Masajes Reductivos"
+    ],
+    [
+      "La Cisterna",
+      "Centro de Belleza"
+    ],
+    [
+      "Renca",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Recoleta",
+      "Centro de Belleza"
+    ],
+    [
+      "La Cisterna",
+      "Esteticista"
+    ],
+    [
+      "Curacaví",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Calera de Tango",
+      "Esteticista"
+    ],
+    [
+      "Puente Alto",
+      "Masajes Reductivos"
+    ],
+    [
+      "Peñaflor",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Alhué",
+      "Centro de Belleza"
+    ],
+    [
+      "Isla de Maipo",
+      "Micropigmentacion"
+    ],
+    [
+      "Talagante",
+      "Centro de Belleza"
+    ],
+    [
+      "Quinta Normal",
+      "Esteticista"
+    ],
+    [
+      "El Monte",
+      "Micropigmentacion"
+    ],
+    [
+      "Recoleta",
+      "Esteticista"
+    ],
+    [
+      "Quinta Normal",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Talagante",
+      "Masajes Reductivos"
+    ],
+    [
+      "Talagante",
+      "Estetica Corporal"
+    ],
+    [
+      "Estación Central",
+      "Micropigmentacion"
+    ],
+    [
+      "Lampa",
+      "Estetica Corporal"
+    ],
+    [
+      "Quilicura",
+      "Estetica Corporal"
+    ],
+    [
+      "San Pedro",
+      "Esteticista"
+    ],
+    [
+      "San José de Maipo",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Til Til",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Lo Espejo",
+      "Cosmetologa"
+    ],
+    [
+      "Isla de Maipo",
+      "Tratamientos Faciales"
+    ],
+    [
+      "María Pinto",
+      "Cosmetologa"
+    ],
+    [
+      "Pudahuel",
+      "Centro de Belleza"
+    ],
+    [
+      "Renca",
+      "Centro de Belleza"
+    ],
+    [
+      "Colina",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Pirque",
+      "Esteticista"
+    ],
+    [
+      "Huechuraba",
+      "Esteticista"
+    ],
+    [
+      "Melipilla",
+      "Estetica Corporal"
+    ],
+    [
+      "Melipilla",
+      "Micropigmentacion"
+    ],
+    [
+      "Lo Prado",
+      "Esteticista"
+    ],
+    [
+      "San Bernardo",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Pirque",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Isla de Maipo",
+      "Esteticista"
+    ],
+    [
+      "Providencia",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Peñalolén",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Buin",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Vitacura",
+      "Esteticista"
+    ],
+    [
+      "La Granja",
+      "Esteticista"
+    ],
+    [
+      "Alhué",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Cerrillos",
+      "Tratamientos Faciales"
+    ],
+    [
+      "El Bosque",
+      "Micropigmentacion"
+    ],
+    [
+      "Isla de Maipo",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Til Til",
+      "Estetica Corporal"
+    ],
+    [
+      "San Joaquín",
+      "Estetica Corporal"
+    ],
+    [
+      "Buin",
+      "Masajes Reductivos"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Independencia",
+      "Masajes Reductivos"
+    ],
+    [
+      "El Monte",
+      "Centro de Belleza"
+    ],
+    [
+      "El Bosque",
+      "Estetica Corporal"
+    ],
+    [
+      "Santiago Centro",
+      "Micropigmentacion"
+    ],
+    [
+      "Colina",
+      "Micropigmentacion"
+    ],
+    [
+      "Ñuñoa",
+      "Centro de Belleza"
+    ],
+    [
+      "Lo Espejo",
+      "Estetica Corporal"
+    ],
+    [
+      "Cerro Navia",
+      "Cosmetologa"
+    ],
+    [
+      "Cerrillos",
+      "Centro de Belleza"
+    ],
+    [
+      "La Cisterna",
+      "Micropigmentacion"
+    ],
+    [
+      "Melipilla",
+      "Cosmetologa"
+    ],
+    [
+      "Cerrillos",
+      "Cejas y Pestanas"
+    ],
+    [
+      "La Granja",
+      "Micropigmentacion"
+    ],
+    [
+      "El Monte",
+      "Masajes Reductivos"
+    ],
+    [
+      "Las Condes",
+      "Micropigmentacion"
+    ],
+    [
+      "Colina",
+      "Estetica Corporal"
+    ],
+    [
+      "Santiago Centro",
+      "Centro de Belleza"
+    ],
+    [
+      "Ñuñoa",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Providencia",
+      "Estetica Corporal"
+    ],
+    [
+      "Cerro Navia",
+      "Esteticista"
+    ],
+    [
+      "Pirque",
+      "Estetica Corporal"
+    ],
+    [
+      "Pirque",
+      "Micropigmentacion"
+    ],
+    [
+      "Calera de Tango",
+      "Estetica Corporal"
+    ],
+    [
+      "Las Condes",
+      "Esteticista"
+    ],
+    [
+      "Renca",
+      "Estetica Corporal"
+    ],
+    [
+      "La Reina",
+      "Estetica Corporal"
+    ],
+    [
+      "Macul",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Colina",
+      "Masajes Reductivos"
+    ],
+    [
+      "Renca",
+      "Esteticista"
+    ],
+    [
+      "El Monte",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Cerrillos",
+      "Micropigmentacion"
+    ],
+    [
+      "Isla de Maipo",
+      "Cosmetologa"
+    ],
+    [
+      "Lampa",
+      "Masajes Reductivos"
+    ],
+    [
+      "Estación Central",
+      "Esteticista"
+    ],
+    [
+      "Buin",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Macul",
+      "Cosmetologa"
+    ],
+    [
+      "Padre Hurtado",
+      "Masajes Reductivos"
+    ],
+    [
+      "Cerro Navia",
+      "Centro de Belleza"
+    ],
+    [
+      "Lo Prado",
+      "Estetica Corporal"
+    ],
+    [
+      "El Bosque",
+      "Centro de Belleza"
+    ],
+    [
+      "Peñalolén",
+      "Micropigmentacion"
+    ],
+    [
+      "Vitacura",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Vitacura",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Padre Hurtado",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Peñalolén",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Huechuraba",
+      "Centro de Belleza"
+    ],
+    [
+      "Paine",
+      "Masajes Reductivos"
+    ],
+    [
+      "La Granja",
+      "Estetica Corporal"
+    ],
+    [
+      "Santiago Centro",
+      "Esteticista"
+    ],
+    [
+      "Providencia",
+      "Cosmetologa"
+    ],
+    [
+      "San Bernardo",
+      "Estetica Corporal"
+    ],
+    [
+      "Padre Hurtado",
+      "Centro de Belleza"
+    ],
+    [
+      "Recoleta",
+      "Estetica Corporal"
+    ],
+    [
+      "Melipilla",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Cerro Navia",
+      "Masajes Reductivos"
+    ],
+    [
+      "San Ramón",
+      "Estetica Corporal"
+    ],
+    [
+      "La Reina",
+      "Centro de Belleza"
+    ],
+    [
+      "María Pinto",
+      "Esteticista"
+    ],
+    [
+      "Conchalí",
+      "Micropigmentacion"
+    ],
+    [
+      "Providencia",
+      "Micropigmentacion"
+    ],
+    [
+      "Curacaví",
+      "Cosmetologa"
+    ],
+    [
+      "Independencia",
+      "Micropigmentacion"
+    ],
+    [
+      "Estación Central",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Colina",
+      "Esteticista"
+    ],
+    [
+      "Santiago Centro",
+      "Masajes Reductivos"
+    ],
+    [
+      "Lo Espejo",
+      "Masajes Reductivos"
+    ],
+    [
+      "San José de Maipo",
+      "Centro de Belleza"
+    ],
+    [
+      "San Ramón",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Calera de Tango",
+      "Micropigmentacion"
+    ],
+    [
+      "San Ramón",
+      "Cosmetologa"
+    ],
+    [
+      "San Bernardo",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Isla de Maipo",
+      "Masajes Reductivos"
+    ],
+    [
+      "Independencia",
+      "Centro de Belleza"
+    ],
+    [
+      "La Pintana",
+      "Cosmetologa"
+    ],
+    [
+      "Santiago Centro",
+      "Cejas y Pestanas"
+    ],
+    [
+      "San Ramón",
+      "Centro de Belleza"
+    ],
+    [
+      "Quilicura",
+      "Tratamientos Faciales"
+    ],
+    [
+      "San Joaquín",
+      "Masajes Reductivos"
+    ],
+    [
+      "Lo Barnechea",
+      "Centro de Belleza"
+    ],
+    [
+      "Padre Hurtado",
+      "Esteticista"
+    ],
+    [
+      "Estación Central",
+      "Centro de Belleza"
+    ],
+    [
+      "Ñuñoa",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Las Condes",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Quilicura",
+      "Cosmetologa"
+    ],
+    [
+      "La Florida",
+      "Cosmetologa"
+    ],
+    [
+      "San José de Maipo",
+      "Cosmetologa"
+    ],
+    [
+      "Alhué",
+      "Esteticista"
+    ],
+    [
+      "Quilicura",
+      "Masajes Reductivos"
+    ],
+    [
+      "Lo Prado",
+      "Cejas y Pestanas"
+    ],
+    [
+      "María Pinto",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Lo Barnechea",
+      "Estetica Corporal"
+    ],
+    [
+      "Padre Hurtado",
+      "Estetica Corporal"
+    ],
+    [
+      "La Granja",
+      "Centro de Belleza"
+    ],
+    [
+      "Paine",
+      "Estetica Corporal"
+    ],
+    [
+      "Estación Central",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Independencia",
+      "Cosmetologa"
+    ],
+    [
+      "San Pedro",
+      "Tratamientos Faciales"
+    ],
+    [
+      "La Cisterna",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Ñuñoa",
+      "Estetica Corporal"
+    ],
+    [
+      "Calera de Tango",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Macul",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Vitacura",
+      "Micropigmentacion"
+    ],
+    [
+      "Peñaflor",
+      "Micropigmentacion"
+    ],
+    [
+      "Pirque",
+      "Masajes Reductivos"
+    ],
+    [
+      "San Miguel",
+      "Masajes Reductivos"
+    ],
+    [
+      "Macul",
+      "Centro de Belleza"
+    ],
+    [
+      "Pirque",
+      "Cosmetologa"
+    ],
+    [
+      "San José de Maipo",
+      "Esteticista"
+    ],
+    [
+      "Lo Espejo",
+      "Esteticista"
+    ],
+    [
+      "Lo Prado",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Macul",
+      "Estetica Corporal"
+    ],
+    [
+      "Quilicura",
+      "Micropigmentacion"
+    ],
+    [
+      "Til Til",
+      "Esteticista"
+    ],
+    [
+      "Buin",
+      "Centro de Belleza"
+    ],
+    [
+      "Peñaflor",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Lo Barnechea",
+      "Masajes Reductivos"
+    ],
+    [
+      "El Bosque",
+      "Masajes Reductivos"
+    ],
+    [
+      "Lo Prado",
+      "Micropigmentacion"
+    ],
+    [
+      "Peñaflor",
+      "Centro de Belleza"
+    ],
+    [
+      "San Miguel",
+      "Estetica Corporal"
+    ],
+    [
+      "Til Til",
+      "Masajes Reductivos"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Centro de Belleza"
+    ],
+    [
+      "San Pedro",
+      "Centro de Belleza"
+    ],
+    [
+      "El Monte",
+      "Estetica Corporal"
+    ],
+    [
+      "Providencia",
+      "Centro de Belleza"
+    ],
+    [
+      "Paine",
+      "Centro de Belleza"
+    ],
+    [
+      "Vitacura",
+      "Estetica Corporal"
+    ],
+    [
+      "Lo Espejo",
+      "Centro de Belleza"
+    ],
+    [
+      "Vitacura",
+      "Centro de Belleza"
+    ],
+    [
+      "Til Til",
+      "Cosmetologa"
+    ],
+    [
+      "Buin",
+      "Esteticista"
+    ],
+    [
+      "Colina",
+      "Centro de Belleza"
+    ],
+    [
+      "Estación Central",
+      "Masajes Reductivos"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Masajes Reductivos"
+    ],
+    [
+      "Conchalí",
+      "Centro de Belleza"
+    ],
+    [
+      "Padre Hurtado",
+      "Cosmetologa"
+    ],
+    [
+      "Recoleta",
+      "Tratamientos Faciales"
+    ],
+    [
+      "San Ramón",
+      "Tratamientos Faciales"
+    ],
+    [
+      "La Granja",
+      "Masajes Reductivos"
+    ],
+    [
+      "Lampa",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Paine",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Santiago Centro",
+      "Estetica Corporal"
+    ],
+    [
+      "Talagante",
+      "Micropigmentacion"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Micropigmentacion"
+    ],
+    [
+      "San Joaquín",
+      "Tratamientos Faciales"
+    ],
+    [
+      "La Pintana",
+      "Centro de Belleza"
+    ],
+    [
+      "María Pinto",
+      "Masajes Reductivos"
+    ],
+    [
+      "Peñaflor",
+      "Esteticista"
+    ],
+    [
+      "Curacaví",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Pudahuel",
+      "Esteticista"
+    ],
+    [
+      "Alhué",
+      "Micropigmentacion"
+    ],
+    [
+      "Lampa",
+      "Esteticista"
+    ],
+    [
+      "Recoleta",
+      "Cejas y Pestanas"
+    ],
+    [
+      "María Pinto",
+      "Centro de Belleza"
+    ],
+    [
+      "Conchalí",
+      "Estetica Corporal"
+    ],
+    [
+      "Peñalolén",
+      "Esteticista"
+    ],
+    [
+      "San Miguel",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Curacaví",
+      "Centro de Belleza"
+    ],
+    [
+      "Maipú",
+      "Estetica Corporal"
+    ],
+    [
+      "Peñalolén",
+      "Cosmetologa"
+    ],
+    [
+      "San Bernardo",
+      "Cosmetologa"
+    ],
+    [
+      "Quinta Normal",
+      "Cosmetologa"
+    ],
+    [
+      "San Ramón",
+      "Esteticista"
+    ],
+    [
+      "La Pintana",
+      "Micropigmentacion"
+    ],
+    [
+      "Ñuñoa",
+      "Cosmetologa"
+    ],
+    [
+      "Lampa",
+      "Cosmetologa"
+    ],
+    [
+      "La Pintana",
+      "Masajes Reductivos"
+    ],
+    [
+      "San Miguel",
+      "Centro de Belleza"
+    ],
+    [
+      "Recoleta",
+      "Masajes Reductivos"
+    ],
+    [
+      "Pudahuel",
+      "Estetica Corporal"
+    ],
+    [
+      "Lo Barnechea",
+      "Cosmetologa"
+    ],
+    [
+      "La Pintana",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Las Condes",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Cerro Navia",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Melipilla",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Cosmetologa"
+    ],
+    [
+      "Pirque",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Cejas y Pestanas"
+    ],
+    [
+      "La Pintana",
+      "Esteticista"
+    ],
+    [
+      "Lo Barnechea",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Puente Alto",
+      "Esteticista"
+    ],
+    [
+      "San Miguel",
+      "Esteticista"
+    ],
+    [
+      "La Granja",
+      "Cosmetologa"
+    ],
+    [
+      "Lo Espejo",
+      "Micropigmentacion"
+    ],
+    [
+      "La Reina",
+      "Masajes Reductivos"
+    ],
+    [
+      "Las Condes",
+      "Masajes Reductivos"
+    ],
+    [
+      "La Pintana",
+      "Estetica Corporal"
+    ],
+    [
+      "Paine",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Huechuraba",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Peñalolén",
+      "Centro de Belleza"
+    ],
+    [
+      "Pirque",
+      "Centro de Belleza"
+    ],
+    [
+      "Estación Central",
+      "Estetica Corporal"
+    ],
+    [
+      "Maipú",
+      "Masajes Reductivos"
+    ],
+    [
+      "Puente Alto",
+      "Cosmetologa"
+    ],
+    [
+      "San Bernardo",
+      "Micropigmentacion"
+    ],
+    [
+      "Cerro Navia",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Quinta Normal",
+      "Masajes Reductivos"
+    ],
+    [
+      "Conchalí",
+      "Masajes Reductivos"
+    ],
+    [
+      "La Pintana",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Cerro Navia",
+      "Micropigmentacion"
+    ],
+    [
+      "Huechuraba",
+      "Estetica Corporal"
+    ],
+    [
+      "Puente Alto",
+      "Tratamientos Faciales"
+    ],
+    [
+      "Puente Alto",
+      "Cejas y Pestanas"
+    ],
+    [
+      "San Bernardo",
+      "Centro de Belleza"
+    ],
+    [
+      "Talagante",
+      "Cosmetologa"
+    ],
+    [
+      "Talagante",
+      "Tratamientos Faciales"
+    ],
+    [
+      "San Bernardo",
+      "Masajes Reductivos"
+    ],
+    [
+      "Maipú",
+      "Cejas y Pestanas"
+    ],
+    [
+      "San Pedro",
+      "Cejas y Pestanas"
+    ],
+    [
+      "Isla de Maipo",
+      "Centro de Belleza"
+    ],
+    [
+      "Peñaflor",
+      "Cosmetologa"
+    ],
+    [
+      "Peñaflor",
+      "Estetica Corporal"
+    ],
+    [
+      "Conchalí",
+      "Cejas y Pestanas"
+    ],
+    [
+      "San Pedro",
+      "Estetica Corporal"
+    ],
+    [
+      "Pudahuel",
+      "Cosmetologa"
+    ],
+    [
+      "María Pinto",
+      "Estetica Corporal"
+    ],
+    [
+      "San José de Maipo",
+      "Micropigmentacion"
+    ],
+    [
+      "La Florida",
+      "Centro de Belleza"
+    ],
+    [
+      "Lampa",
+      "Micropigmentacion"
+    ],
+    [
+      "Paine",
+      "Micropigmentacion"
     ]
   ],
-  "vuelta": 1
+  "vuelta": 1,
+  "terminos": [
+    "Clinica Estetica",
+    "Centro de Estetica",
+    "Medicina Estetica",
+    "Spa Facial",
+    "Depilacion Laser",
+    "Botox y Rellenos",
+    "Centro de Belleza",
+    "Esteticista",
+    "Cosmetologa",
+    "Micropigmentacion",
+    "Cejas y Pestanas",
+    "Estetica Corporal",
+    "Masajes Reductivos",
+    "Tratamientos Faciales"
+  ]
 }

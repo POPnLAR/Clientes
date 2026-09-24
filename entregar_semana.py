@@ -345,12 +345,11 @@ def main():
         respondieron = set()
         print("⚠️  Sin verificar respuestas en el agente (--sin-agente): NO uses este resultado para entregar.\n")
     else:
-        r = agent_client.obtener_respuestas()
-        if r["estado"] != "ok":
-            sys.exit(f"No se pudo consultar al agente (estado: {r['estado']}). Revisa AGENT_SERVICE_URL y "
+        respondieron, estado = agent_client.obtener_telefonos_que_respondieron()
+        if estado != "ok":
+            sys.exit(f"No se pudo consultar al agente (estado: {estado}). Revisa AGENT_SERVICE_URL y "
                      f"AGENT_SERVICE_TOKEN en {args.env}. Sin saber quién ya respondió no se entrega nada.")
-        respondieron = r["humanos"] | r["bots"]
-        print(f"Agente consultado: {len(r['humanos'])} contactos que respondieron y {len(r['bots'])} con respuesta de bot.\n")
+        print(f"Agente consultado: {len(respondieron)} contactos ya respondieron y se excluyen de la entrega.\n")
 
     df = pd.read_csv(ARCHIVO_LEADS, dtype=str)
     hoy = pd.Timestamp(dt.datetime.now())

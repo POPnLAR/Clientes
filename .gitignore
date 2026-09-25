@@ -25,3 +25,6 @@ rippling-strolling-diffie.md
 # Entregas semanales al vendedor (datos personales de prospectos) y credenciales de esa herramienta
 entregas/
 .env.entrega
+
+# PDF de la propuesta comercial (datos para enviar, no para versionar)
+propuestas/

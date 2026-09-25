@@ -27,18 +27,21 @@ PLAYBOOK_PATH = "playbook_ventas.yaml"
 CARPETA_SALIDA = "propuestas"
 ARCHIVO_SALIDA = "GestionVital_Pro_propuesta.pdf"
 
-# Misma familia de colores que la propuesta web (propuesta_gestionvital.html).
-TEAL = (14, 92, 76)
-BAND_INK = (245, 241, 232)
-BAND_INK_SOFT = (198, 214, 205)
-ROSE = (166, 58, 92)
-GOLD_BG = (201, 154, 61)
-GOLD_INK = (31, 21, 3)
-INK = (22, 33, 29)
-INK_SOFT = (75, 90, 84)
-LINE = (222, 229, 223)
-SURFACE2 = (239, 242, 238)
+# Colores oficiales: azul y verde del logo de GestionVital Pro (muestreados de
+# "Logo 1.png"), y el azul marino del logo de ServiGod (identidad de la agencia
+# que desarrolla el producto). Mismos tokens que usa propuesta_gestionvital.html.
+AZUL = (0, 104, 201)       # #0068C9 - GestionVital (wordmark "Gestion Vital")
+VERDE = (0, 131, 109)      # #00836D - GestionVital (acento "PRO")
+NAVY = (20, 32, 46)        # #14202E - ServiGod (franjas: el logo se lee mejor aqui que sobre el azul)
+BAND_INK = (255, 255, 255)
+BAND_INK_SOFT = (176, 188, 204)
+INK = NAVY
+INK_SOFT = (82, 96, 116)
+LINE = (221, 228, 237)
+SURFACE2 = (234, 241, 248)
 WHITE = (255, 255, 255)
+LOGO_GESTIONVITAL = "Logo 1.png"
+LOGO_SERVIGOD_BLANCO = "servigod_logo_blanco.png"
 
 MARGIN = 15
 PAGE_H = 297
@@ -88,13 +91,15 @@ def lineas_de_multicell(pdf, texto, ancho, tam, estilo=""):
     return lineas
 
 
-def bullet(pdf, x, y, texto, color, tam):
-    """Un item con vinieta cuadrada (evita depender de glifos fuera de Latin-1)."""
-    pdf.set_fill_color(*color)
+def bullet(pdf, x, y, texto, color_marca, tam, color_texto=None):
+    """Un item con vinieta cuadrada (evita depender de glifos fuera de Latin-1). El texto usa
+    color_texto si se indica, o color_marca si no (para cuando ambos deben ser el mismo, p. ej.
+    texto blanco sobre una franja de color)."""
+    pdf.set_fill_color(*color_marca)
     pdf.rect(x, y + 1.1, 1.6, 1.6, "F")
     pdf.set_xy(x + 3.2, y - 0.6)
     pdf.set_font("Helvetica", "", tam)
-    pdf.set_text_color(*INK)
+    pdf.set_text_color(*(color_texto or color_marca))
     pdf.cell(0, 4.2, texto)
 
 
@@ -112,7 +117,7 @@ def texto_tachado(pdf, x, y, texto, tam, color):
 def kicker_titulo(pdf, y, kicker, titulo, subtitulo=None):
     pdf.set_xy(MARGIN, y)
     pdf.set_font("Helvetica", "B", 8.5)
-    pdf.set_text_color(*ROSE)
+    pdf.set_text_color(*VERDE)
     pdf.cell(0, 4, kicker.upper())
     pdf.set_xy(MARGIN, y + 5)
     pdf.set_font("Helvetica", "B", 15)
@@ -129,7 +134,7 @@ def kicker_titulo(pdf, y, kicker, titulo, subtitulo=None):
 
 
 def franja_banda(pdf, y, h, titulo, texto, extra=None):
-    pdf.set_fill_color(*TEAL)
+    pdf.set_fill_color(*NAVY)
     pdf.rect(0, y, 210, h, "F")
     pdf.set_xy(MARGIN, y + 8)
     pdf.set_font("Helvetica", "B", 17)
@@ -164,26 +169,30 @@ def construir_pdf(datos):
     pdf.add_page()
 
     # ---------- Encabezado ----------
-    pdf.set_fill_color(*TEAL)
-    pdf.rect(0, 0, 210, 52, "F")
-    pdf.set_xy(MARGIN, 14)
+    BAND_H = 58
+    pdf.set_fill_color(*NAVY)
+    pdf.rect(0, 0, 210, BAND_H, "F")
+    if os.path.exists(LOGO_GESTIONVITAL):
+        logo_w = 58
+        logo_h = logo_w * 160 / 440  # proporcion real del logo (440x160)
+        pdf.image(LOGO_GESTIONVITAL, MARGIN, 9, w=logo_w, h=logo_h)
+        ty = 9 + logo_h + 4
+    else:
+        ty = 12
+    pdf.set_xy(MARGIN, ty)
     pdf.set_font("Helvetica", "B", 8.5)
     pdf.set_text_color(*BAND_INK_SOFT)
     pdf.multi_cell(CONTENT_W, 4.2, "SOFTWARE DE GESTION PARA CENTROS ESTETICOS, PELUQUERIAS Y KINESIOLOGIA")
-    pdf.set_xy(MARGIN, 21)
-    pdf.set_font("Helvetica", "B", 27)
-    pdf.set_text_color(*BAND_INK)
-    pdf.cell(0, 11, empresa.get("nombre", "GestionVital Pro"))
-    pdf.set_xy(MARGIN, 33)
+    pdf.set_xy(MARGIN, ty + 6)
     pdf.set_font("Helvetica", "", 10)
-    pdf.set_text_color(*BAND_INK_SOFT)
+    pdf.set_text_color(*BAND_INK)
     pdf.multi_cell(
         CONTENT_W, 4.6,
         "Agenda, fichas de pacientes o clientes, inventario y ventas en un solo sistema, "
         "para el trabajo diario de centros esteticos, peluquerias y centros de kinesiologia en Chile.",
     )
 
-    y = 45
+    y = ty + 17
     chips = [
         f"{trial_dias} dias de prueba gratis",
         "Sin contrato de permanencia",
@@ -196,7 +205,7 @@ def construir_pdf(datos):
         x += pdf.get_string_width(c) + 12
 
     # ---------- Que resuelve ----------
-    y = 62
+    y = BAND_H + 10
     y = kicker_titulo(pdf, y, "Que resuelve", "Todo el negocio, en un solo sistema") + 3
     pillares = [
         ("Agenda y fichas", "Agenda de citas y fichas de pacientes o clientes, con evolucion y fotos del tratamiento."),
@@ -251,7 +260,7 @@ def construir_pdf(datos):
     for i, t in enumerate(tarjetas):
         plan = t["plan"]
         cx = MARGIN + i * (card_w + gap)
-        borde = GOLD_BG if t["oferta"] else LINE
+        borde = VERDE if t["oferta"] else LINE
         grosor = 0.7 if t["oferta"] else 0.3
         pdf.set_draw_color(*borde)
         pdf.set_line_width(grosor)
@@ -259,11 +268,11 @@ def construir_pdf(datos):
         pdf.rect(cx, card_y, card_w, card_h, "DF")
 
         if t["oferta"]:
-            pdf.set_fill_color(*GOLD_BG)
+            pdf.set_fill_color(*VERDE)
             pdf.rect(cx + 4, card_y - 3.2, 17, 6, "F")
             pdf.set_xy(cx + 4, card_y - 3.2)
             pdf.set_font("Helvetica", "B", 7.3)
-            pdf.set_text_color(*GOLD_INK)
+            pdf.set_text_color(*WHITE)
             pdf.cell(17, 6, "OFERTA", align="C")
 
         ty = card_y + pad
@@ -289,14 +298,14 @@ def construir_pdf(datos):
         if t["oferta"]:
             pdf.set_xy(cx + pad, ty)
             pdf.set_font("Helvetica", "B", 7.6)
-            pdf.set_text_color(*ROSE)
+            pdf.set_text_color(*VERDE)
             pdf.multi_cell(card_w - pad * 2, 3.6, "El plan completo, al precio del Plan Medio.")
             ty = pdf.get_y() + 1
         else:
             ty += 3
 
         for feat in plan.get("incluye", []):
-            bullet(pdf, cx + pad, ty, feat, TEAL, tam_feat)
+            bullet(pdf, cx + pad, ty, feat, AZUL, tam_feat, color_texto=INK)
             ty += 4.6
 
     y = card_y + card_h + 6
@@ -305,7 +314,7 @@ def construir_pdf(datos):
     pdf.set_draw_color(*LINE)
     pdf.set_line_width(0.3)
     pdf.set_fill_color(*SURFACE2)
-    addon_h = 18
+    addon_h = 19
     pdf.rect(MARGIN, y, CONTENT_W, addon_h, "DF")
     pdf.set_xy(MARGIN + pad, y + 4)
     pdf.set_font("Helvetica", "B", 10.5)
@@ -319,7 +328,7 @@ def construir_pdf(datos):
     pdf.set_text_color(*INK_SOFT)
     pdf.cell(0, 6, " + IVA / mes  -  se suma a cualquier plan")
     lista_addon = "   ".join(f"- {f}" for f in ecommerce.get("incluye", []))
-    pdf.set_xy(MARGIN + pad, y + 13.5)
+    pdf.set_xy(MARGIN + pad, y + 15.5)
     pdf.set_font("Helvetica", "", 7.6)
     pdf.set_text_color(*INK_SOFT)
     pdf.cell(0, 4, lista_addon)
@@ -370,7 +379,7 @@ def construir_pdf(datos):
     ]
     gw = CONTENT_W / 3
     for i, g in enumerate(garantias):
-        bullet(pdf, MARGIN + i * gw, y, g, TEAL, 8.5)
+        bullet(pdf, MARGIN + i * gw, y, g, AZUL, 8.5, color_texto=INK)
     y += 13
 
     # ---------- FAQ ----------
@@ -415,7 +424,7 @@ def construir_pdf(datos):
         y = pdf.get_y() + 4
 
     # ---------- Cierre / CTA ----------
-    band_h = 45
+    band_h = 56
     if y + band_h > PAGE_H - PIE_PAGINA_H:
         pdf.add_page()
         y = MARGIN
@@ -435,6 +444,19 @@ def construir_pdf(datos):
             f"Demo por WhatsApp: {dias_demo}, de {demo.get('horario_inicio', '')} a "
             f"{demo.get('horario_fin', '')}, {demo.get('duracion_minutos', '')} minutos.",
         )
+        # Credito: GestionVital Pro es un producto de ServiGod.
+        py = yy + 15
+        pdf.set_draw_color(*BAND_INK_SOFT)
+        pdf.set_line_width(0.2)
+        pdf.line(MARGIN, py, MARGIN + CONTENT_W, py)
+        pdf.set_xy(MARGIN, py + 3.5)
+        pdf.set_font("Helvetica", "", 7.6)
+        pdf.set_text_color(*BAND_INK_SOFT)
+        pdf.cell(28, 5, "Un producto de")
+        if os.path.exists(LOGO_SERVIGOD_BLANCO):
+            sg_w = 26
+            sg_h = sg_w * 350 / 1675  # proporcion real del logo (1675x350)
+            pdf.image(LOGO_SERVIGOD_BLANCO, MARGIN + 26, py + 2, w=sg_w, h=sg_h)
 
     franja_banda(
         pdf, y, band_h, "¿Conversamos?",

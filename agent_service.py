@@ -431,6 +431,28 @@ def replied_phones(dias: int = 90, x_agent_token: Optional[str] = Header(default
     return {"telefonos": store.telefonos_que_respondieron(min(max(dias, 1), 365))}
 
 
+class MensajeSaliente(BaseModel):
+    telefono: str
+    texto: str
+
+
+@app.post("/outbound-log")
+def registrar_mensaje_saliente(msg: MensajeSaliente, x_agent_token: Optional[str] = Header(default=None)):
+    """
+    Los workers (primer contacto y seguimientos) envían directo por Evolution, sin pasar por el
+    agente, así que estos mensajes no quedaban en su base. Se registran aquí para que el agente
+    sepa qué le dijimos al lead: el historial que ve Gemini, y el filtro de cierres, que
+    necesita saber si le ofrecimos una demo para no descartar un «Dale» que la acepta.
+    """
+    _requerir_token(x_agent_token)
+    telefono = normalizar_telefono_chile(msg.telefono)
+    texto = (msg.texto or "").strip()
+    if not telefono or not texto:
+        raise HTTPException(status_code=400, detail="Teléfono o texto inválido.")
+    store.guardar_mensaje(telefono, "out", texto)
+    return {"status": "registrado"}
+
+
 @app.get("/pending-drafts")
 def pending_drafts(x_agent_token: Optional[str] = Header(default=None)):
     _requerir_token(x_agent_token)

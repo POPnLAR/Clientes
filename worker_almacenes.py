@@ -371,6 +371,7 @@ def ejecutar_ciclo():
             continue
 
         if enviar_mensaje_texto(tel_final, msg):
+            agent_client.registrar_mensaje_enviado(tel_final, msg)
             df.at[idx, "Estado"] = "Contactado" if dia_obj < 2 else "Finalizado"
             df.at[idx, "Dia_Secuencia"] = dia_obj
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")

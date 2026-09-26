@@ -249,10 +249,17 @@ def contar_texto_repetido(telefono_normalizado, texto, minutos):
 
 
 def hay_entrante_posterior(telefono_normalizado, mensaje_id):
+    """True si después de `mensaje_id` llegó otro mensaje que SÍ va a generar respuesta.
+
+    Solo cuentan los que siguen sin filtrar: uno que el filtro ya descartó (cierre, bot, flood...)
+    no va a contestar por nadie. Si se contaran todos, en una ráfaga como «Sí» + «Dale» el «Sí»
+    cedería el turno al «Dale», que se descarta como cierre, y la conversación quedaba sin respuesta.
+    Los mensajes se evalúan al llegar (antes de su espera), así que al despertar el anterior los
+    descartados ya tienen su motivo."""
     with _conn() as conn:
         row = conn.execute(
             "SELECT 1 FROM messages WHERE telefono_normalizado = ? AND direccion = 'in' "
-            "AND id > ? LIMIT 1",
+            "AND id > ? AND filtrado_motivo IS NULL LIMIT 1",
             (telefono_normalizado, mensaje_id),
         ).fetchone()
     return row is not None

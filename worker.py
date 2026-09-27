@@ -489,6 +489,7 @@ def ejecutar_ciclo():
         print(f"[{i+1}/{len(candidatos)}] Enviando a: {row['Evento']}...")
 
         if enviar_mensaje_texto(tel_final, msg):
+            agent_client.registrar_mensaje_enviado(tel_final, msg)
             df.at[idx, "Estado"] = "Contactado" if dia_obj < 4 else "Finalizado"
             df.at[idx, "Dia_Secuencia"] = dia_obj
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")

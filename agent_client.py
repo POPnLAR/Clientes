@@ -14,6 +14,42 @@ def clave_telefono(tel):
     return "".join(filter(str.isdigit, str(tel)))[-9:]
 
 
+# Tras este número de fallos seguidos se deja de intentar en el resto de la ejecución: con el
+# agente caído, cada envío esperaría el timeout completo y el ciclo se alargaría de más.
+MAX_FALLOS_REGISTRO = 2
+_fallos_registro = 0
+
+
+def registrar_mensaje_enviado(telefono, texto, timeout=5):
+    """
+    Avisa al agente de un mensaje que el worker acaba de enviar, para que quede en el historial de
+    la conversación. Es de mejor esfuerzo: NUNCA lanza ni debe frenar el envío; devuelve si quedó
+    registrado. Se llama solo después de un envío exitoso.
+    """
+    global _fallos_registro
+    url = (os.getenv("AGENT_SERVICE_URL") or "").strip().rstrip("/")
+    token = os.getenv("AGENT_SERVICE_TOKEN") or ""
+    if not url or _fallos_registro >= MAX_FALLOS_REGISTRO:
+        return False
+    try:
+        res = requests.post(
+            f"{url}/outbound-log",
+            json={"telefono": str(telefono), "texto": texto},
+            headers={"x-agent-token": token} if token else {},
+            timeout=timeout,
+        )
+        if res.status_code != 200:
+            logging.warning("El agente no registró el mensaje enviado (HTTP %s): %s", res.status_code, res.text[:150])
+            _fallos_registro += 1
+            return False
+        _fallos_registro = 0
+        return True
+    except Exception:
+        logging.warning("No se pudo registrar el mensaje enviado en el agente.", exc_info=True)
+        _fallos_registro += 1
+        return False
+
+
 def obtener_telefonos_que_respondieron(dias=90, timeout=15):
     """
     Devuelve (conjunto_de_claves_de_telefono, estado) con estado en:

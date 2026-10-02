@@ -14,6 +14,7 @@ from datetime import datetime, timedelta
 import logging
 
 import agent_client
+import resumen_email
 import asignaciones
 import captacion
 import cobertura
@@ -75,79 +76,16 @@ def _limpiar_alerta():
 
 
 # --- RESUMEN POR EMAIL ---
-GMAIL_USER = os.getenv("GMAIL_USER")
-GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
-EMAIL_DESTINO = os.getenv("EMAIL_DESTINO") or "rvillegasburgos@gmail.com"
-
-
-def enviar_resumen_email(asunto, cuerpo):
-    """
-    Envía el resumen del ciclo por Gmail SMTP (requiere una 'contraseña de
-    aplicación' de Google, no la contraseña normal de la cuenta). Si no está
-    configurado (GMAIL_USER/GMAIL_APP_PASSWORD), se omite silenciosamente:
-    el email es un extra, nunca debe hacer fallar el ciclo de prospección.
-    """
-    if not GMAIL_USER or not GMAIL_APP_PASSWORD:
-        logging.warning("GMAIL_USER/GMAIL_APP_PASSWORD no configurados, se omite el resumen por email.")
-        return False
-    import smtplib
-    from email.mime.text import MIMEText
-
-    msg = MIMEText(cuerpo, "plain", "utf-8")
-    msg["Subject"] = asunto
-    msg["From"] = GMAIL_USER
-    msg["To"] = EMAIL_DESTINO
-    try:
-        with smtplib.SMTP("smtp.gmail.com", 587, timeout=20) as server:
-            server.starttls()
-            server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
-            server.sendmail(GMAIL_USER, [EMAIL_DESTINO], msg.as_string())
-        logging.info("Resumen del ciclo enviado por email a %s.", EMAIL_DESTINO)
-        return True
-    except Exception:
-        logging.exception("No se pudo enviar el resumen del ciclo por email.")
-        return False
 
 
 def _nuevo_resumen():
-    return {"nuevos_leads": [], "mensajes": [], "reciclados": 0, "alertas": []}
+    return resumen_email.nuevo_resumen()
 
 
 def _enviar_resumen_si_corresponde(resumen, ahora):
-    """
-    Solo envía el email si pasó algo relevante en el ciclo (leads nuevos,
-    mensajes enviados, alertas, o reciclaje) — si no hubo nada que reportar
-    (ej. fuera de horario o ciclo vacío), no manda correo.
-    """
-    if not (resumen["nuevos_leads"] or resumen["mensajes"] or resumen["reciclados"] or resumen["alertas"]):
-        print("📪 Nada relevante que reportar este ciclo, no se envía resumen por email.")
-        return
+    """Resumen del ciclo por correo (ver resumen_email.py)."""
+    resumen_email.enviar_resumen_si_corresponde(resumen, "GestiónVital (Clínicas)", ahora)
 
-    asunto = f"GestiónVital (Clínicas) - Resumen {ahora.strftime('%d/%m %H:%M')}"
-    lineas = []
-
-    if resumen["alertas"]:
-        lineas.append("ALERTAS:")
-        lineas += [f"- {a}" for a in resumen["alertas"]]
-        lineas.append("")
-
-    if resumen["nuevos_leads"]:
-        lineas.append(f"Leads nuevos encontrados ({len(resumen['nuevos_leads'])}):")
-        lineas += [f"- {l['Evento']} ({l['Ubicacion']})" for l in resumen["nuevos_leads"]]
-        lineas.append("")
-
-    if resumen["mensajes"]:
-        exitosos = [m for m in resumen["mensajes"] if m["ok"]]
-        fallidos = [m for m in resumen["mensajes"] if not m["ok"]]
-        lineas.append(f"Mensajes de secuencia enviados ({len(exitosos)} ok, {len(fallidos)} fallidos):")
-        for m in resumen["mensajes"]:
-            lineas.append(f"- [{'OK' if m['ok'] else 'FALLO'}] {m['Evento']} - Día {m['dia']}")
-        lineas.append("")
-
-    if resumen["reciclados"]:
-        lineas.append(f"Leads reciclados para recontacto: {resumen['reciclados']}")
-
-    enviar_resumen_email(asunto, "\n".join(lineas))
 
 # --- UTILIDADES DE HUMANIZACIÓN ---
 def aplicar_spintax(texto):

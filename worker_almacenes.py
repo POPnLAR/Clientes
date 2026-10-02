@@ -13,6 +13,7 @@ import agent_client
 import asignaciones
 import captacion
 import cobertura
+import resumen_email
 import serp_client
 from evo_client import (
     normalizar_telefono_chile,
@@ -281,7 +282,7 @@ def _armar_candidatos(df, ahora, respondieron, estado_resp, asignados=frozenset(
 
 
 # --- CICLO PRINCIPAL ---
-def ejecutar_ciclo():
+def _ciclo(resumen):
     ahora = obtener_ahora_chile()
     
     # Horario Almacenero: lunes a sábado, de HORA_INICIO_ENVIO:00 a HORA_FIN_ENVIO:59 (hora de Chile)
@@ -294,6 +295,7 @@ def ejecutar_ciclo():
     if estado_conexion != "open":
         print(f"🔴 Sesión de WhatsApp no está 'open' (estado: {estado_conexion}). Abortando ciclo sin tocar leads.")
         logging.error("Sesión de WhatsApp caída o desconocida (estado=%s). Deteniendo ciclo.", estado_conexion)
+        resumen["alertas"].append(f"Sesión de WhatsApp caída o desconocida (estado={estado_conexion}).")
         sys.exit(1)
 
     if not os.path.exists(ARCHIVO_ALMACENES):
@@ -346,6 +348,9 @@ def ejecutar_ciclo():
         df.to_csv(ARCHIVO_ALMACENES, index=False)
         despues = len(df)
         print(f"➕ Leads agregados: {max(0, despues-antes)}")
+        resumen["nuevos_leads"] = [
+            {"Evento": r["Evento"], "Ubicacion": r["Ubicacion"]} for _, r in df.iloc[antes:].iterrows()
+        ]
 
         # Si se agregaron leads, intentamos enviar en el mismo ciclo (para no esperar al próximo cron).
         candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp, asignados)
@@ -378,13 +383,29 @@ def ejecutar_ciclo():
             if dia_obj == 1:
                 df.at[idx, "Version_Mensaje"] = version
             print(f"   ✅ Día {dia_obj} enviado a {row['Evento']}.")
+            resumen["mensajes"].append({"Evento": row["Evento"], "dia": dia_obj, "ok": True})
         else:
             df.at[idx, "Estado"] = "Error"
             df.at[idx, "Fecha_Contacto"] = ahora.strftime("%d/%m/%Y %H:%M")
+            resumen["mensajes"].append({"Evento": row["Evento"], "dia": dia_obj, "ok": False})
 
         df.to_csv(ARCHIVO_ALMACENES, index=False)
         if i < len(candidatos) - 1:
             time.sleep(random.randint(300, 600)) # Pausas de 5-10 minutos
+
+def ejecutar_ciclo():
+    """Corre el ciclo y, pase lo que pase (incluso si aborta), manda el resumen por correo."""
+    resumen = resumen_email.nuevo_resumen()
+    try:
+        _ciclo(resumen)
+    except Exception as e:
+        resumen["alertas"].append(f"El ciclo terminó con un error inesperado: {type(e).__name__}: {e}")
+        raise
+    finally:
+        resumen_email.enviar_resumen_si_corresponde(
+            resumen, "GestiónAlmacén (Almacenes)", obtener_ahora_chile()
+        )
+
 
 if __name__ == "__main__":
     ejecutar_ciclo()

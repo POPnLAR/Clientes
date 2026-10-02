@@ -45,6 +45,9 @@ jobs:
           NUMERO_OPERADOR: ${{ secrets.NUMERO_OPERADOR }}
           AGENT_SERVICE_URL: ${{ secrets.AGENT_SERVICE_URL }}
           AGENT_SERVICE_TOKEN: ${{ secrets.AGENT_SERVICE_TOKEN }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_DESTINO: ${{ secrets.EMAIL_DESTINO }}
         run: python worker_almacenes.py
 
       - name: Guardar y Sincronizar

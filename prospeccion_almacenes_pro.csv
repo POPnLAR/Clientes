@@ -157,3 +157,9 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 156,28/09/2026,19:02,Minimarket el buen Castor,App Almacen,Maipú,Finalizado,56975901065,2,30/09/2026 16:21,,,B
 157,29/09/2026,17:48,Botilleria Rocha,App Almacen,Puente Alto,Finalizado,56954365039,2,02/10/2026 09:36,,,B
 158,29/09/2026,17:48,Botilleria Poly,App Almacen,Puente Alto,Finalizado,56934102912,2,02/10/2026 09:36,,,A
+159,02/10/2026,19:58,Emporio del Asador,App Almacen,Pedro Aguirre Cerda,Nuevo,56940665543,0,,,,
+160,02/10/2026,19:58,Emporio Valparaiso,App Almacen,Pedro Aguirre Cerda,Contactado,56990732818,1,02/10/2026 19:58,,,B
+161,02/10/2026,19:58,Emporio Central Quilpue,App Almacen,Pedro Aguirre Cerda,Nuevo,56962407312,0,,,,
+162,02/10/2026,19:58,Emporio Valparaiso,App Almacen,Pedro Aguirre Cerda,Contactado,56950120278,1,02/10/2026 19:58,,,B
+163,02/10/2026,19:58,Emporio Sabores De Chile,App Almacen,Pedro Aguirre Cerda,Contactado,56961846680,1,02/10/2026 19:58,,,A
+164,02/10/2026,19:58,Emporio San Miguel - Punto Blue Express,App Almacen,Pedro Aguirre Cerda,Nuevo,56922299789,0,,,,

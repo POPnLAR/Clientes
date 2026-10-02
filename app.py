@@ -180,22 +180,38 @@ def obtener_borradores_pendientes():
 
 
 def aprobar_borrador(draft_id, texto_final):
-    res = requests.post(
-        f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/approve",
-        json={"texto_final": texto_final},
-        headers=_agent_headers(),
-        timeout=30,
-    )
+    """
+    OJO: si esto tira timeout, puede que el agente de todas formas haya terminado de enviar el
+    WhatsApp (agendar el evento en Calendar + mandar el mensaje toma más que una llamada normal).
+    El error solo significa que la respuesta no llegó a tiempo, no que no se haya enviado: antes
+    de reintentar manualmente, refresca la página y revisa si el borrador ya desapareció de la
+    lista de pendientes.
+    """
+    try:
+        res = requests.post(
+            f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/approve",
+            json={"texto_final": texto_final},
+            headers=_agent_headers(),
+            timeout=60,
+        )
+    except requests.exceptions.RequestException as e:
+        return False, (
+            f"Sin respuesta del agente ({e}). Puede que el mensaje SÍ se haya enviado: "
+            "refresca y revisa si el borrador sigue pendiente antes de reintentar."
+        )
     return res.status_code == 200, res.text
 
 
 def marcar_como_bot(draft_id):
-    """El mensaje del prospecto es de un bot: se descarta el borrador y se enseña al filtro."""
-    res = requests.post(
-        f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/mark-bot",
-        headers=_agent_headers(),
-        timeout=20,
-    )
+    """El mensaje del prospecto es de un bot: se descarta este borrador y se enseña al filtro."""
+    try:
+        res = requests.post(
+            f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/mark-bot",
+            headers=_agent_headers(),
+            timeout=20,
+        )
+    except requests.exceptions.RequestException as e:
+        return False, f"Sin respuesta del agente: {e}"
     if res.status_code == 200:
         return True, res.json()
     try:
@@ -216,19 +232,25 @@ def obtener_bots_filtrados():
 
 
 def quitar_bot_filtrado(bot_id):
-    res = requests.delete(
-        f"{AGENT_SERVICE_URL.rstrip('/')}/bot-filters/{bot_id}", headers=_agent_headers(), timeout=15
-    )
+    try:
+        res = requests.delete(
+            f"{AGENT_SERVICE_URL.rstrip('/')}/bot-filters/{bot_id}", headers=_agent_headers(), timeout=15
+        )
+    except requests.exceptions.RequestException as e:
+        return False, f"Sin respuesta del agente: {e}"
     return res.status_code == 200, res.text
 
 
 def regenerar_borrador(draft_id, instruccion):
-    res = requests.post(
-        f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/regenerate",
-        json={"instruccion": instruccion or None},
-        headers=_agent_headers(),
-        timeout=60,
-    )
+    try:
+        res = requests.post(
+            f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/regenerate",
+            json={"instruccion": instruccion or None},
+            headers=_agent_headers(),
+            timeout=60,
+        )
+    except requests.exceptions.RequestException as e:
+        return False, f"Sin respuesta del agente: {e}"
     if res.status_code == 200:
         return True, res.json()
     try:
@@ -249,11 +271,14 @@ def _al_regenerar(draft_id):
 
 
 def rechazar_borrador(draft_id):
-    res = requests.post(
-        f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/reject",
-        headers=_agent_headers(),
-        timeout=10,
-    )
+    try:
+        res = requests.post(
+            f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/reject",
+            headers=_agent_headers(),
+            timeout=10,
+        )
+    except requests.exceptions.RequestException as e:
+        return False, f"Sin respuesta del agente: {e}"
     return res.status_code == 200, res.text
 
 

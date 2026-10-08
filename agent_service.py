@@ -19,6 +19,7 @@ import asyncio
 import json
 import logging
 import os
+import random
 import time
 from datetime import datetime
 from typing import Optional
@@ -27,6 +28,7 @@ import pandas as pd
 from fastapi import FastAPI, Header, HTTPException, Request
 from pydantic import BaseModel
 
+import auto_respuesta
 import calendar_client
 import conversation_store as store
 import filtro_mensajes
@@ -36,7 +38,7 @@ from evo_client import (
     normalizar_telefono_chile,
     verificar_estado_conexion,
 )
-from gemini_client import _borrador_fallback, generar_borrador
+from gemini_client import _borrador_fallback, generar_borrador, generar_borrador_clasificado
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
@@ -47,6 +49,10 @@ AGENT_SERVICE_TOKEN = os.getenv("AGENT_SERVICE_TOKEN")
 NUMERO_OPERADOR = os.getenv("NUMERO_OPERADOR", "")
 CHEQUEO_SALUD_INTERVALO_SEG = int(os.getenv("CHEQUEO_SALUD_INTERVALO_SEG", str(20 * 60)))
 ARCHIVO_ALERTA_AGENTE = "alert_status_agente.json"
+# Respuesta automática: pausa "humana" antes de enviar (segundos); también da tiempo a frenarla.
+AUTO_PAUSA_MIN_SEG = int(os.getenv("AUTO_RESPUESTA_PAUSA_MIN", "45"))
+AUTO_PAUSA_MAX_SEG = int(os.getenv("AUTO_RESPUESTA_PAUSA_MAX", "120"))
+LINEAS_AUTO = ("clinicas", "almacenes")
 
 CSVS_POR_LINEA = {
     "clinicas": "prospeccion_gestionvital_pro.csv",
@@ -282,7 +288,7 @@ async def webhook_evolution(request: Request):
     historial = store.historial_conversacion(telefono, limite=20)
     slots = _obtener_slots_cacheados()
 
-    texto_borrador, accion = generar_borrador(
+    texto_borrador, accion, clase = generar_borrador_clasificado(
         historial, contexto_lead, texto, slots_disponibles=slots, linea=linea
     )
 
@@ -290,13 +296,67 @@ async def webhook_evolution(request: Request):
     if accion:
         accion["linea"] = linea or "clinicas"   # el evento del calendario debe llevar el producto del que se habló
 
+    # Rechazo explícito ("no me interesa", "no me escriban"): no se le vuelve a escribir desde la
+    # secuencia automática. Se registra aunque el borrador de agradecimiento no se envíe solo.
+    if auto_respuesta.es_rechazo(texto):
+        store.agregar_no_contactar(telefono, "rechazo", texto)
+        logging.info("Rechazo de %s: queda en no_contactar (%r).", telefono, texto[:80])
+
     draft_id = store.crear_borrador(
         telefono, msg_id, texto_borrador,
         accion_tipo=accion["tipo"] if accion else None,
         accion_payload=accion,
+        clase=clase,
     )
 
+    # Respuesta automática (solo lo de menor riesgo; ver auto_respuesta.py).
+    linea_auto = linea or "clinicas"
+    modo_activo = store.obtener_ajuste(f"auto_{linea_auto}", "0") == "1"
+    enviar_solo, motivo_manual = auto_respuesta.decidir(
+        modo_activo=modo_activo, clase=clase, accion=accion,
+        texto_respuesta=texto_borrador, texto_entrante=texto,
+        auto_enviados_24h=store.contar_auto_enviados(telefono, 24),
+    )
+    if enviar_solo:
+        asyncio.create_task(_enviar_automatico(draft_id, telefono, msg_id, linea_auto))
+        return {"status": "auto_programado", "draft_id": draft_id}
+    if modo_activo:
+        # Con el modo automático activo ya no revisas cada borrador: se avisa solo de los que sí necesitan tu ojo.
+        asyncio.create_task(asyncio.to_thread(
+            enviar_alerta_whatsapp, EVO_URL, EVO_TOKEN, EVO_INSTANCE, NUMERO_OPERADOR,
+            f"👀 {telefono} quedó pendiente de tu revisión ({motivo_manual}). "
+            "Con la respuesta automática activa, este no se envió solo.",
+        ))
     return {"status": "ok", "draft_id": draft_id}
+
+
+async def _enviar_automatico(draft_id, telefono, msg_id, linea):
+    """
+    Espera una pausa corta y envía el borrador como si lo aprobara el operador. Antes de enviar
+    vuelve a comprobar que nada cambió: el operador no lo tocó, el modo sigue activo y el contacto
+    no escribió algo nuevo (en ese caso este borrador queda obsoleto y responde el del mensaje nuevo).
+    """
+    try:
+        await asyncio.sleep(random.uniform(AUTO_PAUSA_MIN_SEG, AUTO_PAUSA_MAX_SEG))
+        borrador = store.obtener_borrador(draft_id)
+        if not borrador or borrador["estado"] != "pending":
+            return  # el operador ya lo aprobó, rechazó o editó
+        if store.obtener_ajuste(f"auto_{linea}", "0") != "1":
+            return  # apagaron el modo mientras esperaba: queda pendiente para revisión manual
+        if store.hay_entrante_posterior(telefono, msg_id):
+            store.marcar_borrador(draft_id, "rejected")  # obsoleto: lo reemplaza el del mensaje nuevo
+            return
+        store.marcar_borrador_auto(draft_id)
+        await asyncio.to_thread(_aprobar_y_enviar, draft_id, None)
+        logging.info("Respuesta automática enviada a %s (borrador %s).", telefono, draft_id)
+    except HTTPException as e:
+        logging.error("La respuesta automática del borrador %s falló: %s", draft_id, e.detail)
+        await asyncio.to_thread(
+            enviar_alerta_whatsapp, EVO_URL, EVO_TOKEN, EVO_INSTANCE, NUMERO_OPERADOR,
+            f"⚠️ No se pudo enviar la respuesta automática a {telefono}: {e.detail}",
+        )
+    except Exception:
+        logging.exception("Error inesperado en la respuesta automática del borrador %s.", draft_id)
 
 
 @app.post("/drafts/{draft_id}/mark-bot")
@@ -405,6 +465,42 @@ def regenerate_draft(draft_id: int, body: RegenerarBorrador, x_agent_token: Opti
     }
 
 
+class AjusteAuto(BaseModel):
+    linea: str
+    activo: bool
+
+
+@app.get("/auto-mode")
+def auto_mode(x_agent_token: Optional[str] = Header(default=None)):
+    """Estado del interruptor de respuesta automática por línea, y lo último que se envió solo."""
+    _requerir_token(x_agent_token)
+    return {
+        "lineas": {l: store.obtener_ajuste(f"auto_{l}", "0") == "1" for l in LINEAS_AUTO},
+        "recientes": store.listar_auto_enviados(30, 7),
+        "max_por_contacto_24h": auto_respuesta.MAX_AUTO_POR_CONTACTO_24H,
+        "no_contactar": store.listar_no_contactar(),
+    }
+
+
+@app.post("/auto-mode")
+def set_auto_mode(body: AjusteAuto, x_agent_token: Optional[str] = Header(default=None)):
+    _requerir_token(x_agent_token)
+    if body.linea not in LINEAS_AUTO:
+        raise HTTPException(status_code=400, detail=f"Línea desconocida: {body.linea}.")
+    store.guardar_ajuste(f"auto_{body.linea}", "1" if body.activo else "0")
+    logging.warning("Respuesta automática de %s: %s", body.linea, "ACTIVADA" if body.activo else "apagada")
+    return {"linea": body.linea, "activo": body.activo}
+
+
+@app.delete("/no-contactar/{telefono}")
+def quitar_no_contactar(telefono: str, x_agent_token: Optional[str] = Header(default=None)):
+    """Reactiva a un contacto que estaba en la lista de no contactar (rechazo registrado por error)."""
+    _requerir_token(x_agent_token)
+    if not store.quitar_no_contactar(telefono):
+        raise HTTPException(status_code=404, detail="Ese número no está en la lista.")
+    return {"status": "ok"}
+
+
 @app.get("/filtered-messages")
 def filtered_messages(limite: int = 50, x_agent_token: Optional[str] = Header(default=None)):
     """Últimos mensajes que NO se enviaron a Gemini y por qué (para auditar/ajustar el filtro)."""
@@ -470,13 +566,19 @@ class DecisionBorrador(BaseModel):
 @app.post("/drafts/{draft_id}/approve")
 def approve_draft(draft_id: int, decision: DecisionBorrador, x_agent_token: Optional[str] = Header(default=None)):
     _requerir_token(x_agent_token)
+    return _aprobar_y_enviar(draft_id, decision.texto_final)
+
+
+def _aprobar_y_enviar(draft_id, texto_final):
+    """Núcleo de la aprobación: agenda la cita si el borrador la lleva y envía el WhatsApp. Lo usan
+    tanto el operador (endpoint /approve) como la respuesta automática."""
     borrador = store.obtener_borrador(draft_id)
     if not borrador:
         raise HTTPException(status_code=404, detail="Borrador no encontrado.")
     if borrador["estado"] != "pending":
         raise HTTPException(status_code=409, detail=f"Borrador ya está en estado '{borrador['estado']}'.")
 
-    texto_envio = (decision.texto_final or borrador["texto_borrador"]).strip()
+    texto_envio = (texto_final or borrador["texto_borrador"]).strip()
     if not texto_envio:
         raise HTTPException(status_code=400, detail="El texto a enviar no puede estar vacío.")
 

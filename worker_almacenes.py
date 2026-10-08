@@ -44,6 +44,10 @@ HORA_INICIO_ENVIO = int(os.getenv("HORA_INICIO_ENVIO", "9"))
 HORA_FIN_ENVIO = int(os.getenv("HORA_FIN_ENVIO", "19"))
 # Límite diario de mensajes enviados para evitar baneos
 MAX_MENSAJES_DIARIOS = int(os.getenv("MAX_MENSAJES_DIARIOS", "30"))
+# Reciclaje: cuando no queda a quién escribirle ni leads nuevos que buscar, los que terminaron su
+# secuencia sin respuesta vuelven a "Nuevo" pasados RECONTACTO_DIAS (igual que el worker de clínicas).
+RECONTACTO_DIAS = int(os.getenv("RECONTACTO_DIAS", "21"))
+MAX_RECICLADOS_POR_CICLO = int(os.getenv("MAX_RECICLADOS_POR_CICLO", "8"))
 
 logging.basicConfig(
     level=logging.INFO,
@@ -234,6 +238,47 @@ def obtener_mensaje_almacen(nombre, ubicacion, dia):
 RESULTADOS_QUE_CIERRAN = {"interesado", "no interesado", "numero equivocado"}
 
 
+def reciclar_leads_antiguos(df, ahora, excluir=frozenset()):
+    """
+    Devuelve a "Nuevo" (secuencia desde el día 1) a los almacenes que terminaron la secuencia sin
+    respuesta (Finalizado) o fallaron (Error) hace al menos RECONTACTO_DIAS. Nunca recicla:
+    - "Rechazado" (lo descartó el operador),
+    - los ya clasificados (Resultado: interesado / no interesado / número equivocado),
+    - los números de `excluir` (respondieron, rechazaron o los atiende el vendedor).
+    """
+    if df.empty:
+        return df, 0
+
+    candidatos = []
+    for idx, row in df.iterrows():
+        if str(row.get("Estado", "")) not in ["Finalizado", "Error"]:
+            continue
+        if str(row.get("Resultado", "")).strip().lower() in RESULTADOS_QUE_CIERRAN:
+            continue
+        fecha_contacto = str(row.get("Fecha_Contacto", "")).strip()
+        if not fecha_contacto or fecha_contacto == "nan":
+            continue
+        if agent_client.clave_telefono(row.get("Telefono", "")) in excluir:
+            continue
+        try:
+            ultima_fecha = datetime.strptime(fecha_contacto, "%d/%m/%Y %H:%M")
+        except ValueError:
+            continue
+        if (ahora - ultima_fecha).days >= RECONTACTO_DIAS:
+            candidatos.append(idx)
+
+    if not candidatos:
+        return df, 0
+
+    random.shuffle(candidatos)
+    reciclados = candidatos[:MAX_RECICLADOS_POR_CICLO]
+    for idx in reciclados:
+        df.at[idx, "Estado"] = "Nuevo"
+        df.at[idx, "Dia_Secuencia"] = 0
+        df.at[idx, "Fecha_Contacto"] = ""
+    return df, len(reciclados)
+
+
 def _armar_candidatos(df, ahora, respondieron, estado_resp, asignados=frozenset()):
     """
     Hasta 3 envíos [{'idx','dia'}] para este ciclo. Salta a quienes ya respondieron por
@@ -357,6 +402,14 @@ def _ciclo(resumen):
 
         if not candidatos:
             print("📭 Aún no hay candidatos después de buscar nuevos almacenes.")
+            print("♻️ Intentando reciclar leads antiguos...")
+            df, total_reciclados = reciclar_leads_antiguos(df, ahora, respondieron | asignados)
+            resumen["reciclados"] = total_reciclados
+            if total_reciclados > 0:
+                print(f"♻️ Leads reciclados para recontacto: {total_reciclados}")
+                df.to_csv(ARCHIVO_ALMACENES, index=False)
+            else:
+                print("📭 Sin leads reciclables.")
             return
 
     print(f"🚀 Enviando a {len(candidatos)} almacenes...")

@@ -220,6 +220,43 @@ def marcar_como_bot(draft_id):
         return False, res.text
 
 
+def obtener_modo_automatico():
+    """Estado del interruptor por línea, lo último enviado solo y los números en no contactar."""
+    if not AGENT_SERVICE_URL:
+        return None
+    try:
+        res = requests.get(f"{AGENT_SERVICE_URL.rstrip('/')}/auto-mode", headers=_agent_headers(), timeout=15)
+        if res.status_code == 200:
+            return res.json()
+        st.error(f"El agente respondió HTTP {res.status_code} al leer la respuesta automática: {res.text[:200]}")
+    except Exception as e:
+        st.error(f"No se pudo leer el estado de la respuesta automática: {e}")
+    return None
+
+
+def fijar_modo_automatico(linea, activo):
+    try:
+        res = requests.post(
+            f"{AGENT_SERVICE_URL.rstrip('/')}/auto-mode",
+            json={"linea": linea, "activo": activo},
+            headers=_agent_headers(),
+            timeout=15,
+        )
+    except requests.exceptions.RequestException as e:
+        return False, f"Sin respuesta del agente: {e}"
+    return res.status_code == 200, res.text
+
+
+def reactivar_contacto(telefono):
+    try:
+        res = requests.delete(
+            f"{AGENT_SERVICE_URL.rstrip('/')}/no-contactar/{telefono}", headers=_agent_headers(), timeout=15
+        )
+    except requests.exceptions.RequestException as e:
+        return False, f"Sin respuesta del agente: {e}"
+    return res.status_code == 200, res.text
+
+
 def obtener_bots_filtrados():
     try:
         res = requests.get(f"{AGENT_SERVICE_URL.rstrip('/')}/bot-filters", headers=_agent_headers(), timeout=15)
@@ -659,9 +696,60 @@ with t2:
 
 if t3 is not None:
     with t3:
+        modo_auto = obtener_modo_automatico()
+        if modo_auto is not None:
+            with st.container(border=True):
+                st.markdown("#### ⚡ Respuesta automática")
+                st.caption(
+                    "Cuando está activa, el agente responde solo (tras una pausa de 45 a 120 segundos) únicamente "
+                    "lo de menor riesgo: preguntas informativas y agradecer un rechazo. Todo lo que agenda una cita, "
+                    "menciona precios o descuentos, o necesita a una persona queda aquí para tu aprobación, y te "
+                    f"avisa por WhatsApp. Máximo {modo_auto.get('max_por_contacto_24h', 3)} respuestas automáticas "
+                    "por contacto cada 24 h."
+                )
+                nombres_linea = {"clinicas": "GestiónVital (clínicas)", "almacenes": "GestiónAlmacén (almacenes)"}
+                cols_modo = st.columns(len(nombres_linea))
+                for col_modo, (linea_m, nombre_m) in zip(cols_modo, nombres_linea.items()):
+                    with col_modo:
+                        actual = bool(modo_auto.get("lineas", {}).get(linea_m))
+                        nuevo = st.toggle(nombre_m, value=actual, key=f"auto_{linea_m}")
+                        if nuevo != actual:
+                            ok_m, detalle_m = fijar_modo_automatico(linea_m, nuevo)
+                            if ok_m:
+                                st.rerun()
+                            else:
+                                st.error(f"No se pudo cambiar: {detalle_m}")
+                recientes = modo_auto.get("recientes") or []
+                with st.expander(f"Últimas respuestas enviadas solas ({len(recientes)} en 7 días)"):
+                    if not recientes:
+                        st.caption("Todavía no se ha enviado ninguna sola.")
+                    for r in recientes:
+                        st.markdown(
+                            f"**{r['telefono_normalizado']}** · {str(r.get('decided_at') or '')[:16]} UTC\n\n"
+                            f"> 💬 {r.get('mensaje_entrante') or '(sin texto)'}\n\n"
+                            f"> 🤖 {r['respuesta']}"
+                        )
+                        st.divider()
+                bloqueados = modo_auto.get("no_contactar") or []
+                with st.expander(f"No contactar ({len(bloqueados)}): dijeron que no y no se les vuelve a escribir"):
+                    if not bloqueados:
+                        st.caption("Nadie por ahora.")
+                    for x in bloqueados:
+                        col_t, col_b = st.columns([5, 1])
+                        with col_t:
+                            st.markdown(f"**{x['telefono_normalizado']}** — «{x.get('texto') or ''}»")
+                        with col_b:
+                            if st.button("Reactivar", key=f"react_{x['telefono_normalizado']}",
+                                         help="Quitarlo de la lista (si lo registró por error)."):
+                                ok_r, detalle_r = reactivar_contacto(x["telefono_normalizado"])
+                                if ok_r:
+                                    st.rerun()
+                                else:
+                                    st.error(f"No se pudo reactivar: {detalle_r}")
         st.warning(
             "Estos borradores fueron redactados por IA a partir de respuestas reales de WhatsApp. "
-            "Revísalos y edítalos antes de aprobar — nada se envía sin tu aprobación."
+            "Revísalos y edítalos antes de aprobar. Si la respuesta automática está activa, solo ves aquí lo "
+            "que el agente no se atrevió a enviar solo."
         )
         if st.button("🔄 Actualizar bandeja"):
             st.rerun()

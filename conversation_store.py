@@ -52,6 +52,18 @@ CREATE TABLE IF NOT EXISTS bots_aprendidos (
     created_at TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS no_contactar (
+    telefono_normalizado TEXT PRIMARY KEY,
+    motivo TEXT,
+    texto TEXT,
+    created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS ajustes (
+    clave TEXT PRIMARY KEY,
+    valor TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS citas_agendadas (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     draft_id INTEGER NOT NULL,
@@ -71,6 +83,10 @@ _MIGRACIONES_DRAFTS = {
     "accion_tipo": "ALTER TABLE drafts ADD COLUMN accion_tipo TEXT",
     "accion_payload": "ALTER TABLE drafts ADD COLUMN accion_payload TEXT",
     "accion_resultado": "ALTER TABLE drafts ADD COLUMN accion_resultado TEXT",
+    # 'auto' si el agente lo envió solo (respuesta automática); NULL si lo aprobó el operador.
+    "origen": "ALTER TABLE drafts ADD COLUMN origen TEXT",
+    # Clasificación que dio el modelo (informativa, precio, agenda, escalar...).
+    "clase": "ALTER TABLE drafts ADD COLUMN clase TEXT",
 }
 
 
@@ -128,11 +144,12 @@ def historial_conversacion(telefono_normalizado, limite=20):
     return list(reversed([dict(r) for r in rows]))
 
 
-def crear_borrador(telefono_normalizado, mensaje_entrante_id, texto_borrador, accion_tipo=None, accion_payload=None):
+def crear_borrador(telefono_normalizado, mensaje_entrante_id, texto_borrador, accion_tipo=None,
+                   accion_payload=None, clase=None):
     with _conn() as conn:
         cur = conn.execute(
             "INSERT INTO drafts (telefono_normalizado, mensaje_entrante_id, texto_borrador, estado, "
-            "created_at, accion_tipo, accion_payload) VALUES (?, ?, ?, 'pending', ?, ?, ?)",
+            "created_at, accion_tipo, accion_payload, clase) VALUES (?, ?, ?, 'pending', ?, ?, ?, ?)",
             (
                 telefono_normalizado,
                 mensaje_entrante_id,
@@ -140,6 +157,7 @@ def crear_borrador(telefono_normalizado, mensaje_entrante_id, texto_borrador, ac
                 _ahora(),
                 accion_tipo,
                 json.dumps(accion_payload, ensure_ascii=False) if accion_payload else None,
+                clase,
             ),
         )
         return cur.lastrowid
@@ -170,6 +188,75 @@ def marcar_borrador(draft_id, estado):
         conn.execute(
             "UPDATE drafts SET estado = ?, decided_at = ? WHERE id = ?",
             (estado, _ahora(), draft_id),
+        )
+
+
+def marcar_borrador_auto(draft_id):
+    """El borrador lo envió el agente solo (respuesta automática), no el operador."""
+    with _conn() as conn:
+        conn.execute("UPDATE drafts SET origen = 'auto' WHERE id = ?", (draft_id,))
+
+
+def contar_auto_enviados(telefono_normalizado, horas=24):
+    """Respuestas automáticas ya enviadas a este contacto en las últimas `horas` (tope anti-bucle)."""
+    with _conn() as conn:
+        return conn.execute(
+            "SELECT COUNT(*) FROM drafts WHERE telefono_normalizado = ? AND origen = 'auto' "
+            "AND estado = 'sent' AND decided_at >= ?",
+            (telefono_normalizado, _hace(horas * 60)),
+        ).fetchone()[0]
+
+
+def listar_auto_enviados(limite=30, dias=7):
+    """Últimas respuestas enviadas solas, con lo que escribió el prospecto, para que el operador las audite."""
+    with _conn() as conn:
+        rows = conn.execute(
+            "SELECT d.id, d.telefono_normalizado, d.texto_borrador AS respuesta, d.decided_at, d.clase, "
+            "       m.texto AS mensaje_entrante "
+            "FROM drafts d LEFT JOIN messages m ON m.id = d.mensaje_entrante_id "
+            "WHERE d.origen = 'auto' AND d.estado = 'sent' AND d.decided_at >= ? "
+            "ORDER BY d.id DESC LIMIT ?",
+            (_hace(dias * 24 * 60), limite),
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def agregar_no_contactar(telefono_normalizado, motivo, texto=None):
+    """Rechazo explícito: los workers no le vuelven a escribir (sin vencimiento)."""
+    with _conn() as conn:
+        conn.execute(
+            "INSERT OR IGNORE INTO no_contactar (telefono_normalizado, motivo, texto, created_at) "
+            "VALUES (?, ?, ?, ?)",
+            (telefono_normalizado, motivo, (texto or "")[:300], _ahora()),
+        )
+
+
+def quitar_no_contactar(telefono_normalizado):
+    with _conn() as conn:
+        cur = conn.execute("DELETE FROM no_contactar WHERE telefono_normalizado = ?", (telefono_normalizado,))
+        return cur.rowcount > 0
+
+
+def listar_no_contactar():
+    with _conn() as conn:
+        rows = conn.execute(
+            "SELECT telefono_normalizado, motivo, texto, created_at FROM no_contactar ORDER BY created_at DESC"
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def obtener_ajuste(clave, defecto=None):
+    with _conn() as conn:
+        row = conn.execute("SELECT valor FROM ajustes WHERE clave = ?", (clave,)).fetchone()
+    return row["valor"] if row else defecto
+
+
+def guardar_ajuste(clave, valor):
+    with _conn() as conn:
+        conn.execute(
+            "INSERT INTO ajustes (clave, valor) VALUES (?, ?) "
+            "ON CONFLICT(clave) DO UPDATE SET valor = excluded.valor",
+            (clave, str(valor)),
         )
 
 
@@ -321,6 +408,10 @@ def telefonos_que_respondieron(dias=90):
     Teléfonos (no @lid) que escribieron de verdad al WhatsApp de ventas. No cuentan las
     autorespuestas de bots ni los mensajes repetidos/flood: un bot contestando no es un
     lead conversando.
+
+    También incluye, sin límite de tiempo, a quienes rechazaron explícitamente (tabla no_contactar):
+    los workers usan esta misma lista para pausar la secuencia y para no reciclar leads, así que
+    un rechazo no vence a los `dias` como lo hace una simple respuesta.
     """
     with _conn() as conn:
         rows = conn.execute(
@@ -329,7 +420,10 @@ def telefonos_que_respondieron(dias=90):
             "AND (filtrado_motivo IS NULL OR filtrado_motivo IN ('cierre', 'rafaga'))",
             (_hace(dias * 24 * 60),),
         ).fetchall()
-    return [r["telefono_normalizado"] for r in rows]
+        bloqueados = conn.execute(
+            "SELECT telefono_normalizado FROM no_contactar WHERE telefono_normalizado NOT LIKE '%@%'"
+        ).fetchall()
+    return sorted({r["telefono_normalizado"] for r in rows} | {r["telefono_normalizado"] for r in bloqueados})
 
 
 def reclasificar_como_bot(es_bot, limite=5000):

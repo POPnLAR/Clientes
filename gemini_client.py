@@ -28,6 +28,9 @@ _ULTIMA_LLAMADA = 0.0
 _INTERVALO_MINIMO_SEG = 4.5
 
 _MARCADOR_AGENDAR_RE = re.compile(r"\[\[AGENDAR:\s*([^\]]+)\]\]\s*$")
+# Última línea del texto generado: clasificación del mensaje, para decidir si se envía solo.
+_MARCADOR_CLASE_RE = re.compile(r"\[\[CLASE:\s*([A-Za-z_]+)\s*\]\]\s*$")
+CLASES_VALIDAS = ("informativa", "precio", "agenda", "escalar")
 
 # Cache en memoria del playbook, invalidado por mtime del archivo: así Rodrigo
 # puede editar precios/objeciones sin tener que reiniciar el servicio.
@@ -51,8 +54,19 @@ me sirve"), agrega como última línea de tu respuesta, en su propia línea, exa
 No agregues esa línea si el prospecto no confirmó un horario específico de la lista, y nunca
 inventes un horario que no esté en la lista.
 
-Devuelve SOLO el texto del mensaje de WhatsApp (más la línea [[AGENDAR: ...]] si corresponde),
-sin comillas ni explicaciones adicionales."""
+Después de todo lo anterior, agrega como ÚLTIMA línea, sola, la clasificación de tu respuesta:
+[[CLASE: informativa]], [[CLASE: precio]], [[CLASE: agenda]] o [[CLASE: escalar]], según:
+- informativa: explicas qué hace el producto, cómo funciona, la prueba o la migración, o respondes
+  un saludo o agradecimiento, SIN dar cifras de dinero ni comprometer nada nuevo.
+- precio: tu respuesta menciona precios, planes con valores, descuentos, promociones o cobros, o el
+  prospecto los pregunta.
+- agenda: propones, coordinas o confirmas una demo, reunión, llamada u horario.
+- escalar: el prospecto está molesto, reclama, pide hablar con una persona o que no le escriban más,
+  o plantea algo que el playbook no cubre y no estás seguro de qué responder.
+Si dudas entre dos, elige la más prudente (escalar > agenda > precio > informativa).
+
+Devuelve SOLO el texto del mensaje de WhatsApp (más la línea [[AGENDAR: ...]] si corresponde, y al
+final la línea [[CLASE: ...]]), sin comillas ni explicaciones adicionales."""
 
 _PROMPT_CLINICAS = (
     "Eres el asistente de ventas de Rodrigo, dueño de GestiónVital Pro, una empresa chilena que "
@@ -216,8 +230,23 @@ def _extraer_marcador_agendar(texto_generado):
     return texto_visible, {"tipo": "agendar_cita", "inicio_iso": inicio_iso}
 
 
-def generar_borrador(historial, contexto_lead, mensaje_entrante, slots_disponibles=None,
-                     instruccion_operador=None, borrador_anterior=None, linea=None):
+def _extraer_clase(texto_generado):
+    """Separa la línea final [[CLASE: x]]. Devuelve (texto_sin_la_linea, clase_o_None)."""
+    match = _MARCADOR_CLASE_RE.search(texto_generado)
+    if not match:
+        return texto_generado, None
+    clase = match.group(1).strip().lower()
+    return texto_generado[: match.start()].rstrip(), clase if clase in CLASES_VALIDAS else None
+
+
+def generar_borrador(*args, **kwargs):
+    """Igual que generar_borrador_clasificado pero sin la clase: devuelve (texto, accion_o_None)."""
+    texto, accion, _clase = generar_borrador_clasificado(*args, **kwargs)
+    return texto, accion
+
+
+def generar_borrador_clasificado(historial, contexto_lead, mensaje_entrante, slots_disponibles=None,
+                                 instruccion_operador=None, borrador_anterior=None, linea=None):
     """
     linea: "clinicas" | "almacenes" | None. Elige el producto, la marca y el playbook con los que se
     responde (un almacén no debe recibir el discurso ni los precios de GestiónVital). Si no se conoce
@@ -235,13 +264,15 @@ def generar_borrador(historial, contexto_lead, mensaje_entrante, slots_disponibl
                         horarios de demo realmente libres, para que el agente pueda ofrecerlos y
                         detectar si el prospecto confirma uno.
 
-    Devuelve (texto_borrador, accion_o_None). accion es {"tipo": "agendar_cita", "inicio_iso": str}
+    Devuelve (texto_borrador, accion_o_None, clase). accion es {"tipo": "agendar_cita", "inicio_iso": str}
     si el prospecto confirmó un horario, o None en cualquier otro caso (incluido el fallback, para
-    que el flujo de aprobación humana nunca se bloquee por completo).
+    que el flujo de aprobación humana nunca se bloquee por completo). clase es "informativa",
+    "precio", "agenda" o "escalar" según el modelo; None si no la dio o no es válida, y "fallback"
+    si el texto es el de emergencia (Gemini no respondió). Solo "informativa" puede enviarse sola.
     """
     if not GEMINI_API_KEY:
         logging.error("GEMINI_API_KEY no configurado; devolviendo borrador de fallback.")
-        return _borrador_fallback(mensaje_entrante), None
+        return _borrador_fallback(mensaje_entrante), None, "fallback"
 
     playbook_txt = _cargar_playbook(linea)
     contexto_txt = "\n".join(f"{k}: {v}" for k, v in (contexto_lead or {}).items() if v)
@@ -275,22 +306,24 @@ def generar_borrador(historial, contexto_lead, mensaje_entrante, slots_disponibl
         )
         if res.status_code != 200:
             logging.error("Gemini API error: HTTP %s - %s", res.status_code, res.text[:500])
-            return _borrador_fallback(mensaje_entrante), None
+            return _borrador_fallback(mensaje_entrante), None, "fallback"
 
         data = res.json()
         candidatos = data.get("candidates", [])
         if not candidatos:
             logging.error("Gemini no devolvió candidatos: %s", data)
-            return _borrador_fallback(mensaje_entrante), None
+            return _borrador_fallback(mensaje_entrante), None, "fallback"
 
         partes = candidatos[0].get("content", {}).get("parts", [])
         texto = "".join(p.get("text", "") for p in partes).strip()
         if not texto:
-            return _borrador_fallback(mensaje_entrante), None
-        return _extraer_marcador_agendar(texto)
+            return _borrador_fallback(mensaje_entrante), None, "fallback"
+        texto, clase = _extraer_clase(texto)
+        texto_visible, accion = _extraer_marcador_agendar(texto)
+        return texto_visible, accion, clase
     except Exception:
         logging.exception("Excepción al llamar a Gemini API.")
-        return _borrador_fallback(mensaje_entrante), None
+        return _borrador_fallback(mensaje_entrante), None, "fallback"
 
 
 def _seccion_regeneracion(instruccion_operador, borrador_anterior):

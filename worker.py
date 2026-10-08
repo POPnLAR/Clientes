@@ -131,7 +131,8 @@ def reciclar_leads_antiguos(df, ahora, excluir=frozenset()):
         estado = str(row.get("Estado", ""))
         fecha_contacto = str(row.get("Fecha_Contacto", "")).strip()
 
-        if estado not in ["Finalizado", "Error", "Rechazado"]:
+        # "Rechazado" NO se recicla: lo marcó el operador (o dijo que no) y no debe volver a recibir mensajes.
+        if estado not in ["Finalizado", "Error"]:
             continue
         if not fecha_contacto:
             continue

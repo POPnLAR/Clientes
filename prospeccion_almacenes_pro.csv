@@ -170,9 +170,9 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 169,06/10/2026,18:39,ALMACEN LA FAMILIA,App Almacen,Padre Hurtado,Finalizado,56962438687,2,08/10/2026 11:56,,,A
 170,06/10/2026,18:39,Almacén Ebenezer,App Almacen,Padre Hurtado,Finalizado,56953952292,2,08/10/2026 11:56,,,A
 171,06/10/2026,18:39,Almacén Margarita,App Almacen,Padre Hurtado,Finalizado,56931948392,2,08/10/2026 13:29,,,B
-172,06/10/2026,18:39,Almacen Esquina8,App Almacen,Padre Hurtado,Contactado,56933441044,1,08/10/2026 11:56,,,A
+172,06/10/2026,18:39,Almacen Esquina8,App Almacen,Padre Hurtado,Finalizado,56933441044,2,09/10/2026 13:13,,,A
 173,06/10/2026,18:39,Almacén Juanito,App Almacen,Padre Hurtado,Finalizado,56992982573,2,08/10/2026 18:05,,,A
-174,06/10/2026,18:39,Multimarket Kerrico,App Almacen,Padre Hurtado,Contactado,56952055816,1,07/10/2026 18:59,,,A
+174,06/10/2026,18:39,Multimarket Kerrico,App Almacen,Padre Hurtado,Finalizado,56952055816,2,09/10/2026 13:13,,,A
 175,06/10/2026,18:39,Almacén La UNIÓN,App Almacen,Padre Hurtado,Finalizado,56932033332,2,08/10/2026 18:05,,,A
 176,06/10/2026,18:39,Almacen amy,App Almacen,Padre Hurtado,Contactado,56999662634,1,07/10/2026 18:59,,,A
 177,06/10/2026,18:39,Almacen DyT,App Almacen,Padre Hurtado,Finalizado,56974649959,2,08/10/2026 18:05,,,B
@@ -184,5 +184,5 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 183,08/10/2026,19:05,Botilleria Donde El Pelao,App Almacen,La Cisterna,Contactado,56954254958,1,08/10/2026 19:05,,,B
 184,08/10/2026,19:05,Botilleria JL limitada,App Almacen,La Cisterna,Nuevo,56954560243,0,,,,
 185,08/10/2026,19:05,BOTILLERIA DESTILADOS,App Almacen,La Cisterna,Nuevo,56968017606,0,,,,
-186,08/10/2026,19:05,Botilleria Reñma,App Almacen,La Cisterna,Nuevo,56974496717,0,,,,
+186,08/10/2026,19:05,Botilleria Reñma,App Almacen,La Cisterna,Contactado,56974496717,1,09/10/2026 13:13,,,B
 187,08/10/2026,19:05,botilleria oli y co,App Almacen,La Cisterna,Contactado,56992504742,1,08/10/2026 19:05,,,A

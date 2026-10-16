@@ -187,8 +187,8 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 186,08/10/2026,19:05,Botilleria Reñma,App Almacen,La Cisterna,Contactado,56974496717,1,09/10/2026 13:13,,Respondió por WhatsApp: secuencia automática pausada,B
 187,08/10/2026,19:05,botilleria oli y co,App Almacen,La Cisterna,Finalizado,56992504742,2,10/10/2026 10:43,,,A
 188,13/10/2026,13:00,EMPORIO,App Almacen,Estación Central,Finalizado,56982417795,2,14/10/2026 17:43,,,B
-189,13/10/2026,18:15,Licores sempai,App Almacen,Peñalolén,Nuevo,56971352668,0,,,,
-190,13/10/2026,18:15,Botilleria Roca,App Almacen,Peñalolén,Contactado,56956644615,1,15/10/2026 12:02,,,A
+189,13/10/2026,18:15,Licores sempai,App Almacen,Peñalolén,Contactado,56971352668,1,16/10/2026 18:02,,,B
+190,13/10/2026,18:15,Botilleria Roca,App Almacen,Peñalolén,Finalizado,56956644615,2,16/10/2026 18:02,,,A
 191,13/10/2026,18:15,Botillería prontocopet,App Almacen,Peñalolén,Error,56967085297,1,15/10/2026 12:02,,,B
 192,13/10/2026,18:15,Botilleria los socios,App Almacen,Peñalolén,Finalizado,56965053250,2,16/10/2026 15:00,,,B
 193,13/10/2026,18:15,Botillería Don Roberto,App Almacen,Peñalolén,Contactado,56983021141,1,14/10/2026 14:11,,Respondió por WhatsApp: secuencia automática pausada,A

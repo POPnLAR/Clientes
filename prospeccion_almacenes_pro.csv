@@ -207,8 +207,8 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 206,20/10/2026,12:01,Estacion central,App Almacen,Estación Central,Contactado,56964750675,1,20/10/2026 12:01,,Respondió por WhatsApp: secuencia automática pausada,A
 207,20/10/2026,16:11,Creado en Chile,App Almacen,Vitacura,Contactado,56988899856,1,20/10/2026 16:11,,WhatsApp obtenido de su sitio web,B
 208,20/10/2026,19:16,Emporio Macarena,App Almacen,Lo Barnechea,Contactado,56975452676,1,20/10/2026 19:16,,,A
-209,20/10/2026,19:16,Emporio gurme,App Almacen,Lo Barnechea,Contactado,56998726063,1,20/10/2026 19:16,,,B
-210,20/10/2026,19:16,Emporio La Rosa - Espacio Urbano La Dehesa,App Almacen,Lo Barnechea,Contactado,56992188220,1,20/10/2026 19:16,,,A
+209,20/10/2026,19:16,Emporio gurme,App Almacen,Lo Barnechea,Finalizado,56998726063,2,22/10/2026 10:44,,,B
+210,20/10/2026,19:16,Emporio La Rosa - Espacio Urbano La Dehesa,App Almacen,Lo Barnechea,Finalizado,56992188220,2,22/10/2026 10:44,,,A
 211,21/10/2026,10:44,Emporio Beauty,App Almacen,Independencia,Contactado,56936130607,1,21/10/2026 10:44,,,A
 212,21/10/2026,10:44,Emporio Natural,App Almacen,Independencia,Contactado,56976688636,1,21/10/2026 10:44,,,B
 213,21/10/2026,10:44,Emporio Saludable,App Almacen,Independencia,Contactado,56993958320,1,21/10/2026 10:44,,,B
@@ -219,7 +219,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 218,21/10/2026,15:35,Súper Market V&R,App Almacen,San Joaquín,Nuevo,56953230111,0,,,,
 219,21/10/2026,15:35,Minimarket la mami,App Almacen,San Joaquín,Nuevo,56986804916,0,,,,
 220,21/10/2026,15:35,Minimarket y botilleria manoe,App Almacen,San Joaquín,Nuevo,56942354802,0,,,,
-221,21/10/2026,15:35,Minimarket El Beto,App Almacen,San Joaquín,Nuevo,56983353504,0,,,,
+221,21/10/2026,15:35,Minimarket El Beto,App Almacen,San Joaquín,Contactado,56983353504,1,22/10/2026 10:44,,,A
 222,21/10/2026,15:35,Market DS,App Almacen,San Joaquín,Nuevo,56956459151,0,,,,
 223,21/10/2026,15:35,La Industria Botillería y Minimarket,App Almacen,San Joaquín,Nuevo,56958875209,0,,,,
 224,21/10/2026,15:35,Minimarket Adam Josue E.I.R.L,App Almacen,San Joaquín,Contactado,56935881137,1,21/10/2026 19:18,,,A

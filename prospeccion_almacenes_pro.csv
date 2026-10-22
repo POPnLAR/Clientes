@@ -210,13 +210,13 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 209,20/10/2026,19:16,Emporio gurme,App Almacen,Lo Barnechea,Finalizado,56998726063,2,22/10/2026 10:44,,,B
 210,20/10/2026,19:16,Emporio La Rosa - Espacio Urbano La Dehesa,App Almacen,Lo Barnechea,Finalizado,56992188220,2,22/10/2026 10:44,,,A
 211,21/10/2026,10:44,Emporio Beauty,App Almacen,Independencia,Contactado,56936130607,1,21/10/2026 10:44,,,A
-212,21/10/2026,10:44,Emporio Natural,App Almacen,Independencia,Contactado,56976688636,1,21/10/2026 10:44,,,B
+212,21/10/2026,10:44,Emporio Natural,App Almacen,Independencia,Finalizado,56976688636,2,22/10/2026 15:30,,,B
 213,21/10/2026,10:44,Emporio Saludable,App Almacen,Independencia,Contactado,56993958320,1,21/10/2026 10:44,,,B
 214,21/10/2026,15:35,Minimarket la esquina,App Almacen,San Joaquín,Contactado,56930560400,1,21/10/2026 19:18,,,B
 215,21/10/2026,15:35,Minimarket Sofisa,App Almacen,San Joaquín,Contactado,56929411018,1,21/10/2026 15:35,,,B
 216,21/10/2026,15:35,Minimarket Angélica,App Almacen,San Joaquín,Nuevo,56994942249,0,,,,
 217,21/10/2026,15:35,Nix Market,App Almacen,San Joaquín,Contactado,56993297991,1,21/10/2026 15:35,,,A
-218,21/10/2026,15:35,Súper Market V&R,App Almacen,San Joaquín,Nuevo,56953230111,0,,,,
+218,21/10/2026,15:35,Súper Market V&R,App Almacen,San Joaquín,Contactado,56953230111,1,22/10/2026 15:30,,,B
 219,21/10/2026,15:35,Minimarket la mami,App Almacen,San Joaquín,Nuevo,56986804916,0,,,,
 220,21/10/2026,15:35,Minimarket y botilleria manoe,App Almacen,San Joaquín,Nuevo,56942354802,0,,,,
 221,21/10/2026,15:35,Minimarket El Beto,App Almacen,San Joaquín,Contactado,56983353504,1,22/10/2026 10:44,,,A
@@ -224,5 +224,5 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 223,21/10/2026,15:35,La Industria Botillería y Minimarket,App Almacen,San Joaquín,Nuevo,56958875209,0,,,,
 224,21/10/2026,15:35,Minimarket Adam Josue E.I.R.L,App Almacen,San Joaquín,Contactado,56935881137,1,21/10/2026 19:18,,,A
 225,21/10/2026,15:35,Minimarket El Tio,App Almacen,San Joaquín,Contactado,56972192008,1,21/10/2026 15:35,,,B
-226,21/10/2026,15:35,Minimarket Arbolito II,App Almacen,San Joaquín,Nuevo,56993556831,0,,,,
+226,21/10/2026,15:35,Minimarket Arbolito II,App Almacen,San Joaquín,Contactado,56993556831,1,22/10/2026 15:30,,,B
 227,21/10/2026,15:35,Distribuidora JA,App Almacen,San Joaquín,Contactado,56931700804,1,21/10/2026 19:18,,,A

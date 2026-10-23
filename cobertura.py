@@ -45,6 +45,14 @@ COMUNAS_NORTE = [
     "Andacollo", "Vicuña", "Monte Patria", "Combarbalá", "Canela", "Punitaqui",
 ]
 
+# Orden de barrido del norte: primero las ciudades donde están las consultoras, al final las comunas
+# pequeñas (que suelen devolver 0 resultados y gastan un crédito de SerpAPI cada una). Las comunas que
+# no figuren acá van al final de la vuelta. Dentro de cada grupo el orden sigue siendo aleatorio.
+PRIORIDAD_NORTE = [
+    ["Antofagasta", "Calama", "Copiapó", "La Serena", "Coquimbo", "Ovalle", "Vallenar"],
+    ["Caldera", "Mejillones", "Tocopilla", "Diego de Almagro", "Chañaral", "Illapel", "Vicuña", "Los Vilos"],
+]
+
 
 def _cargar(archivo):
     if os.path.exists(archivo):
@@ -70,7 +78,17 @@ def _nueva_vuelta(comunas, terminos, vuelta_anterior=0):
     return {"pendientes": combos, "vuelta": vuelta_anterior + 1, "terminos": list(terminos)}
 
 
-def siguiente(archivo, comunas, terminos, terminos_previos=()):
+def _ordenar_por_prioridad(pendientes, prioridad):
+    """
+    Ordena las combinaciones [comuna, término] por grupo de prioridad (el índice del grupo de la comuna;
+    las no listadas van al final). El orden es estable: dentro de un grupo se conserva el que ya tenían,
+    así que aplicarlo varias veces sobre el mismo estado no cambia nada.
+    """
+    rango = {c: i for i, grupo in enumerate(prioridad) for c in grupo}
+    return sorted(pendientes, key=lambda p: rango.get(p[0], len(prioridad)))
+
+
+def siguiente(archivo, comunas, terminos, terminos_previos=(), prioridad=None):
     """
     Devuelve (zona, termino) a buscar, sin marcarla como cubierta (eso lo hace
     marcar_cubierto una vez que la búsqueda corrió de verdad). `terminos_previos` son
@@ -78,6 +96,9 @@ def siguiente(archivo, comunas, terminos, terminos_previos=()):
     (para no confundirlos con rubros nuevos al migrar).
     Si se agregan rubros a `terminos` con una vuelta en curso, sus combinaciones se
     suman a las pendientes sin reiniciar la vuelta.
+    `prioridad` (opcional): lista de grupos de comunas a barrer primero, en ese orden (ver PRIORIDAD_NORTE).
+    También reordena una vuelta que ya estaba en curso, sin perder lo ya cubierto. Sin ella el orden
+    es aleatorio, como siempre.
     """
     estado = _cargar(archivo)
     if not estado or not estado.get("pendientes"):
@@ -95,6 +116,12 @@ def siguiente(archivo, comunas, terminos, terminos_previos=()):
             print(f"➕ Rubros nuevos en el barrido: {', '.join(nuevos)} ({len(extra)} combinaciones).")
         if nuevos or "terminos" not in estado:
             estado["terminos"] = list(terminos)
+            _guardar(archivo, estado)
+
+    if prioridad:
+        ordenadas = _ordenar_por_prioridad(estado["pendientes"], prioridad)
+        if ordenadas != estado["pendientes"]:
+            estado["pendientes"] = ordenadas
             _guardar(archivo, estado)
 
     zona, termino = estado["pendientes"][0]

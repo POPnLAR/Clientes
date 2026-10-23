@@ -95,7 +95,9 @@ def buscar_y_agregar_consultoras(df_actual):
         return df_actual
 
     ahora_cl = obtener_ahora_chile()
-    zona, termino = cobertura.siguiente(ARCHIVO_COBERTURA, COMUNAS_OBJETIVO, TERMINOS_BUSQUEDA)
+    zona, termino = cobertura.siguiente(
+        ARCHIVO_COBERTURA, COMUNAS_OBJETIVO, TERMINOS_BUSQUEDA, prioridad=cobertura.PRIORIDAD_NORTE
+    )
     print(f"🦺 Buscando '{termino}' en: {zona}...")
 
     tels_en_base = set()

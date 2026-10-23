@@ -1,5 +1,6 @@
 # Playbook del agente para la línea PREVENCIÓN DE RIESGOS (consultoras y asesores, zona minera: regiones II, III y IV).
-# No es un producto: es un servicio de automatización a medida. El primer paso es un diagnóstico gratuito de 20 min.
+# No es un producto: es un servicio de automatización a medida. El primer paso es un diagnóstico gratuito POR
+# MENSAJES (3 preguntas cortas + mini informe). La llamada de 20 min queda como opción si el prospecto la pide.
 # El agente usa EXCLUSIVAMENTE lo que está aquí. Se recarga solo al guardar (sin reiniciar).
 #
 # Fuente: oferta definida con Rodrigo (propuestas/prevencion_oferta_y_diagnostico.md). Los precios son el
@@ -19,8 +20,10 @@ empresa:
     puede conectar con el software que ya use.
 
 hechos:
-  - "El primer paso es un diagnóstico exprés gratuito de 20 minutos por llamada, sin compromiso."
-  - "Después del diagnóstico se envía un mini informe con las horas que se podrían recuperar y qué flujo conviene automatizar primero."
+  - "El primer paso es un diagnóstico gratuito y sin compromiso, por mensajes de WhatsApp: Rodrigo envía 3 preguntas cortas y, con las respuestas, prepara un mini informe."
+  - "Las 3 preguntas del diagnóstico son, tal cual: 1) ¿Cuántos clientes (empresas o faenas) atiende la consultora y cuántos prevencionistas son? 2) ¿Qué informe o documento les quita más tiempo al mes y cómo lo hacen hoy (Word, Excel, algún software)? 3) Más o menos, ¿cuántas horas al mes dedica el equipo a eso?"
+  - "El mini informe con las horas que se podrían recuperar y qué flujo conviene automatizar primero se envía por WhatsApp, normalmente dentro de 1 día hábil desde que responden las preguntas."
+  - "Si la consultora prefiere conversarlo por llamada, se puede coordinar una llamada breve de 20 minutos, sin costo. No se ofrece de entrada: solo si lo piden."
   - "Si hay interés, se hace un piloto de 3 a 4 semanas que automatiza un solo flujo con datos reales de uno o dos clientes de la consultora."
   - "El piloto tiene alcance cerrado y un criterio de éxito medible acordado por escrito antes de empezar."
   - "Al terminar el piloto se revisan los resultados: se puede pasar a una mantención mensual, ajustar una vez o terminar sin compromiso adicional."
@@ -59,8 +62,13 @@ objeciones:
 
   - objecion: "No tenemos tiempo / estamos muy ocupados"
     respuesta_sugerida: >
-      Justamente por eso la llamada dura solo 20 minutos. Si prefieren, les mando tres preguntas por acá y
-      les devuelvo un mini informe sin llamada.
+      Justamente por eso es por mensaje: son 3 preguntas cortas que pueden responder cuando tengan un
+      minuto, sin llamada ni reunión. Con eso les devuelvo un mini informe.
+
+  - objecion: "¿Podemos hablar por teléfono / hacemos una llamada o reunión?"
+    respuesta_sugerida: >
+      Claro. Si les acomoda, coordinamos una llamada breve de 20 minutos, sin costo. Les propongo estos
+      horarios: (usar solo los de la lista de horarios disponibles).
 
   - objecion: "¿Qué hacen exactamente? / ¿Es un sistema?"
     respuesta_sugerida: >
@@ -75,15 +83,16 @@ objeciones:
 
   - objecion: "Mándame información por correo"
     respuesta_sugerida: >
-      Claro. Para enviarles algo útil y no genérico, ¿les parece una llamada breve de 20 minutos para
-      entender cómo trabajan? Con eso les preparo un mini informe a su medida.
+      Claro. Para enviarles algo útil y no genérico, ¿les puedo mandar 3 preguntas cortas por aquí para
+      entender cómo trabajan? Con sus respuestas les preparo un mini informe a su medida.
 
   - objecion: "Lo vemos y te aviso / ahora no es el momento"
     respuesta_sugerida: >
-      Sin problema, gracias por responder. Cuando quieran, aquí quedo para coordinar los 20 minutos.
+      Sin problema, gracias por responder. Cuando quieran, aquí quedo para enviarles las 3 preguntas.
 
+# La llamada es OPCIONAL: solo si el prospecto la pide. El diagnóstico normal es por mensajes.
 demo:
-  modalidad: "Diagnóstico exprés gratuito por llamada, de 20 minutos, sin compromiso."
+  modalidad: "Llamada opcional de 20 minutos, sin costo (solo si el prospecto la pide; el diagnóstico normal es por mensajes)."
   dias_disponibles: ["lunes", "martes", "miércoles", "jueves", "viernes"]
   horario_inicio: "10:00"
   horario_fin: "18:00"

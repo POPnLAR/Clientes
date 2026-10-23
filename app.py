@@ -424,26 +424,26 @@ PLANTILLAS_EMAIL = {
     },
     # Línea de prevención de riesgos: las claves coinciden con los términos de worker_prevencion.py.
     "Prevencion de riesgos": {
-        "asunto": "Diagnostico gratuito de 20 min para {nombre}",
+        "asunto": "Diagnostico gratuito por mensaje para {nombre}",
         "cuerpo": (
             "Hola equipo de {nombre},\n\n"
             "Mi nombre es Rodrigo, desarrollo software en Chile. Estoy ayudando a consultoras de "
             "prevencion de riesgos de {zona} a reducir el tiempo que pierden en informes y papeleo "
             "para sus clientes.\n\n"
-            "Les interesaria una llamada de 20 minutos, sin costo, para ver cuantas horas podrian "
-            "recuperar?\n\n"
+            "Les puedo enviar 3 preguntas cortas por este correo? Con sus respuestas les devuelvo un "
+            "estimado de cuantas horas podrian recuperar, sin costo.\n\n"
             "Saludos,\nRodrigo"
         ),
     },
     "Seguridad laboral": {
-        "asunto": "Diagnostico gratuito de 20 min para {nombre}",
+        "asunto": "Diagnostico gratuito por mensaje para {nombre}",
         "cuerpo": (
             "Hola equipo de {nombre},\n\n"
             "Mi nombre es Rodrigo, desarrollo software en Chile. Estoy ayudando a consultoras de "
             "seguridad laboral de {zona} a reducir el tiempo que pierden en informes y papeleo "
             "para sus clientes.\n\n"
-            "Les interesaria una llamada de 20 minutos, sin costo, para ver cuantas horas podrian "
-            "recuperar?\n\n"
+            "Les puedo enviar 3 preguntas cortas por este correo? Con sus respuestas les devuelvo un "
+            "estimado de cuantas horas podrian recuperar, sin costo.\n\n"
             "Saludos,\nRodrigo"
         ),
     },
@@ -543,15 +543,15 @@ PLANTILLAS_WHATSAPP = {
         "Hola, soy Rodrigo, desarrollo software en Chile. Estoy ayudando a "
         "consultoras de prevencion de riesgos como *{nombre}* en {zona} a "
         "reducir el tiempo que pierden en informes y papeleo para sus clientes. "
-        "Les interesaria una llamada de 20 min, sin costo, para ver cuantas "
-        "horas podrian recuperar?"
+        "Les puedo enviar 3 preguntas cortas por aqui? Con sus respuestas les "
+        "devuelvo un estimado de cuantas horas podrian recuperar, sin costo."
     ),
     "Seguridad laboral": (
         "Hola, soy Rodrigo, desarrollo software en Chile. Estoy ayudando a "
         "consultoras de seguridad laboral como *{nombre}* en {zona} a "
         "reducir el tiempo que pierden en informes y papeleo para sus clientes. "
-        "Les interesaria una llamada de 20 min, sin costo, para ver cuantas "
-        "horas podrian recuperar?"
+        "Les puedo enviar 3 preguntas cortas por aqui? Con sus respuestas les "
+        "devuelvo un estimado de cuantas horas podrian recuperar, sin costo."
     ),
     "_default": (
         "Hola, soy Rodrigo de GestionVital. Vi el negocio de *{nombre}* en "

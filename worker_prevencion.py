@@ -167,8 +167,9 @@ def enviar_mensaje_texto(numero, mensaje):
 def obtener_mensaje_prevencion(nombre, ubicacion, dia):
     """
     Genera el mensaje para la consultora y una etiqueta de versión para A/B testing.
-    Devuelve (mensaje_texto, version). Ofrece el diagnóstico gratuito de 20 minutos; no afirma que
-    exista un producto, ni clientes, ni cifras. Sin links: es una conversación entre personas.
+    Devuelve (mensaje_texto, version). Ofrece un diagnóstico gratuito POR MENSAJES (3 preguntas cortas
+    y un mini informe), sin llamada; no afirma que exista un producto, ni clientes, ni cifras.
+    Sin links: es una conversación entre personas.
     """
     nombre = _sin_marcas_de_plantilla(nombre)
     zona = _sin_marcas_de_plantilla(ubicacion) or "la zona"
@@ -187,8 +188,10 @@ def obtener_mensaje_prevencion(nombre, ubicacion, dia):
                 "Estoy ayudando a consultoras de prevención de riesgos como *{nombre}* a "
                 "{reducir el tiempo que pierden en informes y papeleo para sus clientes|"
                 "ahorrar horas en informes, vencimientos y documentación}.\n\n"
-                "{¿Les interesaría una llamada de 20 min para ver cuántas horas podrían recuperar? Es sin costo.|"
-                "¿Les serviría una llamada de 20 min, sin costo, para ver cuánto tiempo podrían recuperar?}"
+                "{¿Les puedo enviar 3 preguntas cortas por aquí? Con sus respuestas les devuelvo un estimado "
+                "de cuántas horas podrían recuperar, sin costo.|"
+                "¿Les parece si les envío 3 preguntas cortas por aquí? Con sus respuestas les calculo "
+                "cuánto tiempo podrían recuperar, sin costo.}"
             )
         else:
             msg = (
@@ -197,7 +200,7 @@ def obtener_mensaje_prevencion(nombre, ubicacion, dia):
                 "{los informes a clientes|el papeleo y los avisos de vencimientos}, y quería "
                 "preguntarles por *{nombre}*.\n\n"
                 "Si les interesa ver cuántas horas podrían recuperar, respóndanme solo con un *SI* "
-                "y coordinamos una llamada de 20 min, sin costo. 👍"
+                "y les envío 3 preguntas cortas por aquí, sin costo. 👍"
             )
         return armar(msg), variante
 
@@ -206,7 +209,8 @@ def obtener_mensaje_prevencion(nombre, ubicacion, dia):
             "{Hola de nuevo|Hola nuevamente} 👋 Solo para complementar: en estas conversaciones suelen salir "
             "tareas como {informes mensuales|avisos de vencimientos|consolidar datos de varias planillas} "
             "que se pueden automatizar aunque ya usen un software.\n\n"
-            "Si prefieren, les mando 3 preguntas por aquí y les devuelvo un mini informe sin llamada. ¿Les sirve?"
+            "Si les sirve, les envío las 3 preguntas por aquí y les devuelvo un mini informe a su medida. "
+            "¿Se las mando?"
         )
         return armar(msg), "D2"
 

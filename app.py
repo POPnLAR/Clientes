@@ -14,10 +14,12 @@ from urllib.parse import quote
 MODOS = {
     "🏥 Clínicas Estéticas": "prospeccion_gestionvital_pro.csv",
     "🏪 Almacenes de Barrio": "prospeccion_almacenes_pro.csv",
+    "🦺 Prevención de Riesgos (Norte)": "prospeccion_prevencion_pro.csv",
 }
 ARCHIVOS_ALERTA = {
     "🏥 Clínicas Estéticas": "alert_status.json",
     "🏪 Almacenes de Barrio": "alert_status_almacenes.json",
+    "🦺 Prevención de Riesgos (Norte)": "alert_status_prevencion.json",
 }
 COLUMNAS_REQUERIDAS = [
     "Id",
@@ -420,6 +422,31 @@ PLANTILLAS_EMAIL = {
             "Saludos,\nRodrigo\nGestionVital\nhttps://gestionvitalpro.cl"
         ),
     },
+    # Línea de prevención de riesgos: las claves coinciden con los términos de worker_prevencion.py.
+    "Prevencion de riesgos": {
+        "asunto": "Diagnostico gratuito de 20 min para {nombre}",
+        "cuerpo": (
+            "Hola equipo de {nombre},\n\n"
+            "Mi nombre es Rodrigo, desarrollo software en Chile. Estoy ayudando a consultoras de "
+            "prevencion de riesgos de {zona} a reducir el tiempo que pierden en informes y papeleo "
+            "para sus clientes.\n\n"
+            "Les interesaria una llamada de 20 minutos, sin costo, para ver cuantas horas podrian "
+            "recuperar?\n\n"
+            "Saludos,\nRodrigo"
+        ),
+    },
+    "Seguridad laboral": {
+        "asunto": "Diagnostico gratuito de 20 min para {nombre}",
+        "cuerpo": (
+            "Hola equipo de {nombre},\n\n"
+            "Mi nombre es Rodrigo, desarrollo software en Chile. Estoy ayudando a consultoras de "
+            "seguridad laboral de {zona} a reducir el tiempo que pierden en informes y papeleo "
+            "para sus clientes.\n\n"
+            "Les interesaria una llamada de 20 minutos, sin costo, para ver cuantas horas podrian "
+            "recuperar?\n\n"
+            "Saludos,\nRodrigo"
+        ),
+    },
     "_default": {
         "asunto": "GestionVital - Propuesta para {nombre}",
         "cuerpo": (
@@ -510,6 +537,21 @@ PLANTILLAS_WHATSAPP = {
         "realiza botox y rellenos, y trabajo ayudando a centros como el "
         "suyo a mantener las fichas de procedimientos y los consentimientos "
         "ordenados. Como estan llevando hoy esas fichas?"
+    ),
+    # Línea de prevención de riesgos: las claves coinciden con los términos de worker_prevencion.py.
+    "Prevencion de riesgos": (
+        "Hola, soy Rodrigo, desarrollo software en Chile. Estoy ayudando a "
+        "consultoras de prevencion de riesgos como *{nombre}* en {zona} a "
+        "reducir el tiempo que pierden en informes y papeleo para sus clientes. "
+        "Les interesaria una llamada de 20 min, sin costo, para ver cuantas "
+        "horas podrian recuperar?"
+    ),
+    "Seguridad laboral": (
+        "Hola, soy Rodrigo, desarrollo software en Chile. Estoy ayudando a "
+        "consultoras de seguridad laboral como *{nombre}* en {zona} a "
+        "reducir el tiempo que pierden en informes y papeleo para sus clientes. "
+        "Les interesaria una llamada de 20 min, sin costo, para ver cuantas "
+        "horas podrian recuperar?"
     ),
     "_default": (
         "Hola, soy Rodrigo de GestionVital. Vi el negocio de *{nombre}* en "
@@ -638,7 +680,7 @@ with t1:
     )
 
     # Configuración dinámica de progreso según la línea
-    max_secuencia = 2 if "Almacenes" in unidad else 4
+    max_secuencia = 2 if ("Almacenes" in unidad or "Prevención" in unidad) else 4
 
     # Prioriza en la vista a quienes tienen email y aún no fueron contactados por ese canal.
     df_display["_prioridad_email"] = (
@@ -707,7 +749,11 @@ if t3 is not None:
                     f"avisa por WhatsApp. Máximo {modo_auto.get('max_por_contacto_24h', 3)} respuestas automáticas "
                     "por contacto cada 24 h."
                 )
-                nombres_linea = {"clinicas": "GestiónVital (clínicas)", "almacenes": "GestiónAlmacén (almacenes)"}
+                nombres_linea = {
+                    "clinicas": "GestiónVital (clínicas)",
+                    "almacenes": "GestiónAlmacén (almacenes)",
+                    "prevencion": "Prevención de riesgos (norte)",
+                }
                 cols_modo = st.columns(len(nombres_linea))
                 for col_modo, (linea_m, nombre_m) in zip(cols_modo, nombres_linea.items()):
                     with col_modo:

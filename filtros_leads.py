@@ -17,6 +17,13 @@ _PATRONES = {
         r"red ?salud|megasalud|integramedica|\bbupa\b|cruz verde|ahumada|salcobrand|"
         r"\bhospital\b|\bcesfam\b|consultorio|universidad|\bduoc\b|\binacap\b"
     ),
+    # Mutualidades y organismos públicos no son consultoras: son proveedores del sistema o fiscalizan.
+    "prevencion": (
+        r"\bachs\b|asociacion chilena de seguridad|mutual de seguridad|\bist\b|instituto de seguridad|"
+        r"\bisl\b|mutualidad|sernageomin|\bseremi\b|direccion del trabajo|inspeccion del trabajo|"
+        r"suseso|\bsence\b|municipalidad|bomberos|carabineros|\bhospital\b|\bcesfam\b|"
+        r"universidad|\bduoc\b|\binacap\b|\bsanto tomas\b|colegio|liceo"
+    ),
 }
 
 
@@ -26,7 +33,7 @@ def _limpio(texto):
 
 
 def es_cadena(nombre, linea):
-    """linea: 'almacenes' o 'clinicas'."""
+    """linea: 'almacenes', 'clinicas' o 'prevencion'."""
     patron = _PATRONES.get(linea)
     return bool(patron and re.search(patron, _limpio(nombre)))
 
@@ -48,6 +55,10 @@ _RUBRO_SI = {
         r"micropigment|cejas|pestan|lash|clinica|medic|dermat|salon|salud|botox|rellen|bienestar|"
         r"wellness|peluquer|\bunas\b|nail"
     ),
+    "prevencion": (
+        r"prevencion|riesgo|seguridad (laboral|ocupacional|industrial|y salud|minera)|salud ocupacional|"
+        r"\bsso\b|\bsst\b|\bhse\b|hseq|higiene|ergonom"
+    ),
 }
 _RUBRO_NO = {
     "almacenes": (
@@ -60,6 +71,13 @@ _RUBRO_NO = {
     "clinicas": (
         r"\bhotel\b|inmobiliaria|ferreteria|restaurante|restaurant|"
         r"veterin|mascota|optica|farmacia|panaderia|supermercado|abogad|contab|mecanic"
+    ),
+    # Seguridad privada, venta de equipos y rubros ajenos que Google mezcla con "seguridad" o "riesgo".
+    "prevencion": (
+        r"seguridad privada|guardias?|alarma|cerrajer|camara|extintor|ferreteria|epp\b|"
+        r"venta de (ropa|equipos|implementos)|implementos de seguridad|ropa de trabajo|"
+        r"corredora? de seguros|seguros|inmobiliaria|restaurant|restaurante|hotel|"
+        r"transporte|taller|mecanic|abogad|contab|colegio|jardin infantil"
     ),
 }
 
@@ -78,7 +96,12 @@ def texto_categoria(place):
 # Almacenes: lista estricta (el rubro es ambiguo y Google devuelve bodegas, telas, mayoristas).
 # Clínicas: solo se excluye lo claramente ajeno; la lista estricta podría dejar fuera negocios
 # legítimos mientras no se hayan visto las categorías reales que devuelve Google para Chile.
-_RUBRO_ESTRICTO = {"almacenes": True, "clinicas": False}
+#
+# Prevención: lista estricta: el nombre o la categoría deben hablar de prevención, riesgos, seguridad
+# laboral u ocupacional, HSE/SSO o higiene. "Consultora" o "capacitación" por sí solos NO bastan (dejaban
+# pasar consultoras informáticas y centros de formación). Es B2B y de volumen bajo: preferimos perder
+# algún lead antes que escribirle a un negocio ajeno desde el número compartido.
+_RUBRO_ESTRICTO = {"almacenes": True, "clinicas": False, "prevencion": True}
 
 
 def categoria_relevante(place, linea):

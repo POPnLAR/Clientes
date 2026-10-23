@@ -138,7 +138,10 @@ def es_cierre(texto, cfg):
     return all(p in validas for p in palabras)
 
 
-_OFERTA_HORARIO = re.compile(r"\d{1,2}[:.]\d{2}|jueves|viernes|sabado|demo|horario", re.IGNORECASE)
+_OFERTA_HORARIO = re.compile(
+    r"\d{1,2}[:.]\d{2}|lunes|martes|miercoles|jueves|viernes|sabado|demo|horario|llamada|diagnostico",
+    re.IGNORECASE,
+)
 
 
 def nuestro_ultimo_mensaje_ofrecia_horario(ultimo_saliente):

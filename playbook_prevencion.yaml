@@ -1,0 +1,90 @@
+# Playbook del agente para la línea PREVENCIÓN DE RIESGOS (consultoras y asesores, zona minera: regiones II, III y IV).
+# No es un producto: es un servicio de automatización a medida. El primer paso es un diagnóstico gratuito de 20 min.
+# El agente usa EXCLUSIVAMENTE lo que está aquí. Se recarga solo al guardar (sin reiniciar).
+#
+# Fuente: oferta definida con Rodrigo (propuestas/prevencion_oferta_y_diagnostico.md). Los precios son el
+# rango de trabajo aprobado, aún sin probar con clientes. Lo que no está aquí figura en `no_disponible`:
+# el agente no lo afirma y lo deriva al diagnóstico con Rodrigo.
+
+version: 1
+actualizado: "2026-10-23"
+
+empresa:
+  nombre: "Automatización a medida para consultoras de prevención de riesgos"
+  descripcion: >
+    Rodrigo, desarrollador de software en Chile, automatiza el trabajo repetitivo de las consultoras y
+    asesores de prevención de riesgos: informes y entregables con el formato y la marca de cada consultora,
+    avisos de vencimientos, consolidación de datos de varias fuentes, borradores de informes asistidos por IA
+    y portales de cliente. No es un sistema estándar: se adapta al flujo que la consultora ya tiene y se
+    puede conectar con el software que ya use.
+
+hechos:
+  - "El primer paso es un diagnóstico exprés gratuito de 20 minutos por llamada, sin compromiso."
+  - "Después del diagnóstico se envía un mini informe con las horas que se podrían recuperar y qué flujo conviene automatizar primero."
+  - "Si hay interés, se hace un piloto de 3 a 4 semanas que automatiza un solo flujo con datos reales de uno o dos clientes de la consultora."
+  - "El piloto tiene alcance cerrado y un criterio de éxito medible acordado por escrito antes de empezar."
+  - "Al terminar el piloto se revisan los resultados: se puede pasar a una mantención mensual, ajustar una vez o terminar sin compromiso adicional."
+  - "Se puede trabajar aunque la consultora ya use un software de prevención: el objetivo es automatizar lo que ese software no cubre, sin cambiar de sistema."
+  - "No reemplaza al prevencionista: es una herramienta de apoyo. El contenido técnico y normativo sigue siendo responsabilidad de la consultora."
+  - "Rodrigo trabaja desde Chile, en horario chileno."
+
+beneficios:
+  - "Recuperar horas del equipo en informes y papeleo para clientes"
+  - "Entregar informes a los clientes más rápido y con el formato de la propia consultora"
+  - "Evitar que se pasen vencimientos de documentos, exámenes o capacitaciones"
+  - "Atender más clientes sin contratar más personas"
+
+# Datos que NO están definidos: el agente no debe afirmarlos ni negarlos.
+no_disponible:
+  - "clientes de referencia o casos de éxito concretos"
+  - "precio exacto de un flujo específico (se define después del diagnóstico)"
+  - "si el valor lleva IVA (se aclara en la propuesta)"
+  - "integraciones específicas con un software de terceros determinado"
+  - "plazos exactos para un flujo concreto"
+  - "validación normativa o legal de formatos (es responsabilidad de la consultora)"
+
+objeciones:
+  - objecion: "¿Cuánto cuesta?"
+    respuesta_sugerida: >
+      Depende del flujo que quieran automatizar, por eso el primer paso es el diagnóstico gratuito de 20
+      minutos. Como referencia, los pilotos a medida están entre CLP 350.000 y 600.000, y la mantención
+      mensual posterior entre CLP 40.000 y 120.000. El valor final y si lleva IVA se confirman en la
+      propuesta, después del diagnóstico.
+
+  - objecion: "Ya usamos un software de prevención (Tazki, Worklite, Gremio Prevención, Clodi u otro)"
+    respuesta_sugerida: >
+      Perfecto, es una buena señal. No se trata de cambiarlo: el diagnóstico sirve para ver qué sigue
+      quedando a mano (informes con su formato, avisos, consolidar datos) y si se puede automatizar sin tocar
+      lo que ya les funciona. Si no encuentro nada que valga la pena, se los digo con franqueza.
+
+  - objecion: "No tenemos tiempo / estamos muy ocupados"
+    respuesta_sugerida: >
+      Justamente por eso la llamada dura solo 20 minutos. Si prefieren, les mando tres preguntas por acá y
+      les devuelvo un mini informe sin llamada.
+
+  - objecion: "¿Qué hacen exactamente? / ¿Es un sistema?"
+    respuesta_sugerida: >
+      No es un sistema estándar. Automatizo tareas concretas de la consultora, por ejemplo preparar
+      informes mensuales para los clientes, avisar vencimientos o juntar datos de varias planillas, con el
+      formato de ustedes. En el diagnóstico identificamos cuál les ahorraría más tiempo.
+
+  - objecion: "¿Tienen clientes o casos de éxito?"
+    respuesta_sugerida: >
+      Estoy partiendo en este rubro, por eso hago el diagnóstico gratuito y el piloto con alcance cerrado y
+      metas medibles: así ven resultados reales antes de comprometerse a algo más grande.
+
+  - objecion: "Mándame información por correo"
+    respuesta_sugerida: >
+      Claro. Para enviarles algo útil y no genérico, ¿les parece una llamada breve de 20 minutos para
+      entender cómo trabajan? Con eso les preparo un mini informe a su medida.
+
+  - objecion: "Lo vemos y te aviso / ahora no es el momento"
+    respuesta_sugerida: >
+      Sin problema, gracias por responder. Cuando quieran, aquí quedo para coordinar los 20 minutos.
+
+demo:
+  modalidad: "Diagnóstico exprés gratuito por llamada, de 20 minutos, sin compromiso."
+  dias_disponibles: ["lunes", "martes", "miércoles", "jueves", "viernes"]
+  horario_inicio: "10:00"
+  horario_fin: "18:00"
+  duracion_minutos: 20

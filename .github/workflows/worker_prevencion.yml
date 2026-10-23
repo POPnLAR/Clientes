@@ -1,0 +1,63 @@
+name: Prospeccion Prevencion Cron
+
+on:
+  schedule:
+    # Corre cada hora, en el minuto 45 (desfasado de clínicas y almacenes, que usan el :15, para
+    # no pisarse al hacer push). La ventana real de envío la controla worker_prevencion.py
+    # (lunes a viernes, 9:00-17:59 hora Chile; se ajusta con HORA_INICIO_ENVIO/HORA_FIN_ENVIO).
+    - cron: '45 * * * *'
+  workflow_dispatch: # Permite ejecutarlo manualmente desde el botón de GitHub
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Instalar dependencias
+        run: pip install pandas requests beautifulsoup4 lxml tzdata
+
+      - name: Configurar Git
+        run: |
+          git config --global user.name 'Prevencion Bot'
+          git config --global user.email 'bot-prevencion@gestionvitalpro.cl'
+          git config --global pull.rebase true
+
+      - name: Sincronizar Cambios
+        run: git pull origin main
+
+      - name: Ejecutar Prospeccion Prevencion
+        env:
+          EVO_URL: ${{ secrets.EVO_URL }}
+          EVO_TOKEN: ${{ secrets.EVO_TOKEN }}
+          EVO_INSTANCE: ${{ secrets.EVO_INSTANCE }}
+          SERP_KEY: ${{ secrets.SERP_KEY }}
+          NUMERO_OPERADOR: ${{ secrets.NUMERO_OPERADOR }}
+          AGENT_SERVICE_URL: ${{ secrets.AGENT_SERVICE_URL }}
+          AGENT_SERVICE_TOKEN: ${{ secrets.AGENT_SERVICE_TOKEN }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_DESTINO: ${{ secrets.EMAIL_DESTINO }}
+        run: python worker_prevencion.py
+
+      - name: Guardar y Sincronizar
+        run: |
+          for f in prospeccion_prevencion_pro.csv cobertura_prevencion.json presupuesto_serpapi_prevencion.json; do
+            [ -f "$f" ] && git add "$f"
+          done
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "Worker Prevencion: Actualización [Skip CI]"
+            # Resolvemos conflictos priorizando el trabajo del worker
+            git pull origin main --rebase -X theirs
+            git push origin main
+          else
+            echo "Sin cambios para commitear."
+          fi

@@ -55,7 +55,7 @@ def diagnostico(place, linea):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--linea", choices=["almacenes", "clinicas"])
+    ap.add_argument("--linea", choices=["almacenes", "clinicas", "prevencion"])
     ap.add_argument("--comuna")
     ap.add_argument("--termino")
     ap.add_argument("--paginas", type=int, default=1, help="páginas de resultados por consulta (1 búsqueda c/u)")

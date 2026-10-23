@@ -52,11 +52,12 @@ ARCHIVO_ALERTA_AGENTE = "alert_status_agente.json"
 # Respuesta automática: pausa "humana" antes de enviar (segundos); también da tiempo a frenarla.
 AUTO_PAUSA_MIN_SEG = int(os.getenv("AUTO_RESPUESTA_PAUSA_MIN", "45"))
 AUTO_PAUSA_MAX_SEG = int(os.getenv("AUTO_RESPUESTA_PAUSA_MAX", "120"))
-LINEAS_AUTO = ("clinicas", "almacenes")
+LINEAS_AUTO = ("clinicas", "almacenes", "prevencion")
 
 CSVS_POR_LINEA = {
     "clinicas": "prospeccion_gestionvital_pro.csv",
     "almacenes": "prospeccion_almacenes_pro.csv",
+    "prevencion": "prospeccion_prevencion_pro.csv",
 }
 
 app = FastAPI(title="GestiónVital Pro - Agente Conversacional")
@@ -127,7 +128,7 @@ def _valor_json(valor):
 
 
 def _buscar_lead_por_telefono(telefono_normalizado):
-    """Busca el lead en cualquiera de los dos CSV por teléfono normalizado."""
+    """Busca el lead en cualquiera de los CSV de las líneas por teléfono normalizado."""
     for linea, archivo in CSVS_POR_LINEA.items():
         if not os.path.exists(archivo):
             continue
@@ -148,26 +149,31 @@ def _buscar_lead_por_telefono(telefono_normalizado):
     return None, None, {}
 
 
-_CACHE_SLOTS = {"slots": None, "timestamp": 0.0}
+_CACHE_SLOTS = {}  # linea -> {"slots", "timestamp"}
 _CACHE_SLOTS_TTL_SEG = 120
 
 
-def _obtener_slots_cacheados():
+def _obtener_slots_cacheados(linea=None):
     """
     Evita golpear la Calendar API en cada mensaje entrante: refresca la lista
     de horarios libres como máximo cada _CACHE_SLOTS_TTL_SEG. Si la consulta
     falla (credenciales no configuradas, error de red, etc.), se devuelve una
     lista vacía y el agente simplemente no ofrece horarios en ese borrador.
+
+    Cada línea tiene su propia agenda (la demo de 30 min no es el diagnóstico de 20 min), así
+    que el caché es por línea. Sin línea conocida se usa la de clínicas, como en el resto del agente.
     """
+    clave = linea or "clinicas"
     ahora = time.time()
-    if _CACHE_SLOTS["slots"] is None or ahora - _CACHE_SLOTS["timestamp"] > _CACHE_SLOTS_TTL_SEG:
+    entrada = _CACHE_SLOTS.get(clave)
+    if entrada is None or ahora - entrada["timestamp"] > _CACHE_SLOTS_TTL_SEG:
         try:
-            _CACHE_SLOTS["slots"] = calendar_client.obtener_slots_disponibles()
+            slots = calendar_client.obtener_slots_disponibles(linea=clave)
         except Exception:
             logging.exception("No se pudo consultar disponibilidad de Google Calendar.")
-            _CACHE_SLOTS["slots"] = []
-        _CACHE_SLOTS["timestamp"] = ahora
-    return _CACHE_SLOTS["slots"]
+            slots = []
+        entrada = _CACHE_SLOTS[clave] = {"slots": slots, "timestamp": ahora}
+    return entrada["slots"]
 
 
 def _extraer_mensaje_entrante(payload: dict):
@@ -286,7 +292,7 @@ async def webhook_evolution(request: Request):
             return {"status": "filtrado", "motivo": "rafaga"}
 
     historial = store.historial_conversacion(telefono, limite=20)
-    slots = _obtener_slots_cacheados()
+    slots = _obtener_slots_cacheados(linea)
 
     texto_borrador, accion, clase = generar_borrador_clasificado(
         historial, contexto_lead, texto, slots_disponibles=slots, linea=linea
@@ -440,7 +446,7 @@ def regenerate_draft(draft_id: int, body: RegenerarBorrador, x_agent_token: Opti
 
     linea, _archivo, contexto_lead = _buscar_lead_por_telefono(telefono)
     historial = store.historial_conversacion(telefono, limite=20)
-    slots = _obtener_slots_cacheados()
+    slots = _obtener_slots_cacheados(linea)
 
     texto, accion = generar_borrador(
         historial, contexto_lead, texto_entrante, slots_disponibles=slots,

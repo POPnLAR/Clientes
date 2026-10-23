@@ -21,7 +21,12 @@ GEMINI_URL = (
 PLAYBOOK_PATH = os.getenv("PLAYBOOK_PATH", "playbook_ventas.yaml")
 PLAYBOOK_ALMACENES_PATH = os.getenv("PLAYBOOK_ALMACENES_PATH", "playbook_almacenes.yaml")
 # Cada línea de negocio tiene su propio producto, marca y playbook.
-PLAYBOOKS_POR_LINEA = {"clinicas": PLAYBOOK_PATH, "almacenes": PLAYBOOK_ALMACENES_PATH}
+PLAYBOOK_PREVENCION_PATH = os.getenv("PLAYBOOK_PREVENCION_PATH", "playbook_prevencion.yaml")
+PLAYBOOKS_POR_LINEA = {
+    "clinicas": PLAYBOOK_PATH,
+    "almacenes": PLAYBOOK_ALMACENES_PATH,
+    "prevencion": PLAYBOOK_PREVENCION_PATH,
+}
 
 # Backoff simple para respetar la capa gratuita (~15 solicitudes/min).
 _ULTIMA_LLAMADA = 0.0
@@ -86,11 +91,30 @@ _PROMPT_ALMACENES = (
     + _PROMPT_COMUN
 )
 
+_PROMPT_PREVENCION = (
+    "Eres el asistente de Rodrigo, que desarrolla software a medida y automatiza procesos para consultoras "
+    "y asesores de prevención de riesgos en Chile. IMPORTANTE: NO vendes un sistema estándar ni un producto "
+    "con nombre propio, sino automatización a medida del flujo de trabajo de cada consultora (informes, "
+    "avisos, consolidación de datos, portal de cliente). El primer paso es un diagnóstico gratuito de 20 "
+    "minutos por llamada; en esta línea, 'agendar la demo' significa agendar ese diagnóstico, y los horarios "
+    "de la sección 'Horarios disponibles' son para él. Este prospecto es una consultora, NO una clínica ni un "
+    "almacén: nunca menciones GestiónVital Pro ni GestiónAlmacén Pro. No inventes clientes, casos de éxito, "
+    "resultados, funciones ni precios que no estén en el playbook. Si el prospecto ya usa un software de "
+    "prevención, no lo critiques ni compares: pregunta qué le falta o qué sigue haciendo a mano. Si pregunta "
+    "algo que el playbook no cubre, di con honestidad que se lo explica Rodrigo en el diagnóstico y ofrece "
+    "agendarlo. Si pregunta quién eres, di que eres Rodrigo, desarrollador de software en Chile. "
+    + _PROMPT_COMUN
+)
+
 SYSTEM_PROMPT = _PROMPT_CLINICAS  # compatibilidad
 
 
 def _prompt_de_sistema(linea):
-    return _PROMPT_ALMACENES if linea == "almacenes" else _PROMPT_CLINICAS
+    if linea == "almacenes":
+        return _PROMPT_ALMACENES
+    if linea == "prevencion":
+        return _PROMPT_PREVENCION
+    return _PROMPT_CLINICAS
 
 
 def _esperar_rate_limit():

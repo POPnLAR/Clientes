@@ -31,6 +31,20 @@ COMUNAS_RM = [
     "Talagante", "El Monte", "Isla de Maipo", "Padre Hurtado", "Peñaflor",
 ]
 
+# Regiones II (Antofagasta), III (Atacama) y IV (Coquimbo): zona minera donde trabajan las
+# consultoras de prevención de riesgos. Se omiten las comunas casi despobladas (p. ej. Ollagüe).
+COMUNAS_NORTE = [
+    # II Región de Antofagasta
+    "Antofagasta", "Calama", "Mejillones", "Tocopilla", "Taltal", "María Elena",
+    "Sierra Gorda", "San Pedro de Atacama",
+    # III Región de Atacama
+    "Copiapó", "Caldera", "Tierra Amarilla", "Chañaral", "Diego de Almagro",
+    "Vallenar", "Huasco", "Freirina", "Alto del Carmen",
+    # IV Región de Coquimbo
+    "La Serena", "Coquimbo", "Ovalle", "Illapel", "Salamanca", "Los Vilos",
+    "Andacollo", "Vicuña", "Monte Patria", "Combarbalá", "Canela", "Punitaqui",
+]
+
 
 def _cargar(archivo):
     if os.path.exists(archivo):

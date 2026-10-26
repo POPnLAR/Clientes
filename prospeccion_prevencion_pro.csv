@@ -1,4 +1,4 @@
 Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Contacto,Resultado,Notas,Version_Mensaje
-1,23/10/2026,13:18,INGPREV - ingenieria en prevencion y Manejo de residuos,Asesoría prevención de riesgos,Antofagasta,Contactado,56982427850,1,23/10/2026 13:18,,,A
-2,23/10/2026,13:18,PREVENCION DE RIESGOS LABORALES ASESORIAS RISUKU,Asesoría prevención de riesgos,Antofagasta,Contactado,56957045636,1,23/10/2026 13:18,,,A
-3,23/10/2026,17:06,OTEC Cedcap - Centro de Capacitación en seguridad laboral Atacama Coquimbo,Consultora seguridad laboral,Vallenar,Contactado,56996696259,1,23/10/2026 17:06,,,B
+1,23/10/2026,13:18,INGPREV - ingenieria en prevencion y Manejo de residuos,Asesoría prevención de riesgos,Antofagasta,Finalizado,56982427850,2,26/10/2026 12:29,,,A
+2,23/10/2026,13:18,PREVENCION DE RIESGOS LABORALES ASESORIAS RISUKU,Asesoría prevención de riesgos,Antofagasta,Finalizado,56957045636,2,26/10/2026 12:29,,,A
+3,23/10/2026,17:06,OTEC Cedcap - Centro de Capacitación en seguridad laboral Atacama Coquimbo,Consultora seguridad laboral,Vallenar,Finalizado,56996696259,2,26/10/2026 12:29,,,B

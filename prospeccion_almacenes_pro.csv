@@ -169,11 +169,60 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 168,03/10/2026,18:17,Botilleria Licoven,App Almacen,Cerro Navia,Finalizado,56948479079,2,06/10/2026 14:12,,,A
 169,06/10/2026,18:39,ALMACEN LA FAMILIA,App Almacen,Padre Hurtado,Finalizado,56962438687,2,08/10/2026 11:56,,,A
 170,06/10/2026,18:39,Almacén Ebenezer,App Almacen,Padre Hurtado,Finalizado,56953952292,2,08/10/2026 11:56,,,A
-171,06/10/2026,18:39,Almacén Margarita,App Almacen,Padre Hurtado,Contactado,56931948392,1,06/10/2026 18:39,,,B
-172,06/10/2026,18:39,Almacen Esquina8,App Almacen,Padre Hurtado,Contactado,56933441044,1,08/10/2026 11:56,,,A
-173,06/10/2026,18:39,Almacén Juanito,App Almacen,Padre Hurtado,Contactado,56992982573,1,07/10/2026 13:29,,,A
-174,06/10/2026,18:39,Multimarket Kerrico,App Almacen,Padre Hurtado,Contactado,56952055816,1,07/10/2026 18:59,,,A
-175,06/10/2026,18:39,Almacén La UNIÓN,App Almacen,Padre Hurtado,Contactado,56932033332,1,07/10/2026 13:29,,,A
-176,06/10/2026,18:39,Almacen amy,App Almacen,Padre Hurtado,Contactado,56999662634,1,07/10/2026 18:59,,,A
-177,06/10/2026,18:39,Almacen DyT,App Almacen,Padre Hurtado,Contactado,56974649959,1,07/10/2026 13:29,,,B
+171,06/10/2026,18:39,Almacén Margarita,App Almacen,Padre Hurtado,Finalizado,56931948392,2,08/10/2026 13:29,,,B
+172,06/10/2026,18:39,Almacen Esquina8,App Almacen,Padre Hurtado,Finalizado,56933441044,2,09/10/2026 13:13,,,A
+173,06/10/2026,18:39,Almacén Juanito,App Almacen,Padre Hurtado,Finalizado,56992982573,2,08/10/2026 18:05,,,A
+174,06/10/2026,18:39,Multimarket Kerrico,App Almacen,Padre Hurtado,Finalizado,56952055816,2,09/10/2026 13:13,,,A
+175,06/10/2026,18:39,Almacén La UNIÓN,App Almacen,Padre Hurtado,Finalizado,56932033332,2,08/10/2026 18:05,,,A
+176,06/10/2026,18:39,Almacen amy,App Almacen,Padre Hurtado,Finalizado,56999662634,2,10/10/2026 15:37,,,A
+177,06/10/2026,18:39,Almacen DyT,App Almacen,Padre Hurtado,Finalizado,56974649959,2,08/10/2026 18:05,,,B
 178,06/10/2026,18:39,MINIMARKET LA ESPERANZA,App Almacen,Padre Hurtado,Contactado,56998882916,1,07/10/2026 18:59,,Respondió por WhatsApp: secuencia automática pausada,B
+179,08/10/2026,19:05,Botilleria Prolicor La Cisterna,App Almacen,La Cisterna,Finalizado,56976137882,2,12/10/2026 14:56,,,A
+180,08/10/2026,19:05,Los Arcos,App Almacen,La Cisterna,Finalizado,56944286466,2,10/10/2026 19:33,,WhatsApp obtenido de su sitio web,A
+181,08/10/2026,19:05,BOTILLERIA LOS MOSQUETEROS LA CISTERNA,App Almacen,La Cisterna,Finalizado,56933332973,2,10/10/2026 10:43,,,A
+182,08/10/2026,19:05,BOTILLERIA JR LIQUOR STORE,App Almacen,La Cisterna,Contactado,56993315837,1,10/10/2026 10:43,,Respondió por WhatsApp: secuencia automática pausada,B
+183,08/10/2026,19:05,Botilleria Donde El Pelao,App Almacen,La Cisterna,Finalizado,56954254958,2,10/10/2026 15:37,,,B
+184,08/10/2026,19:05,Botilleria JL limitada,App Almacen,La Cisterna,Finalizado,56954560243,2,10/10/2026 19:33,,,A
+185,08/10/2026,19:05,BOTILLERIA DESTILADOS,App Almacen,La Cisterna,Finalizado,56968017606,2,10/10/2026 19:33,,,B
+186,08/10/2026,19:05,Botilleria Reñma,App Almacen,La Cisterna,Contactado,56974496717,1,09/10/2026 13:13,,Respondió por WhatsApp: secuencia automática pausada,B
+187,08/10/2026,19:05,botilleria oli y co,App Almacen,La Cisterna,Finalizado,56992504742,2,10/10/2026 10:43,,,A
+188,13/10/2026,13:00,EMPORIO,App Almacen,Estación Central,Finalizado,56982417795,2,14/10/2026 17:43,,,B
+189,13/10/2026,18:15,Licores sempai,App Almacen,Peñalolén,Finalizado,56971352668,2,17/10/2026 19:15,,,B
+190,13/10/2026,18:15,Botilleria Roca,App Almacen,Peñalolén,Finalizado,56956644615,2,16/10/2026 18:02,,,A
+191,13/10/2026,18:15,Botillería prontocopet,App Almacen,Peñalolén,Error,56967085297,1,15/10/2026 12:02,,,B
+192,13/10/2026,18:15,Botilleria los socios,App Almacen,Peñalolén,Finalizado,56965053250,2,16/10/2026 15:00,,,B
+193,13/10/2026,18:15,Botillería Don Roberto,App Almacen,Peñalolén,Contactado,56983021141,1,14/10/2026 14:11,,Respondió por WhatsApp: secuencia automática pausada,A
+194,13/10/2026,18:15,Botilleria El Vasco,App Almacen,Peñalolén,Contactado,56926403008,1,14/10/2026 14:11,,Respondió por WhatsApp: secuencia automática pausada,B
+195,13/10/2026,18:15,Botillería lorena,App Almacen,Peñalolén,Finalizado,56965571527,2,16/10/2026 15:00,,,B
+196,13/10/2026,18:15,Botillería Costa Brava,App Almacen,Peñalolén,Finalizado,56922546689,2,16/10/2026 15:00,,,A
+197,13/10/2026,18:15,Botilleria entre copas,App Almacen,Peñalolén,Finalizado,56982041865,2,16/10/2026 10:34,,,A
+198,13/10/2026,18:15,Botillería Confitería,App Almacen,Peñalolén,Finalizado,56991095247,2,16/10/2026 10:34,,,B
+199,13/10/2026,18:15,Botilleria JyC Drinks,App Almacen,Peñalolén,Finalizado,56944805378,2,16/10/2026 10:34,,,A
+200,17/10/2026,10:42,Minimarket Las Carolinas,App Almacen,Independencia,Finalizado,56996196401,2,19/10/2026 16:17,,,A
+201,17/10/2026,10:42,Minimarket elsita,App Almacen,Independencia,Finalizado,56977959273,2,19/10/2026 10:02,,,A
+202,17/10/2026,10:42,M Market,App Almacen,Independencia,Finalizado,56955227409,2,19/10/2026 10:02,,,B
+203,17/10/2026,10:42,Santa Olga,App Almacen,Independencia,Finalizado,56979454729,2,19/10/2026 16:17,,,A
+204,17/10/2026,16:20,La Bicicleta Emporio,App Almacen,Cerro Navia,Finalizado,56995992346,2,19/10/2026 10:02,,,B
+205,17/10/2026,16:20,Mi emporio,App Almacen,Cerro Navia,Finalizado,56967775364,2,19/10/2026 16:17,,,B
+206,20/10/2026,12:01,Estacion central,App Almacen,Estación Central,Contactado,56964750675,1,20/10/2026 12:01,,Respondió por WhatsApp: secuencia automática pausada,A
+207,20/10/2026,16:11,Creado en Chile,App Almacen,Vitacura,Finalizado,56988899856,2,22/10/2026 19:16,,WhatsApp obtenido de su sitio web,B
+208,20/10/2026,19:16,Emporio Macarena,App Almacen,Lo Barnechea,Contactado,56975452676,1,20/10/2026 19:16,,,A
+209,20/10/2026,19:16,Emporio gurme,App Almacen,Lo Barnechea,Finalizado,56998726063,2,22/10/2026 10:44,,,B
+210,20/10/2026,19:16,Emporio La Rosa - Espacio Urbano La Dehesa,App Almacen,Lo Barnechea,Finalizado,56992188220,2,22/10/2026 10:44,,,A
+211,21/10/2026,10:44,Emporio Beauty,App Almacen,Independencia,Finalizado,56936130607,2,23/10/2026 10:21,,,A
+212,21/10/2026,10:44,Emporio Natural,App Almacen,Independencia,Finalizado,56976688636,2,22/10/2026 15:30,,,B
+213,21/10/2026,10:44,Emporio Saludable,App Almacen,Independencia,Contactado,56993958320,1,21/10/2026 10:44,,,B
+214,21/10/2026,15:35,Minimarket la esquina,App Almacen,San Joaquín,Contactado,56930560400,1,21/10/2026 19:18,,,B
+215,21/10/2026,15:35,Minimarket Sofisa,App Almacen,San Joaquín,Contactado,56929411018,1,21/10/2026 15:35,,,B
+216,21/10/2026,15:35,Minimarket Angélica,App Almacen,San Joaquín,Nuevo,56994942249,0,,,,
+217,21/10/2026,15:35,Nix Market,App Almacen,San Joaquín,Finalizado,56993297991,2,23/10/2026 10:21,,,A
+218,21/10/2026,15:35,Súper Market V&R,App Almacen,San Joaquín,Contactado,56953230111,1,22/10/2026 15:30,,,B
+219,21/10/2026,15:35,Minimarket la mami,App Almacen,San Joaquín,Nuevo,56986804916,0,,,,
+220,21/10/2026,15:35,Minimarket y botilleria manoe,App Almacen,San Joaquín,Contactado,56942354802,1,22/10/2026 19:16,,,B
+221,21/10/2026,15:35,Minimarket El Beto,App Almacen,San Joaquín,Contactado,56983353504,1,22/10/2026 10:44,,,A
+222,21/10/2026,15:35,Market DS,App Almacen,San Joaquín,Nuevo,56956459151,0,,,,
+223,21/10/2026,15:35,La Industria Botillería y Minimarket,App Almacen,San Joaquín,Nuevo,56958875209,0,,,,
+224,21/10/2026,15:35,Minimarket Adam Josue E.I.R.L,App Almacen,San Joaquín,Finalizado,56935881137,2,23/10/2026 10:21,,,A
+225,21/10/2026,15:35,Minimarket El Tio,App Almacen,San Joaquín,Finalizado,56972192008,2,22/10/2026 19:16,,,B
+226,21/10/2026,15:35,Minimarket Arbolito II,App Almacen,San Joaquín,Contactado,56993556831,1,22/10/2026 15:30,,,B
+227,21/10/2026,15:35,Distribuidora JA,App Almacen,San Joaquín,Contactado,56931700804,1,21/10/2026 19:18,,,A

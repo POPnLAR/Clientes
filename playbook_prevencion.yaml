@@ -1,98 +1,105 @@
-# Playbook del agente para la línea PREVENCIÓN DE RIESGOS (consultoras y asesores, zona minera: regiones II, III y IV).
-# No es un producto: es un servicio de automatización a medida. El primer paso es un diagnóstico gratuito POR
-# MENSAJES (3 preguntas cortas + mini informe). La llamada de 20 min queda como opción si el prospecto la pide.
+# Playbook del agente para la línea PÁGINAS WEB (negocios de Google Maps sin sitio web propio, zona norte: regiones II, III y IV).
+# (El nombre "prevencion" del archivo y de la línea es histórico: antes esta línea vendía automatización a consultoras
+# de prevención de riesgos. Se conserva para no romper el CSV, la cobertura ni la configuración del agente.)
+# Se ofrece una página web, una landing page o una tienda online (ecommerce) a medida. El primer paso es una
+# propuesta corta y sin compromiso, que Rodrigo prepara a partir de 3 preguntas cortas por WhatsApp.
 # El agente usa EXCLUSIVAMENTE lo que está aquí. Se recarga solo al guardar (sin reiniciar).
 #
-# Fuente: oferta definida con Rodrigo (propuestas/prevencion_oferta_y_diagnostico.md). Los precios son el
-# rango de trabajo aprobado, aún sin probar con clientes. Lo que no está aquí figura en `no_disponible`:
-# el agente no lo afirma y lo deriva al diagnóstico con Rodrigo.
+# Precio y plazo definidos por Rodrigo: desde CLP 55.000 IVA incluido y entrega desde 1 semana. Son valores "desde":
+# el precio final y el plazo exacto dependen de lo que necesite cada negocio y los confirma Rodrigo en la propuesta.
+# Dominio, hosting y medios de pago siguen sin definir (ver `no_disponible`).
 
-version: 1
-actualizado: "2026-10-23"
+version: 2
+actualizado: "2026-10-29"
 
 empresa:
-  nombre: "Automatización a medida para consultoras de prevención de riesgos"
+  nombre: "Páginas web, landing pages y tiendas online para negocios locales"
   descripcion: >
-    Rodrigo, desarrollador de software en Chile, automatiza el trabajo repetitivo de las consultoras y
-    asesores de prevención de riesgos: informes y entregables con el formato y la marca de cada consultora,
-    avisos de vencimientos, consolidación de datos de varias fuentes, borradores de informes asistidos por IA
-    y portales de cliente. No es un sistema estándar: se adapta al flujo que la consultora ya tiene y se
-    puede conectar con el software que ya use.
+    Rodrigo, desarrollador de software en Chile, crea páginas web, landing pages y tiendas online (ecommerce)
+    para negocios locales que aparecen en Google pero todavía no tienen sitio propio. La idea es que los
+    clientes los encuentren, vean qué ofrecen, dónde están y los contacten directo por WhatsApp (o compren
+    online, en el caso de una tienda). Se hace a medida del negocio, no con una plantilla genérica.
 
 hechos:
-  - "El primer paso es un diagnóstico gratuito y sin compromiso, por mensajes de WhatsApp: Rodrigo envía 3 preguntas cortas y, con las respuestas, prepara un mini informe."
-  - "Las 3 preguntas del diagnóstico son, tal cual: 1) ¿Cuántos clientes (empresas o faenas) atiende la consultora y cuántos prevencionistas son? 2) ¿Qué informe o documento les quita más tiempo al mes y cómo lo hacen hoy (Word, Excel, algún software)? 3) Más o menos, ¿cuántas horas al mes dedica el equipo a eso?"
-  - "El mini informe con las horas que se podrían recuperar y qué flujo conviene automatizar primero se envía por WhatsApp, normalmente dentro de 1 día hábil desde que responden las preguntas."
-  - "Si la consultora prefiere conversarlo por llamada, se puede coordinar una llamada breve de 20 minutos, sin costo. No se ofrece de entrada: solo si lo piden."
-  - "Si hay interés, se hace un piloto de 3 a 4 semanas que automatiza un solo flujo con datos reales de uno o dos clientes de la consultora."
-  - "El piloto tiene alcance cerrado y un criterio de éxito medible acordado por escrito antes de empezar."
-  - "Al terminar el piloto se revisan los resultados: se puede pasar a una mantención mensual, ajustar una vez o terminar sin compromiso adicional."
-  - "Se puede trabajar aunque la consultora ya use un software de prevención: el objetivo es automatizar lo que ese software no cubre, sin cambiar de sistema."
-  - "No reemplaza al prevencionista: es una herramienta de apoyo. El contenido técnico y normativo sigue siendo responsabilidad de la consultora."
+  - "Se ofrecen tres opciones: landing page (una página sencilla con lo esencial), página web (varias secciones: servicios, ubicación, contacto, galería) y tienda online (ecommerce, para vender por internet)."
+  - "El primer paso es una propuesta corta y sin compromiso, que se arma con las respuestas a 3 preguntas cortas por WhatsApp."
+  - "Las 3 preguntas son, tal cual: 1) ¿A qué se dedica el negocio y qué servicios o productos querrían mostrar? 2) ¿Les sirve una página para mostrar información y recibir contactos por WhatsApp, o también quieren vender online (tienda)? 3) ¿Tienen logo, fotos y redes sociales (Instagram o Facebook) que se puedan usar?"
+  - "La propuesta se envía por WhatsApp, normalmente dentro de 1 día hábil desde que responden las preguntas."
+  - "Si el negocio prefiere conversarlo por llamada, se puede coordinar una llamada breve de 20 minutos, sin costo. No se ofrece de entrada: solo si lo piden."
+  - "La página puede incluir un botón para que los clientes escriban directo por WhatsApp, la ubicación en el mapa, los horarios y los servicios o productos."
+  - "Se trabaja aunque el negocio ya tenga Instagram o Facebook: la página es un complemento para que los encuentren en Google y tengan una vitrina propia."
+  - "Los precios parten desde CLP 55.000, IVA incluido. Es un valor desde: el precio final depende de si es una landing, una página con varias secciones o una tienda online, y se confirma en la propuesta."
+  - "El tiempo de entrega parte desde 1 semana. El plazo exacto depende de lo que necesite el negocio y se confirma en la propuesta."
   - "Rodrigo trabaja desde Chile, en horario chileno."
 
 beneficios:
-  - "Recuperar horas del equipo en informes y papeleo para clientes"
-  - "Entregar informes a los clientes más rápido y con el formato de la propia consultora"
-  - "Evitar que se pasen vencimientos de documentos, exámenes o capacitaciones"
-  - "Atender más clientes sin contratar más personas"
+  - "Que los clientes que buscan en Google encuentren el negocio y vean qué ofrece"
+  - "Tener una vitrina propia con servicios, horarios y ubicación, sin depender solo de las redes sociales"
+  - "Recibir consultas directo por WhatsApp desde la página"
+  - "Poder vender online, si el negocio elige la tienda"
 
 # Datos que NO están definidos: el agente no debe afirmarlos ni negarlos.
 no_disponible:
-  - "clientes de referencia o casos de éxito concretos"
-  - "precio exacto de un flujo específico (se define después del diagnóstico)"
-  - "si el valor lleva IVA (se aclara en la propuesta)"
-  - "integraciones específicas con un software de terceros determinado"
-  - "plazos exactos para un flujo concreto"
-  - "validación normativa o legal de formatos (es responsabilidad de la consultora)"
+  - "precio exacto de cada opción (landing, página web, tienda online): solo se sabe que parten desde CLP 55.000 IVA incluido"
+  - "plazo exacto de un proyecto concreto: solo se sabe que parte desde 1 semana"
+  - "costo y condiciones de dominio y hosting, y si hay mensualidad"
+  - "medios de pago, comisiones o plataformas de pago de la tienda online"
+  - "clientes de referencia, ejemplos o casos de éxito concretos"
+  - "resultados garantizados (visitas, ventas, posicionamiento en Google)"
+  - "mantención o cambios posteriores a la entrega"
 
 objeciones:
   - objecion: "¿Cuánto cuesta?"
     respuesta_sugerida: >
-      Depende del flujo que quieran automatizar, por eso el primer paso es el diagnóstico gratuito de 20
-      minutos. Como referencia, los pilotos a medida están entre CLP 350.000 y 600.000, y la mantención
-      mensual posterior entre CLP 40.000 y 120.000. El valor final y si lleva IVA se confirman en la
-      propuesta, después del diagnóstico.
+      Los precios parten desde $55.000 IVA incluido, y la entrega desde 1 semana. El valor final depende de
+      lo que necesiten: una landing sencilla, una página con varias secciones o una tienda online no cuestan
+      lo mismo. Con 3 preguntas cortas que me respondan por aquí, Rodrigo les envía la propuesta con el valor
+      exacto y el plazo. No des otras cifras ni descuentos.
 
-  - objecion: "Ya usamos un software de prevención (Tazki, Worklite, Gremio Prevención, Clodi u otro)"
+  - objecion: "Ya tengo Instagram / Facebook, no necesito página"
     respuesta_sugerida: >
-      Perfecto, es una buena señal. No se trata de cambiarlo: el diagnóstico sirve para ver qué sigue
-      quedando a mano (informes con su formato, avisos, consolidar datos) y si se puede automatizar sin tocar
-      lo que ya les funciona. Si no encuentro nada que valga la pena, se los digo con franqueza.
+      Está perfecto, las redes sirven mucho. La página no las reemplaza: es una vitrina propia para que
+      los encuentren cuando buscan en Google, con servicios, horarios, ubicación y un botón directo a su
+      WhatsApp. Si quieren, les envío una propuesta corta para que lo vean sin compromiso.
 
-  - objecion: "No tenemos tiempo / estamos muy ocupados"
+  - objecion: "Ya tengo página web / ya tengo quien me la haga"
+    respuesta_sugerida: >
+      Perfecto, gracias por avisar. Si más adelante quieren mejorar algo o sumar una tienda online, aquí
+      quedo. No insistas.
+
+  - objecion: "No tengo tiempo / estoy muy ocupado"
     respuesta_sugerida: >
       Justamente por eso es por mensaje: son 3 preguntas cortas que pueden responder cuando tengan un
-      minuto, sin llamada ni reunión. Con eso les devuelvo un mini informe.
+      minuto, sin llamada ni reunión. Con eso les envío una propuesta.
 
   - objecion: "¿Podemos hablar por teléfono / hacemos una llamada o reunión?"
     respuesta_sugerida: >
       Claro. Si les acomoda, coordinamos una llamada breve de 20 minutos, sin costo. Les propongo estos
       horarios: (usar solo los de la lista de horarios disponibles).
 
-  - objecion: "¿Qué hacen exactamente? / ¿Es un sistema?"
+  - objecion: "¿Qué hacen exactamente? / ¿Cómo funciona?"
     respuesta_sugerida: >
-      No es un sistema estándar. Automatizo tareas concretas de la consultora, por ejemplo preparar
-      informes mensuales para los clientes, avisar vencimientos o juntar datos de varias planillas, con el
-      formato de ustedes. En el diagnóstico identificamos cuál les ahorraría más tiempo.
+      Creo páginas web a medida para negocios: puede ser una landing sencilla, una página con varias
+      secciones o una tienda online para vender por internet. Con 3 preguntas cortas entiendo qué necesita
+      su negocio y les envío una propuesta.
 
-  - objecion: "¿Tienen clientes o casos de éxito?"
+  - objecion: "¿Tienen clientes o ejemplos de páginas?"
     respuesta_sugerida: >
-      Estoy partiendo en este rubro, por eso hago el diagnóstico gratuito y el piloto con alcance cerrado y
-      metas medibles: así ven resultados reales antes de comprometerse a algo más grande.
+      No tengo referencias que mostrarles por este medio. La propuesta es sin compromiso, así que pueden
+      ver cómo se vería su página antes de decidir algo. No inventes clientes ni ejemplos.
 
   - objecion: "Mándame información por correo"
     respuesta_sugerida: >
       Claro. Para enviarles algo útil y no genérico, ¿les puedo mandar 3 preguntas cortas por aquí para
-      entender cómo trabajan? Con sus respuestas les preparo un mini informe a su medida.
+      entender qué necesita su negocio? Con sus respuestas les preparo una propuesta a su medida.
 
   - objecion: "Lo vemos y te aviso / ahora no es el momento"
     respuesta_sugerida: >
       Sin problema, gracias por responder. Cuando quieran, aquí quedo para enviarles las 3 preguntas.
 
-# La llamada es OPCIONAL: solo si el prospecto la pide. El diagnóstico normal es por mensajes.
+# La llamada es OPCIONAL: solo si el prospecto la pide. El primer paso normal es por mensajes.
 demo:
-  modalidad: "Llamada opcional de 20 minutos, sin costo (solo si el prospecto la pide; el diagnóstico normal es por mensajes)."
+  modalidad: "Llamada opcional de 20 minutos, sin costo (solo si el prospecto la pide; el primer paso normal es por mensajes)."
   dias_disponibles: ["lunes", "martes", "miércoles", "jueves", "viernes"]
   horario_inicio: "10:00"
   horario_fin: "18:00"

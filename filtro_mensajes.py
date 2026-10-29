@@ -139,7 +139,7 @@ def es_cierre(texto, cfg):
 
 
 _OFERTA_HORARIO = re.compile(
-    r"\d{1,2}[:.]\d{2}|lunes|martes|miercoles|jueves|viernes|sabado|demo|horario|llamada|diagnostico|preguntas",
+    r"\d{1,2}[:.]\d{2}|lunes|martes|miercoles|jueves|viernes|sabado|demo|horario|llamada|diagnostico|preguntas|propuesta",
     re.IGNORECASE,
 )
 

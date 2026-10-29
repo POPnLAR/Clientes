@@ -38,9 +38,9 @@ TERMINOS_BUSQUEDA = [
     "Veterinaria", "Gimnasio", "Tienda de ropa", "Florería", "Salón de belleza", "Constructora",
 ]
 ARCHIVO_COBERTURA = "cobertura_prevencion.json"
-# Cupo mensual de SerpAPI de esta línea: el que dejó libre la línea de almacenes al pausarse (100 de 250).
+# Cupo mensual de SerpAPI de esta línea: el que dejó libre la línea de almacenes al pausarse (ahora 150 de 250, con clínicas en 100).
 ARCHIVO_PRESUPUESTO_SERP = "presupuesto_serpapi_prevencion.json"
-LIMITE_MENSUAL_SERPAPI = int(os.getenv("LIMITE_MENSUAL_SERPAPI_PREVENCION", "100"))
+LIMITE_MENSUAL_SERPAPI = int(os.getenv("LIMITE_MENSUAL_SERPAPI_PREVENCION", "150"))
 # Es B2B: se escribe en horario de oficina, de lunes a viernes (hora de Chile).
 HORA_INICIO_ENVIO = int(os.getenv("HORA_INICIO_ENVIO", "9"))
 HORA_FIN_ENVIO = int(os.getenv("HORA_FIN_ENVIO", "17"))

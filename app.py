@@ -14,12 +14,12 @@ from urllib.parse import quote
 MODOS = {
     "🏥 Clínicas Estéticas": "prospeccion_gestionvital_pro.csv",
     "🏪 Almacenes de Barrio": "prospeccion_almacenes_pro.csv",
-    "🦺 Prevención de Riesgos (Norte)": "prospeccion_prevencion_pro.csv",
+    "🌐 Páginas Web (Nacional)": "prospeccion_prevencion_pro.csv",
 }
 ARCHIVOS_ALERTA = {
     "🏥 Clínicas Estéticas": "alert_status.json",
     "🏪 Almacenes de Barrio": "alert_status_almacenes.json",
-    "🦺 Prevención de Riesgos (Norte)": "alert_status_prevencion.json",
+    "🌐 Páginas Web (Nacional)": "alert_status_prevencion.json",
 }
 COLUMNAS_REQUERIDAS = [
     "Id",
@@ -422,31 +422,6 @@ PLANTILLAS_EMAIL = {
             "Saludos,\nRodrigo\nGestionVital\nhttps://gestionvitalpro.cl"
         ),
     },
-    # Línea de prevención de riesgos: las claves coinciden con los términos de worker_prevencion.py.
-    "Prevencion de riesgos": {
-        "asunto": "Diagnostico gratuito por mensaje para {nombre}",
-        "cuerpo": (
-            "Hola equipo de {nombre},\n\n"
-            "Mi nombre es Rodrigo, desarrollo software en Chile. Estoy ayudando a consultoras de "
-            "prevencion de riesgos de {zona} a reducir el tiempo que pierden en informes y papeleo "
-            "para sus clientes.\n\n"
-            "Les puedo enviar 3 preguntas cortas por este correo? Con sus respuestas les devuelvo un "
-            "estimado de cuantas horas podrian recuperar, sin costo.\n\n"
-            "Saludos,\nRodrigo"
-        ),
-    },
-    "Seguridad laboral": {
-        "asunto": "Diagnostico gratuito por mensaje para {nombre}",
-        "cuerpo": (
-            "Hola equipo de {nombre},\n\n"
-            "Mi nombre es Rodrigo, desarrollo software en Chile. Estoy ayudando a consultoras de "
-            "seguridad laboral de {zona} a reducir el tiempo que pierden en informes y papeleo "
-            "para sus clientes.\n\n"
-            "Les puedo enviar 3 preguntas cortas por este correo? Con sus respuestas les devuelvo un "
-            "estimado de cuantas horas podrian recuperar, sin costo.\n\n"
-            "Saludos,\nRodrigo"
-        ),
-    },
     "_default": {
         "asunto": "GestionVital - Propuesta para {nombre}",
         "cuerpo": (
@@ -459,6 +434,32 @@ PLANTILLAS_EMAIL = {
         ),
     },
 }
+
+
+# Línea de páginas web (clave histórica "prevencion"): una sola plantilla para todos los rubros que busca
+# worker_prevencion.py; las claves deben coincidir con esos términos.
+TERMINOS_PAGINAS_WEB = (
+    "Peluqueria", "Barberia", "Restaurante", "Pasteleria", "Taller mecanico", "Ferreteria",
+    "Veterinaria", "Gimnasio", "Tienda de ropa", "Floreria", "Salon de belleza", "Constructora",
+)
+_PLANTILLA_EMAIL_WEB = {
+    "asunto": "Pagina web para {nombre}",
+    "cuerpo": (
+        "Hola equipo de {nombre},\n\n"
+        "Mi nombre es Rodrigo, desarrollo paginas web en Chile. Vi que {nombre} aparece en Google, pero "
+        "no encontre una pagina web propia. Hago paginas, landing pages y tiendas online para negocios de "
+        "{zona}, para que los clientes los encuentren, vean que ofrecen y les escriban directo por WhatsApp.\n\n"
+        "Les puedo enviar una propuesta corta, sin compromiso?\n\n"
+        "Saludos,\nRodrigo"
+    ),
+}
+_PLANTILLA_WHATSAPP_WEB = (
+    "Hola, soy Rodrigo, desarrollo paginas web en Chile. Vi que *{nombre}* en {zona} aparece en "
+    "Google, pero no encontre una pagina web propia. Hago paginas, landing pages y tiendas online "
+    "para negocios como el suyo. Les puedo enviar una propuesta corta, sin compromiso?"
+)
+for _termino in TERMINOS_PAGINAS_WEB:
+    PLANTILLAS_EMAIL[_termino] = _PLANTILLA_EMAIL_WEB
 
 
 def _detectar_categoria(ministerio, plantillas):
@@ -538,21 +539,6 @@ PLANTILLAS_WHATSAPP = {
         "suyo a mantener las fichas de procedimientos y los consentimientos "
         "ordenados. Como estan llevando hoy esas fichas?"
     ),
-    # Línea de prevención de riesgos: las claves coinciden con los términos de worker_prevencion.py.
-    "Prevencion de riesgos": (
-        "Hola, soy Rodrigo, desarrollo software en Chile. Estoy ayudando a "
-        "consultoras de prevencion de riesgos como *{nombre}* en {zona} a "
-        "reducir el tiempo que pierden en informes y papeleo para sus clientes. "
-        "Les puedo enviar 3 preguntas cortas por aqui? Con sus respuestas les "
-        "devuelvo un estimado de cuantas horas podrian recuperar, sin costo."
-    ),
-    "Seguridad laboral": (
-        "Hola, soy Rodrigo, desarrollo software en Chile. Estoy ayudando a "
-        "consultoras de seguridad laboral como *{nombre}* en {zona} a "
-        "reducir el tiempo que pierden en informes y papeleo para sus clientes. "
-        "Les puedo enviar 3 preguntas cortas por aqui? Con sus respuestas les "
-        "devuelvo un estimado de cuantas horas podrian recuperar, sin costo."
-    ),
     "_default": (
         "Hola, soy Rodrigo de GestionVital. Vi el negocio de *{nombre}* en "
         "{zona} y trabajo ayudando a negocios como el suyo a optimizar la "
@@ -560,6 +546,10 @@ PLANTILLAS_WHATSAPP = {
         "para agendar?"
     ),
 }
+
+
+for _termino in TERMINOS_PAGINAS_WEB:
+    PLANTILLAS_WHATSAPP[_termino] = _PLANTILLA_WHATSAPP_WEB
 
 
 def format_whatsapp_link(tel, nombre="", ubicacion="", ministerio=""):
@@ -680,7 +670,7 @@ with t1:
     )
 
     # Configuración dinámica de progreso según la línea
-    max_secuencia = 2 if ("Almacenes" in unidad or "Prevención" in unidad) else 4
+    max_secuencia = 2 if ("Almacenes" in unidad or "Páginas Web" in unidad) else 4
 
     # Prioriza en la vista a quienes tienen email y aún no fueron contactados por ese canal.
     df_display["_prioridad_email"] = (
@@ -752,7 +742,7 @@ if t3 is not None:
                 nombres_linea = {
                     "clinicas": "GestiónVital (clínicas)",
                     "almacenes": "GestiónAlmacén (almacenes)",
-                    "prevencion": "Prevención de riesgos (norte)",
+                    "prevencion": "Páginas web (nacional)",
                 }
                 cols_modo = st.columns(len(nombres_linea))
                 for col_modo, (linea_m, nombre_m) in zip(cols_modo, nombres_linea.items()):

@@ -17,12 +17,15 @@ _PATRONES = {
         r"red ?salud|megasalud|integramedica|\bbupa\b|cruz verde|ahumada|salcobrand|"
         r"\bhospital\b|\bcesfam\b|consultorio|universidad|\bduoc\b|\binacap\b"
     ),
-    # Mutualidades y organismos públicos no son consultoras: son proveedores del sistema o fiscalizan.
+    # Línea "prevencion" (clave histórica): hoy es la de páginas web para negocios sin sitio. Cadenas,
+    # bancos y organismos públicos no son el público objetivo: no deciden por su cuenta y comparten números.
     "prevencion": (
-        r"\bachs\b|asociacion chilena de seguridad|mutual de seguridad|\bist\b|instituto de seguridad|"
-        r"\bisl\b|mutualidad|sernageomin|\bseremi\b|direccion del trabajo|inspeccion del trabajo|"
-        r"suseso|\bsence\b|municipalidad|bomberos|carabineros|\bhospital\b|\bcesfam\b|"
-        r"universidad|\bduoc\b|\binacap\b|\bsanto tomas\b|colegio|liceo"
+        r"\blider\b|\bwalmart\b|santa isabel|\bunimarc\b|\bjumbo\b|\btottus\b|\bsodimac\b|\beasy\b|"
+        r"falabella|\bparis\b|\bripley\b|\bhites\b|cruz verde|ahumada|salcobrand|mcdonald|starbucks|"
+        r"burger king|\bkfc\b|pizza hut|telepizza|doggis|juan maestro|\bcopec\b|\bshell\b|petrobras|"
+        r"\bbanco\b|banco ?estado|\bbci\b|santander|scotiabank|\bentel\b|movistar|\bclaro\b|\bwom\b|"
+        r"\bcorreos\b|municipalidad|\bseremi\b|bomberos|carabineros|\bhospital\b|\bcesfam\b|consultorio|"
+        r"universidad|\bduoc\b|\binacap\b|\bsanto tomas\b|colegio|liceo|jardin infantil|escuela"
     ),
 }
 
@@ -55,10 +58,8 @@ _RUBRO_SI = {
         r"micropigment|cejas|pestan|lash|clinica|medic|dermat|salon|salud|botox|rellen|bienestar|"
         r"wellness|peluquer|\bunas\b|nail"
     ),
-    "prevencion": (
-        r"prevencion|riesgo|seguridad (laboral|ocupacional|industrial|y salud|minera)|salud ocupacional|"
-        r"\bsso\b|\bsst\b|\bhse\b|hseq|higiene|ergonom"
-    ),
+    # Sin lista de rubros (ver _RUBRO_ESTRICTO): vale cualquier negocio que atienda público.
+    "prevencion": None,
 }
 _RUBRO_NO = {
     "almacenes": (
@@ -72,12 +73,12 @@ _RUBRO_NO = {
         r"\bhotel\b|inmobiliaria|ferreteria|restaurante|restaurant|"
         r"veterin|mascota|optica|farmacia|panaderia|supermercado|abogad|contab|mecanic"
     ),
-    # Seguridad privada, venta de equipos y rubros ajenos que Google mezcla con "seguridad" o "riesgo".
+    # Lugares que no son un negocio al que ofrecerle una web (instituciones, espacios públicos, servicios).
     "prevencion": (
-        r"seguridad privada|guardias?|alarma|cerrajer|camara|extintor|ferreteria|epp\b|"
-        r"venta de (ropa|equipos|implementos)|implementos de seguridad|ropa de trabajo|"
-        r"corredora? de seguros|seguros|inmobiliaria|restaurant|restaurante|hotel|"
-        r"transporte|taller|mecanic|abogad|contab|colegio|jardin infantil"
+        r"\bbanco\b|cajero|iglesia|parroquia|junta de vecinos|club deportivo|estadio|\bplaza\b|\bparque\b|"
+        r"cementerio|notaria|juzgado|registro civil|comisaria|cuartel|gobierno|oficina de correos|"
+        r"estacion de servicio|aeropuerto|terminal de buses|centro comercial|\bmall\b|"
+        r"sede social|organizacion|fundacion|corporacion"
     ),
 }
 
@@ -97,17 +98,32 @@ def texto_categoria(place):
 # Clínicas: solo se excluye lo claramente ajeno; la lista estricta podría dejar fuera negocios
 # legítimos mientras no se hayan visto las categorías reales que devuelve Google para Chile.
 #
-# Prevención: lista estricta: el nombre o la categoría deben hablar de prevención, riesgos, seguridad
-# laboral u ocupacional, HSE/SSO o higiene. "Consultora" o "capacitación" por sí solos NO bastan (dejaban
-# pasar consultoras informáticas y centros de formación). Es B2B y de volumen bajo: preferimos perder
-# algún lead antes que escribirle a un negocio ajeno desde el número compartido.
-_RUBRO_ESTRICTO = {"almacenes": True, "clinicas": False, "prevencion": True}
+# "prevencion" (páginas web): el rubro lo fijan los términos de búsqueda y el criterio real es que no
+# tenga web propia (ver tiene_web_propia); aquí solo se excluye lo que no es un negocio.
+_RUBRO_ESTRICTO = {"almacenes": True, "clinicas": False, "prevencion": False}
+
+# Redes y enlaces-puente: un negocio que en Google solo muestra uno de estos NO tiene página web propia.
+_DOMINIOS_NO_WEB = (
+    "facebook.com", "fb.com", "fb.me", "instagram.com", "wa.me", "whatsapp.com", "linktr.ee",
+    "tiktok.com", "twitter.com", "x.com", "youtube.com", "youtu.be", "google.com",
+    "goo.gl", "g.page", "business.site", "wixsite.com", "negocio.site", "bio.link", "beacons.ai",
+    "mercadolibre.cl", "mercadolibre.com", "olx.cl", "yapo.cl", "booksy.com", "agendapro.com",
+)
+
+
+def tiene_web_propia(place):
+    """True si el negocio publica en Google Maps un sitio web propio (no solo una red social o un enlace-puente)."""
+    sitio = _limpio(place.get("website") or "")
+    if not sitio:
+        return False
+    host = re.sub(r"^https?://", "", sitio).split("/")[0].split("?")[0]
+    return not any(host == d or host.endswith("." + d) for d in _DOMINIOS_NO_WEB)
 
 
 def categoria_relevante(place, linea):
-    """True si el negocio corresponde al rubro de la línea ('almacenes' o 'clinicas')."""
+    """True si el negocio corresponde al rubro de la línea ('almacenes', 'clinicas' o 'prevencion')."""
     si, no = _RUBRO_SI.get(linea), _RUBRO_NO.get(linea)
-    if not si:
+    if not si and not no:
         return True
     categoria = _limpio(texto_categoria(place))
     titulo = _limpio(place.get("title", ""))

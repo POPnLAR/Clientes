@@ -53,6 +53,39 @@ PRIORIDAD_NORTE = [
     ["Caldera", "Mejillones", "Tocopilla", "Diego de Almagro", "Chañaral", "Illapel", "Vicuña", "Los Vilos"],
 ]
 
+# Todo Chile: comunas de la Región Metropolitana más las principales ciudades de las otras 15 regiones.
+# No son las 346 comunas a propósito: las pequeñas devuelven pocos resultados y cada búsqueda gasta un
+# crédito de SerpAPI. Se pueden agregar más comunas a esta lista cuando haga falta.
+CIUDADES_REGIONES = [
+    # XV Arica y Parinacota, I Tarapacá
+    "Arica", "Iquique", "Alto Hospicio",
+    # II Antofagasta, III Atacama, IV Coquimbo
+    "Antofagasta", "Calama", "Copiapó", "Vallenar", "La Serena", "Coquimbo", "Ovalle",
+    # V Valparaíso
+    "Valparaíso", "Viña del Mar", "Quilpué", "Villa Alemana", "San Antonio", "Quillota", "Los Andes", "San Felipe",
+    # VI O'Higgins, VII Maule
+    "Rancagua", "San Fernando", "Rengo", "Talca", "Curicó", "Linares", "Constitución",
+    # XVI Ñuble, VIII Biobío
+    "Chillán", "Concepción", "Talcahuano", "San Pedro de la Paz", "Chiguayante", "Los Ángeles", "Coronel", "Lota",
+    # IX Araucanía, XIV Los Ríos
+    "Temuco", "Padre Las Casas", "Villarrica", "Angol", "Valdivia", "La Unión",
+    # X Los Lagos
+    "Puerto Montt", "Osorno", "Puerto Varas", "Castro", "Ancud",
+    # XI Aysén, XII Magallanes
+    "Coyhaique", "Punta Arenas", "Puerto Natales",
+]
+COMUNAS_NACIONAL = COMUNAS_RM + CIUDADES_REGIONES
+
+# Orden de barrido nacional: primero las ciudades más grandes (más negocios por búsqueda), después el resto.
+PRIORIDAD_NACIONAL = [
+    ["Santiago Centro", "Providencia", "Las Condes", "Maipú", "Puente Alto", "La Florida", "Ñuñoa",
+     "Antofagasta", "Valparaíso", "Viña del Mar", "Concepción", "La Serena", "Temuco", "Rancagua",
+     "Iquique", "Puerto Montt", "Talca", "Arica", "Chillán"],
+    ["San Bernardo", "Calama", "Copiapó", "Osorno", "Valdivia", "Punta Arenas", "Coquimbo", "Curicó",
+     "Los Ángeles", "Talcahuano", "Quilpué", "Ovalle", "Alto Hospicio", "Peñalolén", "Pudahuel",
+     "Quilicura", "Vitacura", "La Reina", "Macul", "San Miguel", "Estación Central", "Recoleta"],
+]
+
 
 def _cargar(archivo):
     if os.path.exists(archivo):

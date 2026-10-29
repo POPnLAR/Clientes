@@ -26,14 +26,21 @@ EVO_TOKEN = os.getenv("EVO_TOKEN")
 EVO_INSTANCE = os.getenv("EVO_INSTANCE")
 SERP_KEY = os.getenv("SERP_KEY")
 NUMERO_OPERADOR = os.getenv("NUMERO_OPERADOR", "")
-# Consultoras y asesores de prevención de riesgos de las regiones II, III y IV (zona minera).
+# Línea de páginas web: negocios de Google Maps SIN sitio web propio, de todo Chile.
+# (El nombre "prevencion" en archivos, claves y workflow es histórico: antes era la línea de consultoras
+# de prevención de riesgos; se conserva para no perder el CSV, la cobertura ni la configuración del agente.)
 ARCHIVO_PREVENCION = "prospeccion_prevencion_pro.csv"
-COMUNAS_OBJETIVO = cobertura.COMUNAS_NORTE
-TERMINOS_BUSQUEDA = ["Prevención de riesgos", "Asesoría prevención de riesgos", "Consultora seguridad laboral"]
+COMUNAS_OBJETIVO = cobertura.COMUNAS_NACIONAL
+# Rubros de negocios locales que suelen estar en Google sin web y que se benefician de una página,
+# una landing o una tienda online.
+TERMINOS_BUSQUEDA = [
+    "Peluquería", "Barbería", "Restaurante", "Pastelería", "Taller mecánico", "Ferretería",
+    "Veterinaria", "Gimnasio", "Tienda de ropa", "Florería", "Salón de belleza", "Constructora",
+]
 ARCHIVO_COBERTURA = "cobertura_prevencion.json"
-# Cupo mensual de SerpAPI de esta línea: el que dejó libre la línea de almacenes al pausarse (100 de 250).
+# Cupo mensual de SerpAPI de esta línea: el que dejó libre la línea de almacenes al pausarse (ahora 150 de 250, con clínicas en 100).
 ARCHIVO_PRESUPUESTO_SERP = "presupuesto_serpapi_prevencion.json"
-LIMITE_MENSUAL_SERPAPI = int(os.getenv("LIMITE_MENSUAL_SERPAPI_PREVENCION", "100"))
+LIMITE_MENSUAL_SERPAPI = int(os.getenv("LIMITE_MENSUAL_SERPAPI_PREVENCION", "150"))
 # Es B2B: se escribe en horario de oficina, de lunes a viernes (hora de Chile).
 HORA_INICIO_ENVIO = int(os.getenv("HORA_INICIO_ENVIO", "9"))
 HORA_FIN_ENVIO = int(os.getenv("HORA_FIN_ENVIO", "17"))
@@ -82,23 +89,23 @@ def _sin_marcas_de_plantilla(texto):
     return re.sub(r"[{}|]", " ", str(texto or "")).strip()
 
 
-# --- BÚSQUEDA DE CONSULTORAS EN GOOGLE MAPS ---
-def buscar_y_agregar_consultoras(df_actual):
+# --- BÚSQUEDA DE NEGOCIOS SIN WEB EN GOOGLE MAPS ---
+def buscar_y_agregar_negocios(df_actual):
     """
-    Busca consultoras para la siguiente combinación comuna+término del barrido, pidiendo varias
-    páginas mientras rindan. Solo agrega celulares con WhatsApp verificado; si el teléfono de
-    Google es un fijo, intenta rescatar un celular desde el sitio web de la empresa.
+    Busca negocios para la siguiente combinación comuna+término del barrido, pidiendo varias
+    páginas mientras rindan. Solo agrega negocios SIN sitio web propio y con un celular de Google
+    que tenga WhatsApp verificado (sin web no hay dónde rescatar un celular si el de Google es fijo).
     """
     if not SERP_KEY:
-        print("❌ SERP_KEY no configurado, no se buscarán nuevas consultoras.")
-        logging.error("SERP_KEY no configurado; omitiendo búsqueda de consultoras de prevención.")
+        print("❌ SERP_KEY no configurado, no se buscarán nuevos negocios.")
+        logging.error("SERP_KEY no configurado; omitiendo búsqueda de negocios sin web.")
         return df_actual
 
     ahora_cl = obtener_ahora_chile()
     zona, termino = cobertura.siguiente(
-        ARCHIVO_COBERTURA, COMUNAS_OBJETIVO, TERMINOS_BUSQUEDA, prioridad=cobertura.PRIORIDAD_NORTE
+        ARCHIVO_COBERTURA, COMUNAS_OBJETIVO, TERMINOS_BUSQUEDA, prioridad=cobertura.PRIORIDAD_NACIONAL
     )
-    print(f"🦺 Buscando '{termino}' en: {zona}...")
+    print(f"🌐 Buscando '{termino}' en: {zona}...")
 
     tels_en_base = set()
     if not df_actual.empty and "Telefono" in df_actual.columns:
@@ -108,11 +115,13 @@ def buscar_y_agregar_consultoras(df_actual):
                 tels_en_base.add(digits[-9:])
     ultimo_id = int(df_actual["Id"].max()) if not df_actual.empty and "Id" in df_actual.columns else 0
     nuevos_leads = []
-    descartes = {"sin_movil": 0, "cadena": 0, "duplicado": 0, "sin_whatsapp": 0}
+    descartes = {"sin_movil": 0, "cadena": 0, "duplicado": 0, "sin_whatsapp": 0, "con_web": 0}
 
     def procesar_pagina(resultados):
         nonlocal ultimo_id
-        candidatos = captacion.preparar_candidatos(resultados, tels_en_base, "prevencion", descartes)
+        candidatos = captacion.preparar_candidatos(
+            resultados, tels_en_base, "prevencion", descartes, solo_sin_web=True
+        )
         confirmados = captacion.confirmar_con_whatsapp(candidatos, EVO_URL, EVO_TOKEN, EVO_INSTANCE, descartes)
         for cand, tel in confirmados:
             ultimo_id += 1
@@ -120,7 +129,7 @@ def buscar_y_agregar_consultoras(df_actual):
                 "Id": int(ultimo_id),
                 "Fecha": ahora_cl.strftime("%d/%m/%Y"),
                 "Hora": ahora_cl.strftime("%H:%M"),
-                "Evento": cand["place"].get("title", "Consultora"),
+                "Evento": cand["place"].get("title", "Negocio"),
                 "Ministerio": termino,
                 "Ubicacion": zona,
                 "Estado": "Nuevo",
@@ -128,7 +137,7 @@ def buscar_y_agregar_consultoras(df_actual):
                 "Dia_Secuencia": 0,
                 "Fecha_Contacto": "",
                 "Resultado": "",
-                "Notas": "WhatsApp obtenido de su sitio web" if cand["origen"] == "web" else "",
+                "Notas": "Sin sitio web propio en Google Maps",
                 "Version_Mensaje": "",
             })
         return len(confirmados)
@@ -139,8 +148,8 @@ def buscar_y_agregar_consultoras(df_actual):
             ARCHIVO_PRESUPUESTO_SERP, LIMITE_MENSUAL_SERPAPI, ahora_cl, procesar_pagina,
         )
     except Exception:
-        logging.exception("❌ Error en búsqueda de consultoras de prevención")
-        print("❌ Error en búsqueda de consultoras (ver logs).")
+        logging.exception("❌ Error en búsqueda de negocios sin web")
+        print("❌ Error en búsqueda de negocios (ver logs).")
         return df_actual
 
     if estado == "presupuesto_agotado":
@@ -151,11 +160,11 @@ def buscar_y_agregar_consultoras(df_actual):
     if estado == "cuota_agotada":
         enviar_alerta_whatsapp(
             EVO_URL, EVO_TOKEN, EVO_INSTANCE, NUMERO_OPERADOR,
-            "⚠️ Prevención: SerpAPI dejó de responder en la búsqueda de consultoras (posible cuota agotada). Revisar api_key.",
+            "⚠️ Páginas web: SerpAPI dejó de responder en la búsqueda de negocios (posible cuota agotada). Revisar api_key.",
         )
     if nuevos_leads:
         return pd.concat([df_actual, pd.DataFrame(nuevos_leads)], ignore_index=True)
-    print("📭 La búsqueda no dejó leads nuevos (duplicados, fuera de rubro, sin celular o sin WhatsApp).")
+    print("📭 La búsqueda no dejó leads nuevos (duplicados, con web propia, fuera de rubro, sin celular o sin WhatsApp).")
     return df_actual
 
 
@@ -166,10 +175,9 @@ def enviar_mensaje_texto(numero, mensaje):
 
 def obtener_mensaje_prevencion(nombre, ubicacion, dia):
     """
-    Genera el mensaje para la consultora y una etiqueta de versión para A/B testing.
-    Devuelve (mensaje_texto, version). Ofrece un diagnóstico gratuito POR MENSAJES (3 preguntas cortas
-    y un mini informe), sin llamada; no afirma que exista un producto, ni clientes, ni cifras.
-    Sin links: es una conversación entre personas.
+    Genera el mensaje para el negocio y una etiqueta de versión para A/B testing.
+    Devuelve (mensaje_texto, version). Ofrece una propuesta corta y sin compromiso de página web, landing
+    o tienda online; no afirma clientes, cifras ni precios. Sin links: es una conversación entre personas.
     """
     nombre = _sin_marcas_de_plantilla(nombre)
     zona = _sin_marcas_de_plantilla(ubicacion) or "la zona"
@@ -184,33 +192,27 @@ def obtener_mensaje_prevencion(nombre, ubicacion, dia):
         variante = random.choice(["A", "B"])
         if variante == "A":
             msg = (
-                "{Hola|Buenas tardes|Hola, ¿qué tal?} 👋 Mi nombre es Rodrigo, desarrollo software en Chile. "
-                "Estoy ayudando a consultoras de prevención de riesgos como *{nombre}* a "
-                "{reducir el tiempo que pierden en informes y papeleo para sus clientes|"
-                "ahorrar horas en informes, vencimientos y documentación}.\n\n"
-                "{¿Les puedo enviar 3 preguntas cortas por aquí? Con sus respuestas les devuelvo un estimado "
-                "de cuántas horas podrían recuperar, sin costo.|"
-                "¿Les parece si les envío 3 preguntas cortas por aquí? Con sus respuestas les calculo "
-                "cuánto tiempo podrían recuperar, sin costo.}"
+                "{Hola|Buenas tardes|Hola, ¿qué tal?} 👋 Soy Rodrigo, desarrollo páginas web en Chile. "
+                "Vi que *{nombre}* aparece en Google, pero no encontré una página web propia, y hoy muchos "
+                "clientes buscan ahí primero antes de llamar o ir al local.\n\n"
+                "{¿Les gustaría que les cuente cómo sería una página sencilla para el negocio? Sin compromiso.|"
+                "¿Les parece si les envío una propuesta corta de cómo podría verse su página? Sin compromiso.}"
             )
         else:
             msg = (
-                "{Hola|Buenas tardes|Hola, ¿qué tal?} 👋 Soy Rodrigo, desarrollo software en Chile. "
-                "Trabajo con consultoras de prevención de riesgos de {zona} para automatizar "
-                "{los informes a clientes|el papeleo y los avisos de vencimientos}, y quería "
-                "preguntarles por *{nombre}*.\n\n"
-                "Si les interesa ver cuántas horas podrían recuperar, respóndanme solo con un *SI* "
-                "y les envío 3 preguntas cortas por aquí, sin costo. 👍"
+                "{Hola|Buenas tardes|Hola, ¿qué tal?} 👋 Soy Rodrigo, hago páginas web, landing pages y "
+                "tiendas online para negocios de {zona}. Estaba mirando *{nombre}* en Google y vi que "
+                "todavía no tienen sitio web propio.\n\n"
+                "Si les interesa, respóndanme con un *SI* y les envío una propuesta corta, sin compromiso. 👍"
             )
         return armar(msg), variante
 
     elif dia == 2:
         msg = (
-            "{Hola de nuevo|Hola nuevamente} 👋 Solo para complementar: en estas conversaciones suelen salir "
-            "tareas como {informes mensuales|avisos de vencimientos|consolidar datos de varias planillas} "
-            "que se pueden automatizar aunque ya usen un software.\n\n"
-            "Si les sirve, les envío las 3 preguntas por aquí y les devuelvo un mini informe a su medida. "
-            "¿Se las mando?"
+            "{Hola de nuevo|Hola nuevamente} 👋 Solo para complementar: una página propia (puede ser una "
+            "{landing sencilla|página con sus servicios y horarios|tienda online}) hace que los clientes los "
+            "encuentren en Google, vean dónde están y qué ofrecen, y les escriban directo por WhatsApp.\n\n"
+            "¿Les envío una propuesta corta, sin compromiso?"
         )
         return armar(msg), "D2"
 
@@ -222,7 +224,7 @@ RESULTADOS_QUE_CIERRAN = {"interesado", "no interesado", "numero equivocado"}
 
 def reciclar_leads_antiguos(df, ahora, excluir=frozenset()):
     """
-    Devuelve a "Nuevo" (secuencia desde el día 1) a las consultoras que terminaron la secuencia sin
+    Devuelve a "Nuevo" (secuencia desde el día 1) a los negocios que terminaron la secuencia sin
     respuesta (Finalizado) o fallaron (Error) hace al menos RECONTACTO_DIAS. Nunca recicla:
     - "Rechazado" (lo descartó el operador),
     - los ya clasificados (Resultado: interesado / no interesado / número equivocado),
@@ -303,7 +305,7 @@ def _armar_candidatos(df, ahora, respondieron, estado_resp, asignados=frozenset(
         elif row["Estado"] == "Nuevo":
             candidatos.append({"idx": idx, "dia": 1})
 
-    # Límite muy conservador para evitar baneo: solo 3 consultoras por ciclo
+    # Límite muy conservador para evitar baneo: solo 3 negocios por ciclo
     random.shuffle(candidatos)
     return candidatos[:3]
 
@@ -314,7 +316,7 @@ def _ciclo(resumen):
 
     # Horario de oficina: lunes a viernes, de HORA_INICIO_ENVIO:00 a HORA_FIN_ENVIO:59 (hora de Chile)
     if ahora.weekday() > 4 or not (HORA_INICIO_ENVIO <= ahora.hour <= HORA_FIN_ENVIO):
-        print(f"🕒 Fuera de horario para prevención (Hora Chile: {ahora.strftime('%A %H:%M')}; "
+        print(f"🕒 Fuera de horario para páginas web (Hora Chile: {ahora.strftime('%A %H:%M')}; "
               f"se opera de lunes a viernes, {HORA_INICIO_ENVIO}:00 a {HORA_FIN_ENVIO}:59).")
         return
 
@@ -355,9 +357,9 @@ def _ciclo(resumen):
     candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp, asignados)
 
     if not candidatos:
-        print("📭 Buscando nuevas consultoras...")
+        print("📭 Buscando nuevos negocios...")
         antes = len(df)
-        df = buscar_y_agregar_consultoras(df)
+        df = buscar_y_agregar_negocios(df)
         df.to_csv(ARCHIVO_PREVENCION, index=False)
         despues = len(df)
         print(f"➕ Leads agregados: {max(0, despues-antes)}")
@@ -369,7 +371,7 @@ def _ciclo(resumen):
         candidatos = _armar_candidatos(df, ahora, respondieron, estado_resp, asignados)
 
         if not candidatos:
-            print("📭 Aún no hay candidatos después de buscar nuevas consultoras.")
+            print("📭 Aún no hay candidatos después de buscar nuevos negocios.")
             print("♻️ Intentando reciclar leads antiguos...")
             df, total_reciclados = reciclar_leads_antiguos(df, ahora, respondieron | asignados)
             resumen["reciclados"] = total_reciclados
@@ -380,7 +382,7 @@ def _ciclo(resumen):
                 print("📭 Sin leads reciclables.")
             return
 
-    print(f"🚀 Enviando a {len(candidatos)} consultoras...")
+    print(f"🚀 Enviando a {len(candidatos)} negocios...")
 
     for i, item in enumerate(candidatos):
         idx, dia_obj = item['idx'], item['dia']
@@ -425,7 +427,7 @@ def ejecutar_ciclo():
         raise
     finally:
         resumen_email.enviar_resumen_si_corresponde(
-            resumen, "Prevención de riesgos (norte)", obtener_ahora_chile()
+            resumen, "Páginas web para negocios sin sitio (nacional)", obtener_ahora_chile()
         )
 
 

@@ -45,10 +45,12 @@ def diagnostico(place, linea):
         return "CADENA"
     if not filtros_leads.categoria_relevante(place, linea):
         return "FUERA DE RUBRO"
+    if linea == "prevencion" and filtros_leads.tiene_web_propia(place):
+        return "CON WEB PROPIA"
     tel = normalizar_telefono_chile(place.get("phone", ""))
     if es_movil_chileno(tel):
         return None
-    if place.get("website"):
+    if place.get("website") and linea != "prevencion":
         return None  # se intentará rescatar un celular desde su web
     return "SIN CELULAR NI WEB"
 
@@ -92,7 +94,8 @@ def main():
 
         descartes = {"sin_movil": 0, "cadena": 0, "duplicado": 0, "sin_whatsapp": 0}
         candidatos = captacion.preparar_candidatos(
-            resultados, set(), linea, descartes, necesita_email=(linea == "clinicas")
+            resultados, set(), linea, descartes, necesita_email=(linea == "clinicas"),
+            solo_sin_web=(linea == "prevencion"),
         )
         confirmados = captacion.confirmar_con_whatsapp(candidatos, *evo, descartes)
         print(f"\nDescartados: {descartes}")

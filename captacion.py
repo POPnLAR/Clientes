@@ -17,11 +17,13 @@ from evo_client import es_movil_chileno, normalizar_telefono_chile, verificar_wh
 MAX_SITIOS_RESCATE = 8
 
 
-def preparar_candidatos(resultados, tels_en_base, linea, descartes, necesita_email=False):
+def preparar_candidatos(resultados, tels_en_base, linea, descartes, necesita_email=False, solo_sin_web=False):
     """
     Devuelve una lista de candidatos {place, telefonos, origen, email} donde `telefonos` son
     celulares a verificar en orden de preferencia. `descartes` (dict) acumula los motivos.
     Actualiza `tels_en_base` con los teléfonos ya tomados para no repetir dentro del mismo lote.
+    `solo_sin_web`: se queda únicamente con negocios SIN sitio web propio (los que en Google solo muestran
+    una red social o ningún sitio); no hay web donde rescatar un celular, así que el de Google debe ser móvil.
     """
     candidatos = []
     rescates = 0
@@ -36,8 +38,12 @@ def preparar_candidatos(resultados, tels_en_base, linea, descartes, necesita_ema
                 print(f"🚫 Fuera de rubro: {place.get('title', '?')} [{filtros_leads.texto_categoria(place) or 'sin categoría'}]")
             continue
 
+        if solo_sin_web and filtros_leads.tiene_web_propia(place):
+            descartes["con_web"] = descartes.get("con_web", 0) + 1
+            continue
+
         tel_google = normalizar_telefono_chile(place.get("phone", ""))
-        website = place.get("website") or ""
+        website = "" if solo_sin_web else (place.get("website") or "")
         telefonos, origen, email = [], "google", ""
 
         if es_movil_chileno(tel_google):

@@ -81,13 +81,47 @@ reglas_recomendacion:
   - condicion: "Maneja inventario de insumos, anula cobros seguido, o quiere reportes de recompra."
     plan_sugerido: avanzado_precio_medio
 
+# Margen de negociación que el agente SÍ puede ofrecer cuando el prospecto objeta el precio.
+# Cambia descuento_pct para ajustar el tope; no hay otro descuento autorizado.
+negociacion:
+  descuento_pct: 10
+  aplica_a: "cualquier plan o promoción, sobre el precio mensual + IVA, mientras sea cliente"
+  reglas:
+    - "Solo se ofrece si el prospecto dice que es caro, que no le alcanza el presupuesto o pide rebaja."
+    - "Primero reencuadra: valor (qué incluye) y la opción más económica que le calce (combo Básico + Ecommerce). Si sigue objetando, recién ahí ofrece el descuento."
+    - "Se ofrece una sola vez y no se supera el tope. Calcula el precio con descuento sobre el precio real del plan."
+    - "Si pide más rebaja que el tope, o dice que igual no puede pagarlo, no negocies más: dile que Rodrigo lo revisa directamente con él."
+    - "Nunca ofrezcas el descuento a quien no lo pidió ni objetó el precio."
+
 objeciones:
   - objecion: "Es muy caro / no tengo presupuesto para eso"
     respuesta_sugerida: >
       Entiendo la preocupación por el presupuesto. Justo para partir sin
       arriesgar tanto existe el combo Básico + Ecommerce a $80.000 + IVA al
       mes, sin contrato de permanencia, así que puedes probarlo y cancelar
-      cuando quieras si no te acomoda.
+      cuando quieras si no te acomoda. Si aun así se te escapa del presupuesto,
+      cuéntamelo: puedo ofrecerte un 10% de descuento mensual sobre el plan que
+      elijas (por ejemplo, el combo quedaría en $72.000 + IVA al mes). Si necesitas
+      más que eso, Rodrigo lo ve directamente contigo.
+
+  - objecion: "Quiero un descuento / ¿me puede hacer un mejor precio?"
+    respuesta_sugerida: >
+      Algo se puede hacer: te ofrezco un 10% de descuento mensual sobre el plan
+      que elijas (Básico $63.000, combo Básico + Ecommerce $72.000, Medio o
+      Avanzado $153.000, todos + IVA al mes), sin contrato de permanencia. Es
+      el máximo que puedo darte; si necesitas algo distinto, Rodrigo lo
+      conversa directamente contigo.
+
+  - objecion: "Ya uso otra herramienta (Agenda Pro, otro software, agenda online, sistema de la clínica, etc.)"
+    respuesta_sugerida: >
+      Buena, entonces ya conoces el valor de tener todo ordenado. Lo que
+      suma GestiónVital es que reúne en un solo sistema más que una herramienta suelta: trae fichas de pacientes,
+      evolución clínica con fotos y consentimientos digitales (Plan Medio), e
+      inventario de insumos, anulación de cobros y reportes de recompra (Plan
+      Avanzado, hoy a $170.000 + IVA en vez de $320.000), todo en un solo
+      sistema. Además migramos tus datos sin costo, no hay contrato de
+      permanencia y tienes 14 días de prueba gratis para comparar. ¿Qué es lo que hoy
+      sigues haciendo aparte (fichas, inventario, cobros)?
 
   - objecion: "Ya administro todo por Excel o cuaderno / WhatsApp"
     respuesta_sugerida: >

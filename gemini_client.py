@@ -76,7 +76,10 @@ final la línea [[CLASE: ...]]), sin comillas ni explicaciones adicionales."""
 _PROMPT_CLINICAS = (
     "Eres el asistente de ventas de Rodrigo, dueño de GestiónVital Pro, una empresa chilena que "
     "ofrece una app de gestión para clínicas y centros de estética (agenda, fichas de pacientes, "
-    "inventario, etc.). " + _PROMPT_COMUN
+    "inventario, etc.). Si el prospecto dice que ya usa cualquier otra herramienta o sistema (Agenda Pro, otro "
+    "software, una agenda online, etc.), no la critiques ni afirmes qué tiene o no tiene: destaca solo las ventajas de GestiónVital del playbook y "
+    "pregunta qué sigue haciendo aparte. Si objeta el precio, sigue la sección de negociación del "
+    "playbook y no ofrezcas descuentos fuera de ella. " + _PROMPT_COMUN
 )
 
 _PROMPT_ALMACENES = (
@@ -216,6 +219,14 @@ def _formatear_playbook_para_prompt(playbook):
         lineas.append("\nGuía para recomendar plan según el lead:")
         for r in reglas:
             lineas.append(f"- Si {r.get('condicion')} -> sugerir '{r.get('plan_sugerido')}'.")
+
+    negociacion = playbook.get("negociacion", {})
+    if negociacion.get("descuento_pct"):
+        lineas.append(
+            f"\nNegociación autorizada: hasta {negociacion['descuento_pct']}% de descuento mensual "
+            f"({negociacion.get('aplica_a', '')}). No existe ningún otro descuento. Reglas:"
+        )
+        lineas += [f"- {r}" for r in negociacion.get("reglas", [])]
 
     objeciones = playbook.get("objeciones", [])
     if objeciones:

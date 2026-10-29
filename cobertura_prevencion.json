@@ -1,0 +1,4767 @@
+{
+  "pendientes": [
+    [
+      "Rancagua",
+      "Pastelería"
+    ],
+    [
+      "Iquique",
+      "Taller mecánico"
+    ],
+    [
+      "La Serena",
+      "Salón de belleza"
+    ],
+    [
+      "Valparaíso",
+      "Veterinaria"
+    ],
+    [
+      "Arica",
+      "Restaurante"
+    ],
+    [
+      "Providencia",
+      "Restaurante"
+    ],
+    [
+      "Iquique",
+      "Veterinaria"
+    ],
+    [
+      "Las Condes",
+      "Tienda de ropa"
+    ],
+    [
+      "Valparaíso",
+      "Pastelería"
+    ],
+    [
+      "Talca",
+      "Taller mecánico"
+    ],
+    [
+      "Arica",
+      "Salón de belleza"
+    ],
+    [
+      "La Serena",
+      "Gimnasio"
+    ],
+    [
+      "Ñuñoa",
+      "Gimnasio"
+    ],
+    [
+      "Puerto Montt",
+      "Tienda de ropa"
+    ],
+    [
+      "Valparaíso",
+      "Taller mecánico"
+    ],
+    [
+      "Puente Alto",
+      "Veterinaria"
+    ],
+    [
+      "Antofagasta",
+      "Veterinaria"
+    ],
+    [
+      "Arica",
+      "Taller mecánico"
+    ],
+    [
+      "Concepción",
+      "Veterinaria"
+    ],
+    [
+      "La Florida",
+      "Tienda de ropa"
+    ],
+    [
+      "Ñuñoa",
+      "Taller mecánico"
+    ],
+    [
+      "Concepción",
+      "Gimnasio"
+    ],
+    [
+      "Talca",
+      "Tienda de ropa"
+    ],
+    [
+      "La Serena",
+      "Pastelería"
+    ],
+    [
+      "Providencia",
+      "Tienda de ropa"
+    ],
+    [
+      "Temuco",
+      "Constructora"
+    ],
+    [
+      "Santiago Centro",
+      "Barbería"
+    ],
+    [
+      "Puente Alto",
+      "Ferretería"
+    ],
+    [
+      "Rancagua",
+      "Ferretería"
+    ],
+    [
+      "Viña del Mar",
+      "Barbería"
+    ],
+    [
+      "Santiago Centro",
+      "Ferretería"
+    ],
+    [
+      "Las Condes",
+      "Restaurante"
+    ],
+    [
+      "Iquique",
+      "Ferretería"
+    ],
+    [
+      "Talca",
+      "Barbería"
+    ],
+    [
+      "La Serena",
+      "Taller mecánico"
+    ],
+    [
+      "La Serena",
+      "Peluquería"
+    ],
+    [
+      "Puerto Montt",
+      "Barbería"
+    ],
+    [
+      "Puerto Montt",
+      "Gimnasio"
+    ],
+    [
+      "Puente Alto",
+      "Salón de belleza"
+    ],
+    [
+      "Santiago Centro",
+      "Gimnasio"
+    ],
+    [
+      "Puerto Montt",
+      "Taller mecánico"
+    ],
+    [
+      "Arica",
+      "Pastelería"
+    ],
+    [
+      "Arica",
+      "Gimnasio"
+    ],
+    [
+      "Antofagasta",
+      "Florería"
+    ],
+    [
+      "Maipú",
+      "Gimnasio"
+    ],
+    [
+      "Las Condes",
+      "Barbería"
+    ],
+    [
+      "Temuco",
+      "Tienda de ropa"
+    ],
+    [
+      "Viña del Mar",
+      "Salón de belleza"
+    ],
+    [
+      "La Serena",
+      "Tienda de ropa"
+    ],
+    [
+      "Providencia",
+      "Ferretería"
+    ],
+    [
+      "Talca",
+      "Gimnasio"
+    ],
+    [
+      "Providencia",
+      "Florería"
+    ],
+    [
+      "Antofagasta",
+      "Gimnasio"
+    ],
+    [
+      "Puente Alto",
+      "Barbería"
+    ],
+    [
+      "Chillán",
+      "Salón de belleza"
+    ],
+    [
+      "La Florida",
+      "Ferretería"
+    ],
+    [
+      "Temuco",
+      "Veterinaria"
+    ],
+    [
+      "Las Condes",
+      "Peluquería"
+    ],
+    [
+      "Iquique",
+      "Restaurante"
+    ],
+    [
+      "Las Condes",
+      "Veterinaria"
+    ],
+    [
+      "Ñuñoa",
+      "Pastelería"
+    ],
+    [
+      "Santiago Centro",
+      "Restaurante"
+    ],
+    [
+      "La Florida",
+      "Veterinaria"
+    ],
+    [
+      "Antofagasta",
+      "Ferretería"
+    ],
+    [
+      "Maipú",
+      "Constructora"
+    ],
+    [
+      "Rancagua",
+      "Constructora"
+    ],
+    [
+      "Santiago Centro",
+      "Pastelería"
+    ],
+    [
+      "Las Condes",
+      "Ferretería"
+    ],
+    [
+      "Concepción",
+      "Peluquería"
+    ],
+    [
+      "Las Condes",
+      "Salón de belleza"
+    ],
+    [
+      "Concepción",
+      "Florería"
+    ],
+    [
+      "Temuco",
+      "Gimnasio"
+    ],
+    [
+      "Antofagasta",
+      "Tienda de ropa"
+    ],
+    [
+      "Providencia",
+      "Gimnasio"
+    ],
+    [
+      "Puente Alto",
+      "Tienda de ropa"
+    ],
+    [
+      "Ñuñoa",
+      "Restaurante"
+    ],
+    [
+      "Antofagasta",
+      "Barbería"
+    ],
+    [
+      "Santiago Centro",
+      "Veterinaria"
+    ],
+    [
+      "Puente Alto",
+      "Pastelería"
+    ],
+    [
+      "Maipú",
+      "Pastelería"
+    ],
+    [
+      "Santiago Centro",
+      "Peluquería"
+    ],
+    [
+      "Ñuñoa",
+      "Veterinaria"
+    ],
+    [
+      "Antofagasta",
+      "Taller mecánico"
+    ],
+    [
+      "Chillán",
+      "Constructora"
+    ],
+    [
+      "Valparaíso",
+      "Gimnasio"
+    ],
+    [
+      "Rancagua",
+      "Gimnasio"
+    ],
+    [
+      "Viña del Mar",
+      "Constructora"
+    ],
+    [
+      "Viña del Mar",
+      "Tienda de ropa"
+    ],
+    [
+      "Ñuñoa",
+      "Florería"
+    ],
+    [
+      "Talca",
+      "Restaurante"
+    ],
+    [
+      "Valparaíso",
+      "Florería"
+    ],
+    [
+      "Concepción",
+      "Constructora"
+    ],
+    [
+      "Valparaíso",
+      "Restaurante"
+    ],
+    [
+      "Antofagasta",
+      "Peluquería"
+    ],
+    [
+      "Maipú",
+      "Salón de belleza"
+    ],
+    [
+      "Arica",
+      "Veterinaria"
+    ],
+    [
+      "Iquique",
+      "Salón de belleza"
+    ],
+    [
+      "Temuco",
+      "Taller mecánico"
+    ],
+    [
+      "Chillán",
+      "Peluquería"
+    ],
+    [
+      "Talca",
+      "Ferretería"
+    ],
+    [
+      "Puente Alto",
+      "Taller mecánico"
+    ],
+    [
+      "La Serena",
+      "Constructora"
+    ],
+    [
+      "La Florida",
+      "Florería"
+    ],
+    [
+      "Providencia",
+      "Veterinaria"
+    ],
+    [
+      "Valparaíso",
+      "Ferretería"
+    ],
+    [
+      "Arica",
+      "Peluquería"
+    ],
+    [
+      "Puerto Montt",
+      "Florería"
+    ],
+    [
+      "Maipú",
+      "Peluquería"
+    ],
+    [
+      "Chillán",
+      "Tienda de ropa"
+    ],
+    [
+      "La Serena",
+      "Ferretería"
+    ],
+    [
+      "Chillán",
+      "Restaurante"
+    ],
+    [
+      "Maipú",
+      "Florería"
+    ],
+    [
+      "Rancagua",
+      "Veterinaria"
+    ],
+    [
+      "La Florida",
+      "Taller mecánico"
+    ],
+    [
+      "Ñuñoa",
+      "Peluquería"
+    ],
+    [
+      "Ñuñoa",
+      "Salón de belleza"
+    ],
+    [
+      "Puente Alto",
+      "Florería"
+    ],
+    [
+      "Rancagua",
+      "Peluquería"
+    ],
+    [
+      "Antofagasta",
+      "Salón de belleza"
+    ],
+    [
+      "Puerto Montt",
+      "Ferretería"
+    ],
+    [
+      "La Serena",
+      "Veterinaria"
+    ],
+    [
+      "Las Condes",
+      "Taller mecánico"
+    ],
+    [
+      "Santiago Centro",
+      "Florería"
+    ],
+    [
+      "Providencia",
+      "Taller mecánico"
+    ],
+    [
+      "Puerto Montt",
+      "Constructora"
+    ],
+    [
+      "Valparaíso",
+      "Barbería"
+    ],
+    [
+      "Maipú",
+      "Taller mecánico"
+    ],
+    [
+      "Chillán",
+      "Veterinaria"
+    ],
+    [
+      "Iquique",
+      "Tienda de ropa"
+    ],
+    [
+      "Viña del Mar",
+      "Taller mecánico"
+    ],
+    [
+      "Iquique",
+      "Constructora"
+    ],
+    [
+      "Talca",
+      "Pastelería"
+    ],
+    [
+      "Providencia",
+      "Peluquería"
+    ],
+    [
+      "Las Condes",
+      "Constructora"
+    ],
+    [
+      "Valparaíso",
+      "Peluquería"
+    ],
+    [
+      "Concepción",
+      "Pastelería"
+    ],
+    [
+      "Rancagua",
+      "Taller mecánico"
+    ],
+    [
+      "Puente Alto",
+      "Restaurante"
+    ],
+    [
+      "Rancagua",
+      "Tienda de ropa"
+    ],
+    [
+      "Ñuñoa",
+      "Ferretería"
+    ],
+    [
+      "Las Condes",
+      "Pastelería"
+    ],
+    [
+      "Talca",
+      "Salón de belleza"
+    ],
+    [
+      "Arica",
+      "Florería"
+    ],
+    [
+      "Viña del Mar",
+      "Florería"
+    ],
+    [
+      "Maipú",
+      "Tienda de ropa"
+    ],
+    [
+      "Santiago Centro",
+      "Constructora"
+    ],
+    [
+      "La Florida",
+      "Gimnasio"
+    ],
+    [
+      "Maipú",
+      "Veterinaria"
+    ],
+    [
+      "Concepción",
+      "Ferretería"
+    ],
+    [
+      "Valparaíso",
+      "Tienda de ropa"
+    ],
+    [
+      "Chillán",
+      "Gimnasio"
+    ],
+    [
+      "Valparaíso",
+      "Salón de belleza"
+    ],
+    [
+      "Temuco",
+      "Pastelería"
+    ],
+    [
+      "Rancagua",
+      "Restaurante"
+    ],
+    [
+      "Viña del Mar",
+      "Gimnasio"
+    ],
+    [
+      "Temuco",
+      "Salón de belleza"
+    ],
+    [
+      "Temuco",
+      "Restaurante"
+    ],
+    [
+      "Puerto Montt",
+      "Restaurante"
+    ],
+    [
+      "Viña del Mar",
+      "Peluquería"
+    ],
+    [
+      "Providencia",
+      "Barbería"
+    ],
+    [
+      "Maipú",
+      "Ferretería"
+    ],
+    [
+      "Maipú",
+      "Restaurante"
+    ],
+    [
+      "La Serena",
+      "Florería"
+    ],
+    [
+      "Arica",
+      "Tienda de ropa"
+    ],
+    [
+      "Concepción",
+      "Tienda de ropa"
+    ],
+    [
+      "Ñuñoa",
+      "Tienda de ropa"
+    ],
+    [
+      "La Florida",
+      "Constructora"
+    ],
+    [
+      "Viña del Mar",
+      "Ferretería"
+    ],
+    [
+      "Puerto Montt",
+      "Veterinaria"
+    ],
+    [
+      "Concepción",
+      "Barbería"
+    ],
+    [
+      "Providencia",
+      "Pastelería"
+    ],
+    [
+      "Iquique",
+      "Barbería"
+    ],
+    [
+      "Las Condes",
+      "Florería"
+    ],
+    [
+      "Rancagua",
+      "Barbería"
+    ],
+    [
+      "Antofagasta",
+      "Restaurante"
+    ],
+    [
+      "Santiago Centro",
+      "Salón de belleza"
+    ],
+    [
+      "Concepción",
+      "Taller mecánico"
+    ],
+    [
+      "Antofagasta",
+      "Pastelería"
+    ],
+    [
+      "Chillán",
+      "Taller mecánico"
+    ],
+    [
+      "Puerto Montt",
+      "Salón de belleza"
+    ],
+    [
+      "La Serena",
+      "Restaurante"
+    ],
+    [
+      "Santiago Centro",
+      "Taller mecánico"
+    ],
+    [
+      "La Serena",
+      "Barbería"
+    ],
+    [
+      "Iquique",
+      "Florería"
+    ],
+    [
+      "Puente Alto",
+      "Constructora"
+    ],
+    [
+      "La Florida",
+      "Peluquería"
+    ],
+    [
+      "La Florida",
+      "Barbería"
+    ],
+    [
+      "Iquique",
+      "Gimnasio"
+    ],
+    [
+      "Arica",
+      "Barbería"
+    ],
+    [
+      "Temuco",
+      "Peluquería"
+    ],
+    [
+      "Valparaíso",
+      "Constructora"
+    ],
+    [
+      "Chillán",
+      "Barbería"
+    ],
+    [
+      "Temuco",
+      "Ferretería"
+    ],
+    [
+      "Chillán",
+      "Pastelería"
+    ],
+    [
+      "Iquique",
+      "Pastelería"
+    ],
+    [
+      "Temuco",
+      "Barbería"
+    ],
+    [
+      "Puerto Montt",
+      "Pastelería"
+    ],
+    [
+      "Talca",
+      "Florería"
+    ],
+    [
+      "Viña del Mar",
+      "Veterinaria"
+    ],
+    [
+      "Puente Alto",
+      "Gimnasio"
+    ],
+    [
+      "Chillán",
+      "Ferretería"
+    ],
+    [
+      "Antofagasta",
+      "Constructora"
+    ],
+    [
+      "Arica",
+      "Ferretería"
+    ],
+    [
+      "Viña del Mar",
+      "Pastelería"
+    ],
+    [
+      "Talca",
+      "Peluquería"
+    ],
+    [
+      "La Florida",
+      "Pastelería"
+    ],
+    [
+      "Ñuñoa",
+      "Barbería"
+    ],
+    [
+      "Ñuñoa",
+      "Constructora"
+    ],
+    [
+      "Concepción",
+      "Salón de belleza"
+    ],
+    [
+      "Providencia",
+      "Salón de belleza"
+    ],
+    [
+      "Temuco",
+      "Florería"
+    ],
+    [
+      "Puente Alto",
+      "Peluquería"
+    ],
+    [
+      "Talca",
+      "Veterinaria"
+    ],
+    [
+      "Iquique",
+      "Peluquería"
+    ],
+    [
+      "Rancagua",
+      "Salón de belleza"
+    ],
+    [
+      "Chillán",
+      "Florería"
+    ],
+    [
+      "Santiago Centro",
+      "Tienda de ropa"
+    ],
+    [
+      "Arica",
+      "Constructora"
+    ],
+    [
+      "Maipú",
+      "Barbería"
+    ],
+    [
+      "Talca",
+      "Constructora"
+    ],
+    [
+      "Concepción",
+      "Restaurante"
+    ],
+    [
+      "La Florida",
+      "Salón de belleza"
+    ],
+    [
+      "Rancagua",
+      "Florería"
+    ],
+    [
+      "Las Condes",
+      "Gimnasio"
+    ],
+    [
+      "Puerto Montt",
+      "Peluquería"
+    ],
+    [
+      "Providencia",
+      "Constructora"
+    ],
+    [
+      "Viña del Mar",
+      "Restaurante"
+    ],
+    [
+      "Los Ángeles",
+      "Constructora"
+    ],
+    [
+      "Talcahuano",
+      "Ferretería"
+    ],
+    [
+      "Macul",
+      "Gimnasio"
+    ],
+    [
+      "Peñalolén",
+      "Taller mecánico"
+    ],
+    [
+      "Alto Hospicio",
+      "Florería"
+    ],
+    [
+      "Valdivia",
+      "Florería"
+    ],
+    [
+      "Valdivia",
+      "Taller mecánico"
+    ],
+    [
+      "Recoleta",
+      "Constructora"
+    ],
+    [
+      "Osorno",
+      "Taller mecánico"
+    ],
+    [
+      "San Miguel",
+      "Veterinaria"
+    ],
+    [
+      "Quilicura",
+      "Ferretería"
+    ],
+    [
+      "San Bernardo",
+      "Barbería"
+    ],
+    [
+      "Osorno",
+      "Veterinaria"
+    ],
+    [
+      "Ovalle",
+      "Ferretería"
+    ],
+    [
+      "Estación Central",
+      "Pastelería"
+    ],
+    [
+      "Curicó",
+      "Taller mecánico"
+    ],
+    [
+      "Vitacura",
+      "Tienda de ropa"
+    ],
+    [
+      "Valdivia",
+      "Gimnasio"
+    ],
+    [
+      "Peñalolén",
+      "Constructora"
+    ],
+    [
+      "Osorno",
+      "Pastelería"
+    ],
+    [
+      "Punta Arenas",
+      "Peluquería"
+    ],
+    [
+      "San Bernardo",
+      "Ferretería"
+    ],
+    [
+      "La Reina",
+      "Taller mecánico"
+    ],
+    [
+      "Quilicura",
+      "Peluquería"
+    ],
+    [
+      "Curicó",
+      "Gimnasio"
+    ],
+    [
+      "Coquimbo",
+      "Pastelería"
+    ],
+    [
+      "San Miguel",
+      "Ferretería"
+    ],
+    [
+      "Curicó",
+      "Salón de belleza"
+    ],
+    [
+      "Valdivia",
+      "Peluquería"
+    ],
+    [
+      "Copiapó",
+      "Pastelería"
+    ],
+    [
+      "Copiapó",
+      "Gimnasio"
+    ],
+    [
+      "Punta Arenas",
+      "Barbería"
+    ],
+    [
+      "Recoleta",
+      "Barbería"
+    ],
+    [
+      "Peñalolén",
+      "Florería"
+    ],
+    [
+      "Alto Hospicio",
+      "Tienda de ropa"
+    ],
+    [
+      "Macul",
+      "Peluquería"
+    ],
+    [
+      "Punta Arenas",
+      "Salón de belleza"
+    ],
+    [
+      "Recoleta",
+      "Taller mecánico"
+    ],
+    [
+      "Alto Hospicio",
+      "Veterinaria"
+    ],
+    [
+      "Quilicura",
+      "Tienda de ropa"
+    ],
+    [
+      "Talcahuano",
+      "Tienda de ropa"
+    ],
+    [
+      "Punta Arenas",
+      "Veterinaria"
+    ],
+    [
+      "Macul",
+      "Pastelería"
+    ],
+    [
+      "Quilicura",
+      "Salón de belleza"
+    ],
+    [
+      "Calama",
+      "Restaurante"
+    ],
+    [
+      "Coquimbo",
+      "Peluquería"
+    ],
+    [
+      "Pudahuel",
+      "Restaurante"
+    ],
+    [
+      "Peñalolén",
+      "Restaurante"
+    ],
+    [
+      "Punta Arenas",
+      "Pastelería"
+    ],
+    [
+      "Pudahuel",
+      "Ferretería"
+    ],
+    [
+      "Curicó",
+      "Barbería"
+    ],
+    [
+      "La Reina",
+      "Constructora"
+    ],
+    [
+      "Osorno",
+      "Gimnasio"
+    ],
+    [
+      "Copiapó",
+      "Ferretería"
+    ],
+    [
+      "La Reina",
+      "Florería"
+    ],
+    [
+      "Calama",
+      "Ferretería"
+    ],
+    [
+      "La Reina",
+      "Peluquería"
+    ],
+    [
+      "Estación Central",
+      "Gimnasio"
+    ],
+    [
+      "Los Ángeles",
+      "Florería"
+    ],
+    [
+      "Osorno",
+      "Peluquería"
+    ],
+    [
+      "Recoleta",
+      "Florería"
+    ],
+    [
+      "Talcahuano",
+      "Constructora"
+    ],
+    [
+      "Osorno",
+      "Salón de belleza"
+    ],
+    [
+      "San Bernardo",
+      "Restaurante"
+    ],
+    [
+      "Los Ángeles",
+      "Gimnasio"
+    ],
+    [
+      "Calama",
+      "Pastelería"
+    ],
+    [
+      "San Bernardo",
+      "Pastelería"
+    ],
+    [
+      "Punta Arenas",
+      "Taller mecánico"
+    ],
+    [
+      "Punta Arenas",
+      "Gimnasio"
+    ],
+    [
+      "Ovalle",
+      "Peluquería"
+    ],
+    [
+      "Estación Central",
+      "Taller mecánico"
+    ],
+    [
+      "Peñalolén",
+      "Tienda de ropa"
+    ],
+    [
+      "La Reina",
+      "Ferretería"
+    ],
+    [
+      "Talcahuano",
+      "Taller mecánico"
+    ],
+    [
+      "Quilpué",
+      "Peluquería"
+    ],
+    [
+      "Copiapó",
+      "Taller mecánico"
+    ],
+    [
+      "Ovalle",
+      "Tienda de ropa"
+    ],
+    [
+      "Peñalolén",
+      "Ferretería"
+    ],
+    [
+      "Valdivia",
+      "Tienda de ropa"
+    ],
+    [
+      "Quilicura",
+      "Constructora"
+    ],
+    [
+      "Estación Central",
+      "Barbería"
+    ],
+    [
+      "Estación Central",
+      "Ferretería"
+    ],
+    [
+      "Recoleta",
+      "Peluquería"
+    ],
+    [
+      "Pudahuel",
+      "Tienda de ropa"
+    ],
+    [
+      "Calama",
+      "Barbería"
+    ],
+    [
+      "Copiapó",
+      "Barbería"
+    ],
+    [
+      "Coquimbo",
+      "Barbería"
+    ],
+    [
+      "San Miguel",
+      "Florería"
+    ],
+    [
+      "Estación Central",
+      "Tienda de ropa"
+    ],
+    [
+      "Curicó",
+      "Peluquería"
+    ],
+    [
+      "Recoleta",
+      "Restaurante"
+    ],
+    [
+      "Macul",
+      "Florería"
+    ],
+    [
+      "Coquimbo",
+      "Restaurante"
+    ],
+    [
+      "Recoleta",
+      "Veterinaria"
+    ],
+    [
+      "Curicó",
+      "Restaurante"
+    ],
+    [
+      "Talcahuano",
+      "Barbería"
+    ],
+    [
+      "Valdivia",
+      "Constructora"
+    ],
+    [
+      "Quilpué",
+      "Veterinaria"
+    ],
+    [
+      "Punta Arenas",
+      "Florería"
+    ],
+    [
+      "San Miguel",
+      "Pastelería"
+    ],
+    [
+      "Macul",
+      "Veterinaria"
+    ],
+    [
+      "Valdivia",
+      "Barbería"
+    ],
+    [
+      "Alto Hospicio",
+      "Taller mecánico"
+    ],
+    [
+      "Osorno",
+      "Ferretería"
+    ],
+    [
+      "Talcahuano",
+      "Veterinaria"
+    ],
+    [
+      "Alto Hospicio",
+      "Barbería"
+    ],
+    [
+      "Peñalolén",
+      "Barbería"
+    ],
+    [
+      "San Bernardo",
+      "Salón de belleza"
+    ],
+    [
+      "Recoleta",
+      "Pastelería"
+    ],
+    [
+      "Coquimbo",
+      "Constructora"
+    ],
+    [
+      "San Bernardo",
+      "Peluquería"
+    ],
+    [
+      "Estación Central",
+      "Constructora"
+    ],
+    [
+      "Calama",
+      "Gimnasio"
+    ],
+    [
+      "Valdivia",
+      "Restaurante"
+    ],
+    [
+      "Quilicura",
+      "Restaurante"
+    ],
+    [
+      "Talcahuano",
+      "Gimnasio"
+    ],
+    [
+      "Vitacura",
+      "Ferretería"
+    ],
+    [
+      "Calama",
+      "Veterinaria"
+    ],
+    [
+      "Macul",
+      "Barbería"
+    ],
+    [
+      "Curicó",
+      "Florería"
+    ],
+    [
+      "Copiapó",
+      "Veterinaria"
+    ],
+    [
+      "Calama",
+      "Constructora"
+    ],
+    [
+      "Los Ángeles",
+      "Ferretería"
+    ],
+    [
+      "La Reina",
+      "Salón de belleza"
+    ],
+    [
+      "San Miguel",
+      "Salón de belleza"
+    ],
+    [
+      "Ovalle",
+      "Pastelería"
+    ],
+    [
+      "Quilpué",
+      "Pastelería"
+    ],
+    [
+      "Osorno",
+      "Restaurante"
+    ],
+    [
+      "Talcahuano",
+      "Peluquería"
+    ],
+    [
+      "Peñalolén",
+      "Salón de belleza"
+    ],
+    [
+      "Quilpué",
+      "Constructora"
+    ],
+    [
+      "Quilpué",
+      "Ferretería"
+    ],
+    [
+      "Recoleta",
+      "Gimnasio"
+    ],
+    [
+      "La Reina",
+      "Tienda de ropa"
+    ],
+    [
+      "Peñalolén",
+      "Peluquería"
+    ],
+    [
+      "Osorno",
+      "Tienda de ropa"
+    ],
+    [
+      "Copiapó",
+      "Florería"
+    ],
+    [
+      "Vitacura",
+      "Pastelería"
+    ],
+    [
+      "San Miguel",
+      "Constructora"
+    ],
+    [
+      "Alto Hospicio",
+      "Pastelería"
+    ],
+    [
+      "Pudahuel",
+      "Pastelería"
+    ],
+    [
+      "Osorno",
+      "Barbería"
+    ],
+    [
+      "Osorno",
+      "Constructora"
+    ],
+    [
+      "Coquimbo",
+      "Gimnasio"
+    ],
+    [
+      "Los Ángeles",
+      "Peluquería"
+    ],
+    [
+      "San Bernardo",
+      "Taller mecánico"
+    ],
+    [
+      "Vitacura",
+      "Restaurante"
+    ],
+    [
+      "La Reina",
+      "Gimnasio"
+    ],
+    [
+      "Quilpué",
+      "Gimnasio"
+    ],
+    [
+      "Recoleta",
+      "Salón de belleza"
+    ],
+    [
+      "Quilicura",
+      "Pastelería"
+    ],
+    [
+      "Punta Arenas",
+      "Constructora"
+    ],
+    [
+      "Estación Central",
+      "Restaurante"
+    ],
+    [
+      "Quilicura",
+      "Florería"
+    ],
+    [
+      "Quilpué",
+      "Florería"
+    ],
+    [
+      "Calama",
+      "Tienda de ropa"
+    ],
+    [
+      "Los Ángeles",
+      "Taller mecánico"
+    ],
+    [
+      "Calama",
+      "Florería"
+    ],
+    [
+      "Copiapó",
+      "Restaurante"
+    ],
+    [
+      "Ovalle",
+      "Salón de belleza"
+    ],
+    [
+      "Estación Central",
+      "Florería"
+    ],
+    [
+      "Macul",
+      "Constructora"
+    ],
+    [
+      "Alto Hospicio",
+      "Constructora"
+    ],
+    [
+      "Peñalolén",
+      "Veterinaria"
+    ],
+    [
+      "Valdivia",
+      "Pastelería"
+    ],
+    [
+      "Talcahuano",
+      "Salón de belleza"
+    ],
+    [
+      "Vitacura",
+      "Barbería"
+    ],
+    [
+      "Ovalle",
+      "Gimnasio"
+    ],
+    [
+      "Peñalolén",
+      "Gimnasio"
+    ],
+    [
+      "Coquimbo",
+      "Veterinaria"
+    ],
+    [
+      "Quilpué",
+      "Tienda de ropa"
+    ],
+    [
+      "Recoleta",
+      "Ferretería"
+    ],
+    [
+      "Copiapó",
+      "Tienda de ropa"
+    ],
+    [
+      "Quilicura",
+      "Taller mecánico"
+    ],
+    [
+      "Pudahuel",
+      "Salón de belleza"
+    ],
+    [
+      "Pudahuel",
+      "Peluquería"
+    ],
+    [
+      "Vitacura",
+      "Gimnasio"
+    ],
+    [
+      "Vitacura",
+      "Florería"
+    ],
+    [
+      "Ovalle",
+      "Constructora"
+    ],
+    [
+      "Coquimbo",
+      "Taller mecánico"
+    ],
+    [
+      "Los Ángeles",
+      "Barbería"
+    ],
+    [
+      "Copiapó",
+      "Salón de belleza"
+    ],
+    [
+      "Estación Central",
+      "Salón de belleza"
+    ],
+    [
+      "Pudahuel",
+      "Florería"
+    ],
+    [
+      "San Miguel",
+      "Taller mecánico"
+    ],
+    [
+      "Ovalle",
+      "Barbería"
+    ],
+    [
+      "Calama",
+      "Salón de belleza"
+    ],
+    [
+      "La Reina",
+      "Veterinaria"
+    ],
+    [
+      "Ovalle",
+      "Restaurante"
+    ],
+    [
+      "Peñalolén",
+      "Pastelería"
+    ],
+    [
+      "Alto Hospicio",
+      "Gimnasio"
+    ],
+    [
+      "Los Ángeles",
+      "Pastelería"
+    ],
+    [
+      "Los Ángeles",
+      "Tienda de ropa"
+    ],
+    [
+      "Ovalle",
+      "Taller mecánico"
+    ],
+    [
+      "Pudahuel",
+      "Taller mecánico"
+    ],
+    [
+      "Quilicura",
+      "Veterinaria"
+    ],
+    [
+      "San Miguel",
+      "Restaurante"
+    ],
+    [
+      "Quilpué",
+      "Salón de belleza"
+    ],
+    [
+      "Vitacura",
+      "Taller mecánico"
+    ],
+    [
+      "Macul",
+      "Tienda de ropa"
+    ],
+    [
+      "Vitacura",
+      "Peluquería"
+    ],
+    [
+      "Punta Arenas",
+      "Restaurante"
+    ],
+    [
+      "Coquimbo",
+      "Ferretería"
+    ],
+    [
+      "Curicó",
+      "Pastelería"
+    ],
+    [
+      "Valdivia",
+      "Veterinaria"
+    ],
+    [
+      "San Miguel",
+      "Gimnasio"
+    ],
+    [
+      "Punta Arenas",
+      "Ferretería"
+    ],
+    [
+      "Vitacura",
+      "Veterinaria"
+    ],
+    [
+      "Macul",
+      "Taller mecánico"
+    ],
+    [
+      "Alto Hospicio",
+      "Peluquería"
+    ],
+    [
+      "Valdivia",
+      "Ferretería"
+    ],
+    [
+      "San Bernardo",
+      "Gimnasio"
+    ],
+    [
+      "San Bernardo",
+      "Florería"
+    ],
+    [
+      "Quilpué",
+      "Restaurante"
+    ],
+    [
+      "Calama",
+      "Taller mecánico"
+    ],
+    [
+      "Quilpué",
+      "Taller mecánico"
+    ],
+    [
+      "Alto Hospicio",
+      "Ferretería"
+    ],
+    [
+      "Macul",
+      "Restaurante"
+    ],
+    [
+      "Coquimbo",
+      "Tienda de ropa"
+    ],
+    [
+      "Curicó",
+      "Veterinaria"
+    ],
+    [
+      "Osorno",
+      "Florería"
+    ],
+    [
+      "Ovalle",
+      "Florería"
+    ],
+    [
+      "Los Ángeles",
+      "Restaurante"
+    ],
+    [
+      "San Bernardo",
+      "Tienda de ropa"
+    ],
+    [
+      "Talcahuano",
+      "Restaurante"
+    ],
+    [
+      "Los Ángeles",
+      "Veterinaria"
+    ],
+    [
+      "San Miguel",
+      "Tienda de ropa"
+    ],
+    [
+      "Coquimbo",
+      "Florería"
+    ],
+    [
+      "Estación Central",
+      "Veterinaria"
+    ],
+    [
+      "Pudahuel",
+      "Veterinaria"
+    ],
+    [
+      "Copiapó",
+      "Peluquería"
+    ],
+    [
+      "Curicó",
+      "Constructora"
+    ],
+    [
+      "Macul",
+      "Salón de belleza"
+    ],
+    [
+      "Alto Hospicio",
+      "Restaurante"
+    ],
+    [
+      "Recoleta",
+      "Tienda de ropa"
+    ],
+    [
+      "Quilpué",
+      "Barbería"
+    ],
+    [
+      "Calama",
+      "Peluquería"
+    ],
+    [
+      "Curicó",
+      "Ferretería"
+    ],
+    [
+      "Talcahuano",
+      "Florería"
+    ],
+    [
+      "Vitacura",
+      "Salón de belleza"
+    ],
+    [
+      "Pudahuel",
+      "Gimnasio"
+    ],
+    [
+      "Pudahuel",
+      "Constructora"
+    ],
+    [
+      "San Miguel",
+      "Peluquería"
+    ],
+    [
+      "Quilicura",
+      "Barbería"
+    ],
+    [
+      "Los Ángeles",
+      "Salón de belleza"
+    ],
+    [
+      "Talcahuano",
+      "Pastelería"
+    ],
+    [
+      "La Reina",
+      "Restaurante"
+    ],
+    [
+      "Copiapó",
+      "Constructora"
+    ],
+    [
+      "Ovalle",
+      "Veterinaria"
+    ],
+    [
+      "Macul",
+      "Ferretería"
+    ],
+    [
+      "Punta Arenas",
+      "Tienda de ropa"
+    ],
+    [
+      "Estación Central",
+      "Peluquería"
+    ],
+    [
+      "La Reina",
+      "Pastelería"
+    ],
+    [
+      "Quilicura",
+      "Gimnasio"
+    ],
+    [
+      "San Bernardo",
+      "Veterinaria"
+    ],
+    [
+      "Valdivia",
+      "Salón de belleza"
+    ],
+    [
+      "Curicó",
+      "Tienda de ropa"
+    ],
+    [
+      "Alto Hospicio",
+      "Salón de belleza"
+    ],
+    [
+      "Coquimbo",
+      "Salón de belleza"
+    ],
+    [
+      "Pudahuel",
+      "Barbería"
+    ],
+    [
+      "Vitacura",
+      "Constructora"
+    ],
+    [
+      "La Reina",
+      "Barbería"
+    ],
+    [
+      "San Miguel",
+      "Barbería"
+    ],
+    [
+      "San Bernardo",
+      "Constructora"
+    ],
+    [
+      "Independencia",
+      "Peluquería"
+    ],
+    [
+      "San Felipe",
+      "Taller mecánico"
+    ],
+    [
+      "La Unión",
+      "Restaurante"
+    ],
+    [
+      "Isla de Maipo",
+      "Veterinaria"
+    ],
+    [
+      "La Granja",
+      "Tienda de ropa"
+    ],
+    [
+      "Isla de Maipo",
+      "Salón de belleza"
+    ],
+    [
+      "Coronel",
+      "Peluquería"
+    ],
+    [
+      "Colina",
+      "Barbería"
+    ],
+    [
+      "Los Andes",
+      "Peluquería"
+    ],
+    [
+      "El Monte",
+      "Tienda de ropa"
+    ],
+    [
+      "San Joaquín",
+      "Florería"
+    ],
+    [
+      "Villarrica",
+      "Restaurante"
+    ],
+    [
+      "Ancud",
+      "Veterinaria"
+    ],
+    [
+      "Angol",
+      "Gimnasio"
+    ],
+    [
+      "San Pedro",
+      "Peluquería"
+    ],
+    [
+      "Padre Las Casas",
+      "Tienda de ropa"
+    ],
+    [
+      "Lo Espejo",
+      "Constructora"
+    ],
+    [
+      "María Pinto",
+      "Barbería"
+    ],
+    [
+      "Huechuraba",
+      "Pastelería"
+    ],
+    [
+      "Conchalí",
+      "Constructora"
+    ],
+    [
+      "Chiguayante",
+      "Gimnasio"
+    ],
+    [
+      "María Pinto",
+      "Pastelería"
+    ],
+    [
+      "San Pedro de la Paz",
+      "Ferretería"
+    ],
+    [
+      "Lampa",
+      "Florería"
+    ],
+    [
+      "Buin",
+      "Constructora"
+    ],
+    [
+      "La Pintana",
+      "Gimnasio"
+    ],
+    [
+      "Peñaflor",
+      "Constructora"
+    ],
+    [
+      "El Monte",
+      "Veterinaria"
+    ],
+    [
+      "Constitución",
+      "Constructora"
+    ],
+    [
+      "Los Andes",
+      "Veterinaria"
+    ],
+    [
+      "El Bosque",
+      "Florería"
+    ],
+    [
+      "Padre Hurtado",
+      "Tienda de ropa"
+    ],
+    [
+      "Quinta Normal",
+      "Florería"
+    ],
+    [
+      "Lampa",
+      "Salón de belleza"
+    ],
+    [
+      "Independencia",
+      "Florería"
+    ],
+    [
+      "Lo Espejo",
+      "Taller mecánico"
+    ],
+    [
+      "Puerto Varas",
+      "Peluquería"
+    ],
+    [
+      "Lampa",
+      "Ferretería"
+    ],
+    [
+      "Linares",
+      "Florería"
+    ],
+    [
+      "Puerto Varas",
+      "Gimnasio"
+    ],
+    [
+      "Puerto Natales",
+      "Florería"
+    ],
+    [
+      "San Ramón",
+      "Veterinaria"
+    ],
+    [
+      "Curacaví",
+      "Gimnasio"
+    ],
+    [
+      "Talagante",
+      "Barbería"
+    ],
+    [
+      "San Ramón",
+      "Taller mecánico"
+    ],
+    [
+      "San Ramón",
+      "Restaurante"
+    ],
+    [
+      "Isla de Maipo",
+      "Taller mecánico"
+    ],
+    [
+      "Padre Hurtado",
+      "Ferretería"
+    ],
+    [
+      "San Felipe",
+      "Florería"
+    ],
+    [
+      "Castro",
+      "Constructora"
+    ],
+    [
+      "Quinta Normal",
+      "Pastelería"
+    ],
+    [
+      "Paine",
+      "Constructora"
+    ],
+    [
+      "San Fernando",
+      "Taller mecánico"
+    ],
+    [
+      "Peñaflor",
+      "Veterinaria"
+    ],
+    [
+      "Independencia",
+      "Taller mecánico"
+    ],
+    [
+      "San Joaquín",
+      "Ferretería"
+    ],
+    [
+      "Padre Las Casas",
+      "Salón de belleza"
+    ],
+    [
+      "Vallenar",
+      "Ferretería"
+    ],
+    [
+      "La Pintana",
+      "Pastelería"
+    ],
+    [
+      "Lo Prado",
+      "Tienda de ropa"
+    ],
+    [
+      "Padre Las Casas",
+      "Pastelería"
+    ],
+    [
+      "La Unión",
+      "Pastelería"
+    ],
+    [
+      "Lampa",
+      "Restaurante"
+    ],
+    [
+      "San Pedro",
+      "Florería"
+    ],
+    [
+      "Coyhaique",
+      "Gimnasio"
+    ],
+    [
+      "Paine",
+      "Florería"
+    ],
+    [
+      "La Unión",
+      "Salón de belleza"
+    ],
+    [
+      "La Granja",
+      "Gimnasio"
+    ],
+    [
+      "Rengo",
+      "Constructora"
+    ],
+    [
+      "Lo Espejo",
+      "Barbería"
+    ],
+    [
+      "Rengo",
+      "Gimnasio"
+    ],
+    [
+      "Lota",
+      "Veterinaria"
+    ],
+    [
+      "Colina",
+      "Tienda de ropa"
+    ],
+    [
+      "Quinta Normal",
+      "Constructora"
+    ],
+    [
+      "Huechuraba",
+      "Restaurante"
+    ],
+    [
+      "La Cisterna",
+      "Veterinaria"
+    ],
+    [
+      "Lota",
+      "Tienda de ropa"
+    ],
+    [
+      "Rengo",
+      "Restaurante"
+    ],
+    [
+      "Renca",
+      "Ferretería"
+    ],
+    [
+      "Chiguayante",
+      "Tienda de ropa"
+    ],
+    [
+      "San Pedro de la Paz",
+      "Constructora"
+    ],
+    [
+      "San Antonio",
+      "Taller mecánico"
+    ],
+    [
+      "Villa Alemana",
+      "Pastelería"
+    ],
+    [
+      "Padre Hurtado",
+      "Restaurante"
+    ],
+    [
+      "San José de Maipo",
+      "Tienda de ropa"
+    ],
+    [
+      "Rengo",
+      "Veterinaria"
+    ],
+    [
+      "La Cisterna",
+      "Pastelería"
+    ],
+    [
+      "Renca",
+      "Salón de belleza"
+    ],
+    [
+      "La Unión",
+      "Barbería"
+    ],
+    [
+      "Alhué",
+      "Restaurante"
+    ],
+    [
+      "Melipilla",
+      "Ferretería"
+    ],
+    [
+      "Conchalí",
+      "Restaurante"
+    ],
+    [
+      "Til Til",
+      "Restaurante"
+    ],
+    [
+      "San José de Maipo",
+      "Peluquería"
+    ],
+    [
+      "Coronel",
+      "Veterinaria"
+    ],
+    [
+      "Puerto Natales",
+      "Constructora"
+    ],
+    [
+      "Constitución",
+      "Veterinaria"
+    ],
+    [
+      "Isla de Maipo",
+      "Constructora"
+    ],
+    [
+      "Alhué",
+      "Taller mecánico"
+    ],
+    [
+      "Vallenar",
+      "Peluquería"
+    ],
+    [
+      "San Pedro de la Paz",
+      "Barbería"
+    ],
+    [
+      "Lo Prado",
+      "Taller mecánico"
+    ],
+    [
+      "Coyhaique",
+      "Florería"
+    ],
+    [
+      "San Pedro de la Paz",
+      "Pastelería"
+    ],
+    [
+      "Peñaflor",
+      "Barbería"
+    ],
+    [
+      "Independencia",
+      "Tienda de ropa"
+    ],
+    [
+      "Villarrica",
+      "Salón de belleza"
+    ],
+    [
+      "Lampa",
+      "Barbería"
+    ],
+    [
+      "Padre Hurtado",
+      "Pastelería"
+    ],
+    [
+      "San Pedro",
+      "Tienda de ropa"
+    ],
+    [
+      "Talagante",
+      "Florería"
+    ],
+    [
+      "Colina",
+      "Peluquería"
+    ],
+    [
+      "Buin",
+      "Barbería"
+    ],
+    [
+      "Isla de Maipo",
+      "Barbería"
+    ],
+    [
+      "Huechuraba",
+      "Tienda de ropa"
+    ],
+    [
+      "Padre Las Casas",
+      "Restaurante"
+    ],
+    [
+      "Vallenar",
+      "Constructora"
+    ],
+    [
+      "Huechuraba",
+      "Florería"
+    ],
+    [
+      "La Granja",
+      "Taller mecánico"
+    ],
+    [
+      "San Fernando",
+      "Constructora"
+    ],
+    [
+      "Talagante",
+      "Peluquería"
+    ],
+    [
+      "Quinta Normal",
+      "Ferretería"
+    ],
+    [
+      "Paine",
+      "Barbería"
+    ],
+    [
+      "San Pedro",
+      "Taller mecánico"
+    ],
+    [
+      "Buin",
+      "Taller mecánico"
+    ],
+    [
+      "Lo Barnechea",
+      "Gimnasio"
+    ],
+    [
+      "Colina",
+      "Constructora"
+    ],
+    [
+      "Buin",
+      "Ferretería"
+    ],
+    [
+      "Puerto Varas",
+      "Taller mecánico"
+    ],
+    [
+      "Padre Hurtado",
+      "Salón de belleza"
+    ],
+    [
+      "Til Til",
+      "Salón de belleza"
+    ],
+    [
+      "Lo Barnechea",
+      "Salón de belleza"
+    ],
+    [
+      "La Unión",
+      "Tienda de ropa"
+    ],
+    [
+      "Padre Hurtado",
+      "Taller mecánico"
+    ],
+    [
+      "Alhué",
+      "Ferretería"
+    ],
+    [
+      "La Cisterna",
+      "Restaurante"
+    ],
+    [
+      "Lota",
+      "Restaurante"
+    ],
+    [
+      "San Fernando",
+      "Peluquería"
+    ],
+    [
+      "La Unión",
+      "Gimnasio"
+    ],
+    [
+      "Coronel",
+      "Florería"
+    ],
+    [
+      "San Joaquín",
+      "Peluquería"
+    ],
+    [
+      "Independencia",
+      "Barbería"
+    ],
+    [
+      "Isla de Maipo",
+      "Ferretería"
+    ],
+    [
+      "Castro",
+      "Florería"
+    ],
+    [
+      "Pirque",
+      "Florería"
+    ],
+    [
+      "Padre Hurtado",
+      "Florería"
+    ],
+    [
+      "San Ramón",
+      "Ferretería"
+    ],
+    [
+      "El Bosque",
+      "Pastelería"
+    ],
+    [
+      "Til Til",
+      "Florería"
+    ],
+    [
+      "Curacaví",
+      "Salón de belleza"
+    ],
+    [
+      "San José de Maipo",
+      "Salón de belleza"
+    ],
+    [
+      "San Joaquín",
+      "Gimnasio"
+    ],
+    [
+      "San Ramón",
+      "Pastelería"
+    ],
+    [
+      "Paine",
+      "Gimnasio"
+    ],
+    [
+      "La Pintana",
+      "Veterinaria"
+    ],
+    [
+      "Chiguayante",
+      "Pastelería"
+    ],
+    [
+      "Constitución",
+      "Salón de belleza"
+    ],
+    [
+      "Villa Alemana",
+      "Constructora"
+    ],
+    [
+      "Curacaví",
+      "Taller mecánico"
+    ],
+    [
+      "Lota",
+      "Gimnasio"
+    ],
+    [
+      "Pirque",
+      "Salón de belleza"
+    ],
+    [
+      "Lo Barnechea",
+      "Barbería"
+    ],
+    [
+      "Conchalí",
+      "Barbería"
+    ],
+    [
+      "Rengo",
+      "Salón de belleza"
+    ],
+    [
+      "San Ramón",
+      "Barbería"
+    ],
+    [
+      "Lo Barnechea",
+      "Restaurante"
+    ],
+    [
+      "San Felipe",
+      "Pastelería"
+    ],
+    [
+      "Cerro Navia",
+      "Peluquería"
+    ],
+    [
+      "Quillota",
+      "Taller mecánico"
+    ],
+    [
+      "Quillota",
+      "Restaurante"
+    ],
+    [
+      "Huechuraba",
+      "Peluquería"
+    ],
+    [
+      "Curacaví",
+      "Restaurante"
+    ],
+    [
+      "Lo Barnechea",
+      "Taller mecánico"
+    ],
+    [
+      "Talagante",
+      "Tienda de ropa"
+    ],
+    [
+      "Coronel",
+      "Taller mecánico"
+    ],
+    [
+      "Independencia",
+      "Veterinaria"
+    ],
+    [
+      "Linares",
+      "Salón de belleza"
+    ],
+    [
+      "Cerro Navia",
+      "Salón de belleza"
+    ],
+    [
+      "Independencia",
+      "Gimnasio"
+    ],
+    [
+      "Chiguayante",
+      "Ferretería"
+    ],
+    [
+      "María Pinto",
+      "Veterinaria"
+    ],
+    [
+      "Puerto Natales",
+      "Restaurante"
+    ],
+    [
+      "Coyhaique",
+      "Pastelería"
+    ],
+    [
+      "Coronel",
+      "Gimnasio"
+    ],
+    [
+      "Renca",
+      "Gimnasio"
+    ],
+    [
+      "San Ramón",
+      "Salón de belleza"
+    ],
+    [
+      "Cerro Navia",
+      "Restaurante"
+    ],
+    [
+      "Padre Hurtado",
+      "Gimnasio"
+    ],
+    [
+      "María Pinto",
+      "Florería"
+    ],
+    [
+      "San Joaquín",
+      "Taller mecánico"
+    ],
+    [
+      "Chiguayante",
+      "Salón de belleza"
+    ],
+    [
+      "San Pedro de la Paz",
+      "Taller mecánico"
+    ],
+    [
+      "Puerto Varas",
+      "Tienda de ropa"
+    ],
+    [
+      "María Pinto",
+      "Gimnasio"
+    ],
+    [
+      "San Antonio",
+      "Gimnasio"
+    ],
+    [
+      "Los Andes",
+      "Tienda de ropa"
+    ],
+    [
+      "Los Andes",
+      "Taller mecánico"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Florería"
+    ],
+    [
+      "San Ramón",
+      "Peluquería"
+    ],
+    [
+      "San Ramón",
+      "Tienda de ropa"
+    ],
+    [
+      "Padre Hurtado",
+      "Peluquería"
+    ],
+    [
+      "Calera de Tango",
+      "Tienda de ropa"
+    ],
+    [
+      "Castro",
+      "Barbería"
+    ],
+    [
+      "La Unión",
+      "Constructora"
+    ],
+    [
+      "Talagante",
+      "Veterinaria"
+    ],
+    [
+      "Los Andes",
+      "Barbería"
+    ],
+    [
+      "Cerrillos",
+      "Ferretería"
+    ],
+    [
+      "Puerto Natales",
+      "Ferretería"
+    ],
+    [
+      "Puerto Varas",
+      "Veterinaria"
+    ],
+    [
+      "Lo Prado",
+      "Veterinaria"
+    ],
+    [
+      "Huechuraba",
+      "Salón de belleza"
+    ],
+    [
+      "La Cisterna",
+      "Florería"
+    ],
+    [
+      "El Bosque",
+      "Gimnasio"
+    ],
+    [
+      "San José de Maipo",
+      "Pastelería"
+    ],
+    [
+      "Isla de Maipo",
+      "Gimnasio"
+    ],
+    [
+      "Pirque",
+      "Peluquería"
+    ],
+    [
+      "El Bosque",
+      "Taller mecánico"
+    ],
+    [
+      "La Pintana",
+      "Ferretería"
+    ],
+    [
+      "Lo Espejo",
+      "Gimnasio"
+    ],
+    [
+      "La Unión",
+      "Veterinaria"
+    ],
+    [
+      "El Bosque",
+      "Salón de belleza"
+    ],
+    [
+      "Quinta Normal",
+      "Peluquería"
+    ],
+    [
+      "Villa Alemana",
+      "Veterinaria"
+    ],
+    [
+      "Lo Prado",
+      "Restaurante"
+    ],
+    [
+      "Puerto Natales",
+      "Taller mecánico"
+    ],
+    [
+      "San Joaquín",
+      "Constructora"
+    ],
+    [
+      "Alhué",
+      "Salón de belleza"
+    ],
+    [
+      "Chiguayante",
+      "Florería"
+    ],
+    [
+      "Lo Barnechea",
+      "Veterinaria"
+    ],
+    [
+      "Vallenar",
+      "Veterinaria"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Salón de belleza"
+    ],
+    [
+      "Independencia",
+      "Constructora"
+    ],
+    [
+      "Peñaflor",
+      "Gimnasio"
+    ],
+    [
+      "Villarrica",
+      "Gimnasio"
+    ],
+    [
+      "Lo Barnechea",
+      "Ferretería"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Constructora"
+    ],
+    [
+      "Linares",
+      "Constructora"
+    ],
+    [
+      "El Bosque",
+      "Barbería"
+    ],
+    [
+      "San Pedro de la Paz",
+      "Restaurante"
+    ],
+    [
+      "Vallenar",
+      "Restaurante"
+    ],
+    [
+      "Renca",
+      "Tienda de ropa"
+    ],
+    [
+      "Quillota",
+      "Veterinaria"
+    ],
+    [
+      "San Fernando",
+      "Tienda de ropa"
+    ],
+    [
+      "San Pedro",
+      "Restaurante"
+    ],
+    [
+      "Villarrica",
+      "Veterinaria"
+    ],
+    [
+      "Castro",
+      "Tienda de ropa"
+    ],
+    [
+      "San José de Maipo",
+      "Veterinaria"
+    ],
+    [
+      "El Bosque",
+      "Tienda de ropa"
+    ],
+    [
+      "Lo Barnechea",
+      "Peluquería"
+    ],
+    [
+      "Linares",
+      "Peluquería"
+    ],
+    [
+      "Renca",
+      "Pastelería"
+    ],
+    [
+      "Lampa",
+      "Gimnasio"
+    ],
+    [
+      "La Granja",
+      "Peluquería"
+    ],
+    [
+      "Renca",
+      "Constructora"
+    ],
+    [
+      "Til Til",
+      "Gimnasio"
+    ],
+    [
+      "Coronel",
+      "Pastelería"
+    ],
+    [
+      "Buin",
+      "Florería"
+    ],
+    [
+      "Lampa",
+      "Tienda de ropa"
+    ],
+    [
+      "Talagante",
+      "Gimnasio"
+    ],
+    [
+      "Puerto Varas",
+      "Salón de belleza"
+    ],
+    [
+      "Vallenar",
+      "Florería"
+    ],
+    [
+      "La Granja",
+      "Pastelería"
+    ],
+    [
+      "San Felipe",
+      "Tienda de ropa"
+    ],
+    [
+      "Ancud",
+      "Constructora"
+    ],
+    [
+      "San Felipe",
+      "Gimnasio"
+    ],
+    [
+      "Angol",
+      "Pastelería"
+    ],
+    [
+      "La Cisterna",
+      "Ferretería"
+    ],
+    [
+      "Ancud",
+      "Salón de belleza"
+    ],
+    [
+      "San Antonio",
+      "Veterinaria"
+    ],
+    [
+      "Coyhaique",
+      "Salón de belleza"
+    ],
+    [
+      "Villa Alemana",
+      "Barbería"
+    ],
+    [
+      "Colina",
+      "Restaurante"
+    ],
+    [
+      "Linares",
+      "Gimnasio"
+    ],
+    [
+      "Colina",
+      "Veterinaria"
+    ],
+    [
+      "Padre Las Casas",
+      "Ferretería"
+    ],
+    [
+      "Cerrillos",
+      "Restaurante"
+    ],
+    [
+      "Til Til",
+      "Taller mecánico"
+    ],
+    [
+      "Lo Espejo",
+      "Peluquería"
+    ],
+    [
+      "Castro",
+      "Restaurante"
+    ],
+    [
+      "Melipilla",
+      "Barbería"
+    ],
+    [
+      "San Fernando",
+      "Veterinaria"
+    ],
+    [
+      "Til Til",
+      "Constructora"
+    ],
+    [
+      "Calera de Tango",
+      "Ferretería"
+    ],
+    [
+      "Buin",
+      "Peluquería"
+    ],
+    [
+      "San Pedro de la Paz",
+      "Tienda de ropa"
+    ],
+    [
+      "Lo Espejo",
+      "Tienda de ropa"
+    ],
+    [
+      "Talagante",
+      "Constructora"
+    ],
+    [
+      "Til Til",
+      "Tienda de ropa"
+    ],
+    [
+      "Peñaflor",
+      "Florería"
+    ],
+    [
+      "Cerrillos",
+      "Constructora"
+    ],
+    [
+      "Castro",
+      "Peluquería"
+    ],
+    [
+      "Cerrillos",
+      "Florería"
+    ],
+    [
+      "Vallenar",
+      "Salón de belleza"
+    ],
+    [
+      "Angol",
+      "Florería"
+    ],
+    [
+      "Lota",
+      "Pastelería"
+    ],
+    [
+      "Castro",
+      "Veterinaria"
+    ],
+    [
+      "El Monte",
+      "Salón de belleza"
+    ],
+    [
+      "Angol",
+      "Veterinaria"
+    ],
+    [
+      "Isla de Maipo",
+      "Restaurante"
+    ],
+    [
+      "Buin",
+      "Restaurante"
+    ],
+    [
+      "Constitución",
+      "Pastelería"
+    ],
+    [
+      "Lo Espejo",
+      "Ferretería"
+    ],
+    [
+      "San Joaquín",
+      "Tienda de ropa"
+    ],
+    [
+      "Coyhaique",
+      "Peluquería"
+    ],
+    [
+      "La Pintana",
+      "Constructora"
+    ],
+    [
+      "Villarrica",
+      "Peluquería"
+    ],
+    [
+      "Calera de Tango",
+      "Barbería"
+    ],
+    [
+      "San Pedro",
+      "Constructora"
+    ],
+    [
+      "Ancud",
+      "Florería"
+    ],
+    [
+      "Angol",
+      "Tienda de ropa"
+    ],
+    [
+      "La Pintana",
+      "Florería"
+    ],
+    [
+      "Coronel",
+      "Restaurante"
+    ],
+    [
+      "Cerro Navia",
+      "Constructora"
+    ],
+    [
+      "Peñaflor",
+      "Peluquería"
+    ],
+    [
+      "Padre Las Casas",
+      "Florería"
+    ],
+    [
+      "El Bosque",
+      "Peluquería"
+    ],
+    [
+      "Coyhaique",
+      "Constructora"
+    ],
+    [
+      "San Pedro de la Paz",
+      "Gimnasio"
+    ],
+    [
+      "Lo Prado",
+      "Pastelería"
+    ],
+    [
+      "Talagante",
+      "Taller mecánico"
+    ],
+    [
+      "Peñaflor",
+      "Taller mecánico"
+    ],
+    [
+      "San José de Maipo",
+      "Taller mecánico"
+    ],
+    [
+      "Villarrica",
+      "Taller mecánico"
+    ],
+    [
+      "Curacaví",
+      "Veterinaria"
+    ],
+    [
+      "Puerto Natales",
+      "Veterinaria"
+    ],
+    [
+      "Lo Barnechea",
+      "Constructora"
+    ],
+    [
+      "San Felipe",
+      "Ferretería"
+    ],
+    [
+      "Isla de Maipo",
+      "Tienda de ropa"
+    ],
+    [
+      "Chiguayante",
+      "Peluquería"
+    ],
+    [
+      "Lo Espejo",
+      "Florería"
+    ],
+    [
+      "San Felipe",
+      "Constructora"
+    ],
+    [
+      "San Fernando",
+      "Barbería"
+    ],
+    [
+      "Lo Espejo",
+      "Salón de belleza"
+    ],
+    [
+      "Melipilla",
+      "Taller mecánico"
+    ],
+    [
+      "María Pinto",
+      "Constructora"
+    ],
+    [
+      "Alhué",
+      "Tienda de ropa"
+    ],
+    [
+      "Puerto Natales",
+      "Pastelería"
+    ],
+    [
+      "Alhué",
+      "Peluquería"
+    ],
+    [
+      "Paine",
+      "Ferretería"
+    ],
+    [
+      "La Pintana",
+      "Restaurante"
+    ],
+    [
+      "San Felipe",
+      "Restaurante"
+    ],
+    [
+      "La Unión",
+      "Ferretería"
+    ],
+    [
+      "Lota",
+      "Taller mecánico"
+    ],
+    [
+      "Rengo",
+      "Florería"
+    ],
+    [
+      "Lo Espejo",
+      "Restaurante"
+    ],
+    [
+      "San Antonio",
+      "Restaurante"
+    ],
+    [
+      "Cerrillos",
+      "Tienda de ropa"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Ferretería"
+    ],
+    [
+      "El Monte",
+      "Constructora"
+    ],
+    [
+      "Constitución",
+      "Tienda de ropa"
+    ],
+    [
+      "Paine",
+      "Tienda de ropa"
+    ],
+    [
+      "Conchalí",
+      "Salón de belleza"
+    ],
+    [
+      "Paine",
+      "Pastelería"
+    ],
+    [
+      "Pirque",
+      "Tienda de ropa"
+    ],
+    [
+      "Lota",
+      "Peluquería"
+    ],
+    [
+      "Ancud",
+      "Tienda de ropa"
+    ],
+    [
+      "San Pedro",
+      "Veterinaria"
+    ],
+    [
+      "Colina",
+      "Taller mecánico"
+    ],
+    [
+      "La Pintana",
+      "Barbería"
+    ],
+    [
+      "Quillota",
+      "Ferretería"
+    ],
+    [
+      "Angol",
+      "Taller mecánico"
+    ],
+    [
+      "Los Andes",
+      "Salón de belleza"
+    ],
+    [
+      "Puerto Varas",
+      "Pastelería"
+    ],
+    [
+      "Constitución",
+      "Taller mecánico"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Pastelería"
+    ],
+    [
+      "Lota",
+      "Constructora"
+    ],
+    [
+      "Coronel",
+      "Ferretería"
+    ],
+    [
+      "Quillota",
+      "Peluquería"
+    ],
+    [
+      "Angol",
+      "Barbería"
+    ],
+    [
+      "Padre Las Casas",
+      "Gimnasio"
+    ],
+    [
+      "Huechuraba",
+      "Veterinaria"
+    ],
+    [
+      "Puerto Natales",
+      "Barbería"
+    ],
+    [
+      "San Antonio",
+      "Florería"
+    ],
+    [
+      "Cerrillos",
+      "Taller mecánico"
+    ],
+    [
+      "María Pinto",
+      "Restaurante"
+    ],
+    [
+      "Huechuraba",
+      "Taller mecánico"
+    ],
+    [
+      "Rengo",
+      "Taller mecánico"
+    ],
+    [
+      "Villarrica",
+      "Pastelería"
+    ],
+    [
+      "Ancud",
+      "Barbería"
+    ],
+    [
+      "San Ramón",
+      "Gimnasio"
+    ],
+    [
+      "Talagante",
+      "Pastelería"
+    ],
+    [
+      "Cerro Navia",
+      "Barbería"
+    ],
+    [
+      "La Pintana",
+      "Tienda de ropa"
+    ],
+    [
+      "Cerrillos",
+      "Pastelería"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Restaurante"
+    ],
+    [
+      "Linares",
+      "Barbería"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Tienda de ropa"
+    ],
+    [
+      "San Pedro de la Paz",
+      "Veterinaria"
+    ],
+    [
+      "Renca",
+      "Restaurante"
+    ],
+    [
+      "Lo Prado",
+      "Ferretería"
+    ],
+    [
+      "Quinta Normal",
+      "Restaurante"
+    ],
+    [
+      "San Fernando",
+      "Pastelería"
+    ],
+    [
+      "Calera de Tango",
+      "Pastelería"
+    ],
+    [
+      "San Joaquín",
+      "Restaurante"
+    ],
+    [
+      "Los Andes",
+      "Constructora"
+    ],
+    [
+      "San José de Maipo",
+      "Florería"
+    ],
+    [
+      "San Antonio",
+      "Salón de belleza"
+    ],
+    [
+      "Curacaví",
+      "Barbería"
+    ],
+    [
+      "Angol",
+      "Constructora"
+    ],
+    [
+      "San Pedro",
+      "Salón de belleza"
+    ],
+    [
+      "Melipilla",
+      "Constructora"
+    ],
+    [
+      "Puerto Varas",
+      "Florería"
+    ],
+    [
+      "El Bosque",
+      "Veterinaria"
+    ],
+    [
+      "Castro",
+      "Ferretería"
+    ],
+    [
+      "San Pedro de la Paz",
+      "Salón de belleza"
+    ],
+    [
+      "San José de Maipo",
+      "Constructora"
+    ],
+    [
+      "Huechuraba",
+      "Gimnasio"
+    ],
+    [
+      "Los Andes",
+      "Ferretería"
+    ],
+    [
+      "Isla de Maipo",
+      "Florería"
+    ],
+    [
+      "Calera de Tango",
+      "Florería"
+    ],
+    [
+      "Constitución",
+      "Restaurante"
+    ],
+    [
+      "María Pinto",
+      "Salón de belleza"
+    ],
+    [
+      "Talagante",
+      "Ferretería"
+    ],
+    [
+      "Colina",
+      "Gimnasio"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Veterinaria"
+    ],
+    [
+      "Peñaflor",
+      "Ferretería"
+    ],
+    [
+      "Linares",
+      "Tienda de ropa"
+    ],
+    [
+      "Rengo",
+      "Barbería"
+    ],
+    [
+      "Alhué",
+      "Pastelería"
+    ],
+    [
+      "Talagante",
+      "Salón de belleza"
+    ],
+    [
+      "Til Til",
+      "Pastelería"
+    ],
+    [
+      "Constitución",
+      "Peluquería"
+    ],
+    [
+      "María Pinto",
+      "Tienda de ropa"
+    ],
+    [
+      "Peñaflor",
+      "Pastelería"
+    ],
+    [
+      "La Granja",
+      "Ferretería"
+    ],
+    [
+      "Pirque",
+      "Pastelería"
+    ],
+    [
+      "Colina",
+      "Salón de belleza"
+    ],
+    [
+      "Pirque",
+      "Constructora"
+    ],
+    [
+      "Pirque",
+      "Barbería"
+    ],
+    [
+      "Quinta Normal",
+      "Veterinaria"
+    ],
+    [
+      "La Cisterna",
+      "Peluquería"
+    ],
+    [
+      "Coyhaique",
+      "Barbería"
+    ],
+    [
+      "Paine",
+      "Restaurante"
+    ],
+    [
+      "Paine",
+      "Peluquería"
+    ],
+    [
+      "Lampa",
+      "Constructora"
+    ],
+    [
+      "Melipilla",
+      "Veterinaria"
+    ],
+    [
+      "San José de Maipo",
+      "Restaurante"
+    ],
+    [
+      "San Felipe",
+      "Barbería"
+    ],
+    [
+      "Calera de Tango",
+      "Restaurante"
+    ],
+    [
+      "Isla de Maipo",
+      "Peluquería"
+    ],
+    [
+      "San José de Maipo",
+      "Barbería"
+    ],
+    [
+      "Los Andes",
+      "Restaurante"
+    ],
+    [
+      "Linares",
+      "Veterinaria"
+    ],
+    [
+      "Ancud",
+      "Restaurante"
+    ],
+    [
+      "Lo Prado",
+      "Gimnasio"
+    ],
+    [
+      "Coyhaique",
+      "Tienda de ropa"
+    ],
+    [
+      "Coronel",
+      "Constructora"
+    ],
+    [
+      "Lo Prado",
+      "Constructora"
+    ],
+    [
+      "Rengo",
+      "Tienda de ropa"
+    ],
+    [
+      "Puerto Natales",
+      "Peluquería"
+    ],
+    [
+      "Cerro Navia",
+      "Taller mecánico"
+    ],
+    [
+      "El Monte",
+      "Taller mecánico"
+    ],
+    [
+      "Isla de Maipo",
+      "Pastelería"
+    ],
+    [
+      "Coyhaique",
+      "Taller mecánico"
+    ],
+    [
+      "Angol",
+      "Ferretería"
+    ],
+    [
+      "San José de Maipo",
+      "Ferretería"
+    ],
+    [
+      "Curacaví",
+      "Peluquería"
+    ],
+    [
+      "Castro",
+      "Taller mecánico"
+    ],
+    [
+      "Renca",
+      "Peluquería"
+    ],
+    [
+      "Coyhaique",
+      "Ferretería"
+    ],
+    [
+      "Quinta Normal",
+      "Barbería"
+    ],
+    [
+      "Colina",
+      "Ferretería"
+    ],
+    [
+      "Villa Alemana",
+      "Ferretería"
+    ],
+    [
+      "Lo Espejo",
+      "Pastelería"
+    ],
+    [
+      "Padre Hurtado",
+      "Veterinaria"
+    ],
+    [
+      "Chiguayante",
+      "Constructora"
+    ],
+    [
+      "El Monte",
+      "Barbería"
+    ],
+    [
+      "Cerrillos",
+      "Salón de belleza"
+    ],
+    [
+      "La Granja",
+      "Barbería"
+    ],
+    [
+      "Calera de Tango",
+      "Veterinaria"
+    ],
+    [
+      "Cerro Navia",
+      "Pastelería"
+    ],
+    [
+      "Peñaflor",
+      "Tienda de ropa"
+    ],
+    [
+      "San Joaquín",
+      "Pastelería"
+    ],
+    [
+      "Calera de Tango",
+      "Gimnasio"
+    ],
+    [
+      "Rengo",
+      "Peluquería"
+    ],
+    [
+      "Padre Las Casas",
+      "Veterinaria"
+    ],
+    [
+      "La Cisterna",
+      "Taller mecánico"
+    ],
+    [
+      "Til Til",
+      "Ferretería"
+    ],
+    [
+      "La Pintana",
+      "Salón de belleza"
+    ],
+    [
+      "La Pintana",
+      "Taller mecánico"
+    ],
+    [
+      "San Ramón",
+      "Constructora"
+    ],
+    [
+      "Huechuraba",
+      "Ferretería"
+    ],
+    [
+      "Lo Prado",
+      "Peluquería"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Peluquería"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Gimnasio"
+    ],
+    [
+      "Talagante",
+      "Restaurante"
+    ],
+    [
+      "Renca",
+      "Barbería"
+    ],
+    [
+      "La Cisterna",
+      "Gimnasio"
+    ],
+    [
+      "Independencia",
+      "Restaurante"
+    ],
+    [
+      "La Unión",
+      "Taller mecánico"
+    ],
+    [
+      "Curacaví",
+      "Constructora"
+    ],
+    [
+      "El Monte",
+      "Restaurante"
+    ],
+    [
+      "Chiguayante",
+      "Barbería"
+    ],
+    [
+      "Quillota",
+      "Tienda de ropa"
+    ],
+    [
+      "Linares",
+      "Pastelería"
+    ],
+    [
+      "Conchalí",
+      "Taller mecánico"
+    ],
+    [
+      "Cerrillos",
+      "Gimnasio"
+    ],
+    [
+      "San Pedro de la Paz",
+      "Peluquería"
+    ],
+    [
+      "Curacaví",
+      "Ferretería"
+    ],
+    [
+      "Peñaflor",
+      "Restaurante"
+    ],
+    [
+      "Peñaflor",
+      "Salón de belleza"
+    ],
+    [
+      "Ancud",
+      "Taller mecánico"
+    ],
+    [
+      "Rengo",
+      "Pastelería"
+    ],
+    [
+      "Lota",
+      "Ferretería"
+    ],
+    [
+      "La Cisterna",
+      "Tienda de ropa"
+    ],
+    [
+      "Chiguayante",
+      "Taller mecánico"
+    ],
+    [
+      "Melipilla",
+      "Salón de belleza"
+    ],
+    [
+      "Melipilla",
+      "Pastelería"
+    ],
+    [
+      "Pirque",
+      "Taller mecánico"
+    ],
+    [
+      "Til Til",
+      "Veterinaria"
+    ],
+    [
+      "San Joaquín",
+      "Salón de belleza"
+    ],
+    [
+      "Villa Alemana",
+      "Salón de belleza"
+    ],
+    [
+      "Conchalí",
+      "Gimnasio"
+    ],
+    [
+      "Buin",
+      "Salón de belleza"
+    ],
+    [
+      "El Monte",
+      "Ferretería"
+    ],
+    [
+      "San Antonio",
+      "Pastelería"
+    ],
+    [
+      "Padre Las Casas",
+      "Constructora"
+    ],
+    [
+      "La Granja",
+      "Veterinaria"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Taller mecánico"
+    ],
+    [
+      "Independencia",
+      "Salón de belleza"
+    ],
+    [
+      "Lampa",
+      "Taller mecánico"
+    ],
+    [
+      "Calera de Tango",
+      "Taller mecánico"
+    ],
+    [
+      "Alhué",
+      "Barbería"
+    ],
+    [
+      "Renca",
+      "Florería"
+    ],
+    [
+      "Vallenar",
+      "Pastelería"
+    ],
+    [
+      "Independencia",
+      "Pastelería"
+    ],
+    [
+      "Huechuraba",
+      "Constructora"
+    ],
+    [
+      "Angol",
+      "Salón de belleza"
+    ],
+    [
+      "Vallenar",
+      "Tienda de ropa"
+    ],
+    [
+      "Ancud",
+      "Pastelería"
+    ],
+    [
+      "Paine",
+      "Veterinaria"
+    ],
+    [
+      "Villarrica",
+      "Barbería"
+    ],
+    [
+      "Linares",
+      "Taller mecánico"
+    ],
+    [
+      "San Antonio",
+      "Constructora"
+    ],
+    [
+      "San Fernando",
+      "Gimnasio"
+    ],
+    [
+      "Buin",
+      "Tienda de ropa"
+    ],
+    [
+      "Puerto Natales",
+      "Gimnasio"
+    ],
+    [
+      "Alhué",
+      "Constructora"
+    ],
+    [
+      "San Fernando",
+      "Ferretería"
+    ],
+    [
+      "San Pedro",
+      "Ferretería"
+    ],
+    [
+      "San Antonio",
+      "Barbería"
+    ],
+    [
+      "Constitución",
+      "Gimnasio"
+    ],
+    [
+      "El Bosque",
+      "Ferretería"
+    ],
+    [
+      "Ancud",
+      "Peluquería"
+    ],
+    [
+      "María Pinto",
+      "Taller mecánico"
+    ],
+    [
+      "Ancud",
+      "Gimnasio"
+    ],
+    [
+      "Puerto Varas",
+      "Ferretería"
+    ],
+    [
+      "Curacaví",
+      "Florería"
+    ],
+    [
+      "Til Til",
+      "Barbería"
+    ],
+    [
+      "San Fernando",
+      "Florería"
+    ],
+    [
+      "Villa Alemana",
+      "Peluquería"
+    ],
+    [
+      "Paine",
+      "Salón de belleza"
+    ],
+    [
+      "San Antonio",
+      "Ferretería"
+    ],
+    [
+      "Coyhaique",
+      "Veterinaria"
+    ],
+    [
+      "La Cisterna",
+      "Constructora"
+    ],
+    [
+      "Puerto Varas",
+      "Restaurante"
+    ],
+    [
+      "La Cisterna",
+      "Barbería"
+    ],
+    [
+      "Puerto Varas",
+      "Constructora"
+    ],
+    [
+      "Constitución",
+      "Barbería"
+    ],
+    [
+      "Coyhaique",
+      "Restaurante"
+    ],
+    [
+      "Quillota",
+      "Barbería"
+    ],
+    [
+      "Constitución",
+      "Ferretería"
+    ],
+    [
+      "San Fernando",
+      "Restaurante"
+    ],
+    [
+      "Quillota",
+      "Gimnasio"
+    ],
+    [
+      "Los Andes",
+      "Pastelería"
+    ],
+    [
+      "Buin",
+      "Pastelería"
+    ],
+    [
+      "Villarrica",
+      "Ferretería"
+    ],
+    [
+      "Cerro Navia",
+      "Gimnasio"
+    ],
+    [
+      "Melipilla",
+      "Florería"
+    ],
+    [
+      "El Bosque",
+      "Restaurante"
+    ],
+    [
+      "Lo Barnechea",
+      "Tienda de ropa"
+    ],
+    [
+      "Lampa",
+      "Peluquería"
+    ],
+    [
+      "Villa Alemana",
+      "Tienda de ropa"
+    ],
+    [
+      "Quinta Normal",
+      "Tienda de ropa"
+    ],
+    [
+      "Pedro Aguirre Cerda",
+      "Barbería"
+    ],
+    [
+      "Puerto Varas",
+      "Barbería"
+    ],
+    [
+      "La Granja",
+      "Constructora"
+    ],
+    [
+      "San Antonio",
+      "Tienda de ropa"
+    ],
+    [
+      "San Joaquín",
+      "Barbería"
+    ],
+    [
+      "Castro",
+      "Pastelería"
+    ],
+    [
+      "Melipilla",
+      "Restaurante"
+    ],
+    [
+      "Lota",
+      "Florería"
+    ],
+    [
+      "Quillota",
+      "Constructora"
+    ],
+    [
+      "Calera de Tango",
+      "Peluquería"
+    ],
+    [
+      "Quillota",
+      "Pastelería"
+    ],
+    [
+      "Alhué",
+      "Florería"
+    ],
+    [
+      "Calera de Tango",
+      "Constructora"
+    ],
+    [
+      "San Fernando",
+      "Salón de belleza"
+    ],
+    [
+      "La Unión",
+      "Florería"
+    ],
+    [
+      "San José de Maipo",
+      "Gimnasio"
+    ],
+    [
+      "Villarrica",
+      "Constructora"
+    ],
+    [
+      "Padre Hurtado",
+      "Constructora"
+    ],
+    [
+      "El Bosque",
+      "Constructora"
+    ],
+    [
+      "Conchalí",
+      "Pastelería"
+    ],
+    [
+      "Cerro Navia",
+      "Florería"
+    ],
+    [
+      "Alhué",
+      "Gimnasio"
+    ],
+    [
+      "Pirque",
+      "Restaurante"
+    ],
+    [
+      "Los Andes",
+      "Gimnasio"
+    ],
+    [
+      "Conchalí",
+      "Florería"
+    ],
+    [
+      "Villa Alemana",
+      "Taller mecánico"
+    ],
+    [
+      "Chiguayante",
+      "Restaurante"
+    ],
+    [
+      "San Ramón",
+      "Florería"
+    ],
+    [
+      "Lota",
+      "Barbería"
+    ],
+    [
+      "Melipilla",
+      "Tienda de ropa"
+    ],
+    [
+      "San Pedro",
+      "Pastelería"
+    ],
+    [
+      "Conchalí",
+      "Peluquería"
+    ],
+    [
+      "Paine",
+      "Taller mecánico"
+    ],
+    [
+      "Villarrica",
+      "Tienda de ropa"
+    ],
+    [
+      "Renca",
+      "Veterinaria"
+    ],
+    [
+      "Quinta Normal",
+      "Salón de belleza"
+    ],
+    [
+      "Quillota",
+      "Florería"
+    ],
+    [
+      "Conchalí",
+      "Veterinaria"
+    ],
+    [
+      "Cerrillos",
+      "Barbería"
+    ],
+    [
+      "Puerto Natales",
+      "Tienda de ropa"
+    ],
+    [
+      "Cerrillos",
+      "Veterinaria"
+    ],
+    [
+      "Buin",
+      "Gimnasio"
+    ],
+    [
+      "La Unión",
+      "Peluquería"
+    ],
+    [
+      "San Pedro",
+      "Barbería"
+    ],
+    [
+      "Calera de Tango",
+      "Salón de belleza"
+    ],
+    [
+      "Lo Barnechea",
+      "Pastelería"
+    ],
+    [
+      "María Pinto",
+      "Peluquería"
+    ],
+    [
+      "Villarrica",
+      "Florería"
+    ],
+    [
+      "Vallenar",
+      "Barbería"
+    ],
+    [
+      "Huechuraba",
+      "Barbería"
+    ],
+    [
+      "María Pinto",
+      "Ferretería"
+    ],
+    [
+      "Cerrillos",
+      "Peluquería"
+    ],
+    [
+      "Padre Las Casas",
+      "Taller mecánico"
+    ],
+    [
+      "Til Til",
+      "Peluquería"
+    ],
+    [
+      "Cerro Navia",
+      "Tienda de ropa"
+    ],
+    [
+      "Lo Prado",
+      "Florería"
+    ],
+    [
+      "San Pedro",
+      "Gimnasio"
+    ],
+    [
+      "Melipilla",
+      "Peluquería"
+    ],
+    [
+      "Colina",
+      "Pastelería"
+    ],
+    [
+      "Cerro Navia",
+      "Veterinaria"
+    ],
+    [
+      "Lota",
+      "Salón de belleza"
+    ],
+    [
+      "Padre Hurtado",
+      "Barbería"
+    ],
+    [
+      "Vallenar",
+      "Taller mecánico"
+    ],
+    [
+      "Rengo",
+      "Ferretería"
+    ],
+    [
+      "Puerto Natales",
+      "Salón de belleza"
+    ],
+    [
+      "Lo Espejo",
+      "Veterinaria"
+    ],
+    [
+      "Melipilla",
+      "Gimnasio"
+    ],
+    [
+      "Lo Prado",
+      "Barbería"
+    ],
+    [
+      "Curacaví",
+      "Pastelería"
+    ],
+    [
+      "Linares",
+      "Ferretería"
+    ],
+    [
+      "San Felipe",
+      "Peluquería"
+    ],
+    [
+      "El Monte",
+      "Peluquería"
+    ],
+    [
+      "Quinta Normal",
+      "Gimnasio"
+    ],
+    [
+      "Quillota",
+      "Salón de belleza"
+    ],
+    [
+      "San Felipe",
+      "Veterinaria"
+    ],
+    [
+      "Ancud",
+      "Ferretería"
+    ],
+    [
+      "Castro",
+      "Gimnasio"
+    ],
+    [
+      "Linares",
+      "Restaurante"
+    ],
+    [
+      "Angol",
+      "Peluquería"
+    ],
+    [
+      "El Monte",
+      "Gimnasio"
+    ],
+    [
+      "Castro",
+      "Salón de belleza"
+    ],
+    [
+      "Cerro Navia",
+      "Ferretería"
+    ],
+    [
+      "Lampa",
+      "Pastelería"
+    ],
+    [
+      "La Pintana",
+      "Peluquería"
+    ],
+    [
+      "San Antonio",
+      "Peluquería"
+    ],
+    [
+      "Villa Alemana",
+      "Florería"
+    ],
+    [
+      "Quinta Normal",
+      "Taller mecánico"
+    ],
+    [
+      "Angol",
+      "Restaurante"
+    ],
+    [
+      "La Granja",
+      "Restaurante"
+    ],
+    [
+      "El Monte",
+      "Pastelería"
+    ],
+    [
+      "Padre Las Casas",
+      "Peluquería"
+    ],
+    [
+      "Padre Las Casas",
+      "Barbería"
+    ],
+    [
+      "Coronel",
+      "Barbería"
+    ],
+    [
+      "Colina",
+      "Florería"
+    ],
+    [
+      "Alhué",
+      "Veterinaria"
+    ],
+    [
+      "El Monte",
+      "Florería"
+    ],
+    [
+      "Coronel",
+      "Tienda de ropa"
+    ],
+    [
+      "San Pedro de la Paz",
+      "Florería"
+    ],
+    [
+      "Lo Prado",
+      "Salón de belleza"
+    ],
+    [
+      "Lo Barnechea",
+      "Florería"
+    ],
+    [
+      "Conchalí",
+      "Tienda de ropa"
+    ],
+    [
+      "Pirque",
+      "Gimnasio"
+    ],
+    [
+      "Independencia",
+      "Ferretería"
+    ],
+    [
+      "Curacaví",
+      "Tienda de ropa"
+    ],
+    [
+      "Pirque",
+      "Veterinaria"
+    ],
+    [
+      "La Granja",
+      "Salón de belleza"
+    ],
+    [
+      "Conchalí",
+      "Ferretería"
+    ],
+    [
+      "Chiguayante",
+      "Veterinaria"
+    ],
+    [
+      "La Granja",
+      "Florería"
+    ],
+    [
+      "Pirque",
+      "Ferretería"
+    ],
+    [
+      "San Joaquín",
+      "Veterinaria"
+    ],
+    [
+      "Constitución",
+      "Florería"
+    ],
+    [
+      "San Felipe",
+      "Salón de belleza"
+    ],
+    [
+      "Los Andes",
+      "Florería"
+    ],
+    [
+      "Lampa",
+      "Veterinaria"
+    ],
+    [
+      "Vallenar",
+      "Gimnasio"
+    ],
+    [
+      "Renca",
+      "Taller mecánico"
+    ],
+    [
+      "La Cisterna",
+      "Salón de belleza"
+    ],
+    [
+      "Villa Alemana",
+      "Gimnasio"
+    ],
+    [
+      "Coronel",
+      "Salón de belleza"
+    ],
+    [
+      "Buin",
+      "Veterinaria"
+    ],
+    [
+      "Villa Alemana",
+      "Restaurante"
+    ]
+  ],
+  "vuelta": 1,
+  "terminos": [
+    "Peluquería",
+    "Barbería",
+    "Restaurante",
+    "Pastelería",
+    "Taller mecánico",
+    "Ferretería",
+    "Veterinaria",
+    "Gimnasio",
+    "Tienda de ropa",
+    "Florería",
+    "Salón de belleza",
+    "Constructora"
+  ]
+}

@@ -14,12 +14,12 @@ from urllib.parse import quote
 MODOS = {
     "🏥 Clínicas Estéticas": "prospeccion_gestionvital_pro.csv",
     "🏪 Almacenes de Barrio": "prospeccion_almacenes_pro.csv",
-    "🌐 Páginas Web (Norte)": "prospeccion_prevencion_pro.csv",
+    "🌐 Páginas Web (Nacional)": "prospeccion_prevencion_pro.csv",
 }
 ARCHIVOS_ALERTA = {
     "🏥 Clínicas Estéticas": "alert_status.json",
     "🏪 Almacenes de Barrio": "alert_status_almacenes.json",
-    "🌐 Páginas Web (Norte)": "alert_status_prevencion.json",
+    "🌐 Páginas Web (Nacional)": "alert_status_prevencion.json",
 }
 COLUMNAS_REQUERIDAS = [
     "Id",
@@ -742,7 +742,7 @@ if t3 is not None:
                 nombres_linea = {
                     "clinicas": "GestiónVital (clínicas)",
                     "almacenes": "GestiónAlmacén (almacenes)",
-                    "prevencion": "Páginas web (norte)",
+                    "prevencion": "Páginas web (nacional)",
                 }
                 cols_modo = st.columns(len(nombres_linea))
                 for col_modo, (linea_m, nombre_m) in zip(cols_modo, nombres_linea.items()):

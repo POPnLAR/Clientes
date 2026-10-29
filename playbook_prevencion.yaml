@@ -1,4 +1,4 @@
-# Playbook del agente para la línea PÁGINAS WEB (negocios de Google Maps sin sitio web propio, zona norte: regiones II, III y IV).
+# Playbook del agente para la línea PÁGINAS WEB (negocios de Google Maps sin sitio web propio, todo Chile).
 # (El nombre "prevencion" del archivo y de la línea es histórico: antes esta línea vendía automatización a consultoras
 # de prevención de riesgos. Se conserva para no romper el CSV, la cobertura ni la configuración del agente.)
 # Se ofrece una página web, una landing page o una tienda online (ecommerce) a medida. El primer paso es una

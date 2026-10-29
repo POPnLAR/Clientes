@@ -26,11 +26,11 @@ EVO_TOKEN = os.getenv("EVO_TOKEN")
 EVO_INSTANCE = os.getenv("EVO_INSTANCE")
 SERP_KEY = os.getenv("SERP_KEY")
 NUMERO_OPERADOR = os.getenv("NUMERO_OPERADOR", "")
-# Línea de páginas web: negocios de Google Maps SIN sitio web propio, de las regiones II, III y IV.
+# Línea de páginas web: negocios de Google Maps SIN sitio web propio, de todo Chile.
 # (El nombre "prevencion" en archivos, claves y workflow es histórico: antes era la línea de consultoras
 # de prevención de riesgos; se conserva para no perder el CSV, la cobertura ni la configuración del agente.)
 ARCHIVO_PREVENCION = "prospeccion_prevencion_pro.csv"
-COMUNAS_OBJETIVO = cobertura.COMUNAS_NORTE
+COMUNAS_OBJETIVO = cobertura.COMUNAS_NACIONAL
 # Rubros de negocios locales que suelen estar en Google sin web y que se benefician de una página,
 # una landing o una tienda online.
 TERMINOS_BUSQUEDA = [
@@ -103,7 +103,7 @@ def buscar_y_agregar_negocios(df_actual):
 
     ahora_cl = obtener_ahora_chile()
     zona, termino = cobertura.siguiente(
-        ARCHIVO_COBERTURA, COMUNAS_OBJETIVO, TERMINOS_BUSQUEDA, prioridad=cobertura.PRIORIDAD_NORTE
+        ARCHIVO_COBERTURA, COMUNAS_OBJETIVO, TERMINOS_BUSQUEDA, prioridad=cobertura.PRIORIDAD_NACIONAL
     )
     print(f"🌐 Buscando '{termino}' en: {zona}...")
 
@@ -427,7 +427,7 @@ def ejecutar_ciclo():
         raise
     finally:
         resumen_email.enviar_resumen_si_corresponde(
-            resumen, "Páginas web para negocios sin sitio (norte)", obtener_ahora_chile()
+            resumen, "Páginas web para negocios sin sitio (nacional)", obtener_ahora_chile()
         )
 
 

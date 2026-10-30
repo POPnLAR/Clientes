@@ -92,6 +92,8 @@ _MIGRACIONES_DRAFTS = {
 
 _MIGRACIONES_MESSAGES = {
     "filtrado_motivo": "ALTER TABLE messages ADD COLUMN filtrado_motivo TEXT",
+    # Línea de producto (clinicas / almacenes / prevencion) con la que el worker contactó al lead.
+    "linea": "ALTER TABLE messages ADD COLUMN linea TEXT",
 }
 
 
@@ -124,14 +126,25 @@ def _ahora():
     return datetime.utcnow().isoformat()
 
 
-def guardar_mensaje(telefono_normalizado, direccion, texto, evolution_message_id=None):
+def guardar_mensaje(telefono_normalizado, direccion, texto, evolution_message_id=None, linea=None):
     with _conn() as conn:
         cur = conn.execute(
-            "INSERT INTO messages (telefono_normalizado, direccion, texto, evolution_message_id, timestamp) "
-            "VALUES (?, ?, ?, ?, ?)",
-            (telefono_normalizado, direccion, texto, evolution_message_id, _ahora()),
+            "INSERT INTO messages (telefono_normalizado, direccion, texto, evolution_message_id, timestamp, linea) "
+            "VALUES (?, ?, ?, ?, ?, ?)",
+            (telefono_normalizado, direccion, texto, evolution_message_id, _ahora(), linea),
         )
         return cur.lastrowid
+
+
+def linea_de_telefono(telefono_normalizado):
+    """Línea con la que se contactó por última vez a este teléfono (None si no se registró)."""
+    with _conn() as conn:
+        row = conn.execute(
+            "SELECT linea FROM messages WHERE telefono_normalizado = ? AND direccion = 'out' "
+            "AND linea IS NOT NULL ORDER BY id DESC LIMIT 1",
+            (telefono_normalizado,),
+        ).fetchone()
+    return row["linea"] if row else None
 
 
 def historial_conversacion(telefono_normalizado, limite=20):

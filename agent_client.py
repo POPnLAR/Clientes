@@ -20,7 +20,7 @@ MAX_FALLOS_REGISTRO = 2
 _fallos_registro = 0
 
 
-def registrar_mensaje_enviado(telefono, texto, timeout=5):
+def registrar_mensaje_enviado(telefono, texto, linea=None, timeout=5):
     """
     Avisa al agente de un mensaje que el worker acaba de enviar, para que quede en el historial de
     la conversación. Es de mejor esfuerzo: NUNCA lanza ni debe frenar el envío; devuelve si quedó
@@ -34,7 +34,7 @@ def registrar_mensaje_enviado(telefono, texto, timeout=5):
     try:
         res = requests.post(
             f"{url}/outbound-log",
-            json={"telefono": str(telefono), "texto": texto},
+            json={"telefono": str(telefono), "texto": texto, "linea": linea},
             headers={"x-agent-token": token} if token else {},
             timeout=timeout,
         )

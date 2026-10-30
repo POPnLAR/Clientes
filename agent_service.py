@@ -128,7 +128,11 @@ def _valor_json(valor):
 
 
 def _buscar_lead_por_telefono(telefono_normalizado):
-    """Busca el lead en cualquiera de los CSV de las líneas por teléfono normalizado."""
+    """
+    Busca el lead en cualquiera de los CSV de las líneas por teléfono normalizado. Si no aparece
+    (CSV vaciado o aún no sincronizado), usa la línea con la que el worker le escribió: sin eso se
+    caería al playbook de clínicas y se enviarían precios de otro producto.
+    """
     for linea, archivo in CSVS_POR_LINEA.items():
         if not os.path.exists(archivo):
             continue
@@ -146,6 +150,9 @@ def _buscar_lead_por_telefono(telefono_normalizado):
                 campo: _valor_json(row.get(campo, ""))
                 for campo in ("Evento", "Ubicacion", "Estado", "Dia_Secuencia")
             }
+    linea_registrada = store.linea_de_telefono(telefono_normalizado)
+    if linea_registrada:
+        return linea_registrada, CSVS_POR_LINEA.get(linea_registrada), {}
     return None, None, {}
 
 
@@ -536,6 +543,7 @@ def replied_phones(dias: int = 90, x_agent_token: Optional[str] = Header(default
 class MensajeSaliente(BaseModel):
     telefono: str
     texto: str
+    linea: Optional[str] = None
 
 
 @app.post("/outbound-log")
@@ -551,7 +559,8 @@ def registrar_mensaje_saliente(msg: MensajeSaliente, x_agent_token: Optional[str
     texto = (msg.texto or "").strip()
     if not telefono or not texto:
         raise HTTPException(status_code=400, detail="Teléfono o texto inválido.")
-    store.guardar_mensaje(telefono, "out", texto)
+    linea = msg.linea if msg.linea in LINEAS_AUTO else None
+    store.guardar_mensaje(telefono, "out", texto, linea=linea)
     return {"status": "registrado"}
 
 

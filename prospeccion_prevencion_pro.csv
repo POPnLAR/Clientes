@@ -1,5 +1,5 @@
 Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Contacto,Resultado,Notas,Version_Mensaje
-1,29/10/2026,17:29,Bajon Tio Coco,Restaurante,La Florida,Contactado,56936616124,1,29/10/2026 17:29,,Sin sitio web propio en Google Maps,B
+1,29/10/2026,17:29,Bajon Tio Coco,Restaurante,La Florida,Finalizado,56936616124,2,03/11/2026 15:04,,Sin sitio web propio en Google Maps,B
 2,29/10/2026,17:29,COCINERIA DONDE YOYO'S,Restaurante,La Florida,Contactado,56973545215,1,29/10/2026 17:29,,Sin sitio web propio en Google Maps,B
 3,30/10/2026,10:37,Tortas Manu Rancagua,Pastelería,Rancagua,Finalizado,56999607505,2,03/11/2026 14:26,,Sin sitio web propio en Google Maps,B
 4,30/10/2026,10:37,La Uslera Rancagua,Pastelería,Rancagua,Nuevo,56998107999,0,,,Sin sitio web propio en Google Maps,
@@ -14,12 +14,12 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 13,30/10/2026,10:37,Cafetería Delicias San Martín,Pastelería,Rancagua,Nuevo,56981822434,0,,,Sin sitio web propio en Google Maps,
 14,30/10/2026,10:37,La Dulceria Rancagua,Pastelería,Rancagua,Nuevo,56989614854,0,,,Sin sitio web propio en Google Maps,
 15,30/10/2026,10:37,Panaderia Santa Barbara,Pastelería,Rancagua,Finalizado,56992659928,2,02/11/2026 15:50,,Sin sitio web propio en Google Maps,B
-16,30/10/2026,10:37,Amasandería El Amigo,Pastelería,Rancagua,Nuevo,56981236458,0,,,Sin sitio web propio en Google Maps,
+16,30/10/2026,10:37,Amasandería El Amigo,Pastelería,Rancagua,Contactado,56981236458,1,03/11/2026 15:04,,Sin sitio web propio en Google Maps,B
 17,30/10/2026,10:37,Pastelería Artesanal Dulce Amira,Pastelería,Rancagua,Nuevo,56963412231,0,,,Sin sitio web propio en Google Maps,
 18,30/10/2026,10:37,Tortas Manu Alameda,Pastelería,Rancagua,Contactado,56956499750,1,02/11/2026 15:19,,Sin sitio web propio en Google Maps,B
 19,30/10/2026,10:37,Muriel pastelería,Pastelería,Rancagua,Contactado,56996238228,1,30/10/2026 10:37,,Sin sitio web propio en Google Maps,B
 20,30/10/2026,10:37,Amapola la fabrica,Pastelería,Rancagua,Contactado,56967468444,1,03/11/2026 14:26,,Sin sitio web propio en Google Maps,B
-21,30/10/2026,10:37,Panaderia San Francisco spa,Pastelería,Rancagua,Nuevo,56973116707,0,,,Sin sitio web propio en Google Maps,
+21,30/10/2026,10:37,Panaderia San Francisco spa,Pastelería,Rancagua,Contactado,56973116707,1,03/11/2026 15:04,,Sin sitio web propio en Google Maps,A
 22,30/10/2026,10:37,Pasteleria Mercurio,Pastelería,Rancagua,Nuevo,56981216346,0,,,Sin sitio web propio en Google Maps,
 23,30/10/2026,10:37,Distribuidora La Repostera,Pastelería,Rancagua,Nuevo,56954553721,0,,,Sin sitio web propio en Google Maps,
 24,30/10/2026,10:37,La Repugsteria,Pastelería,Rancagua,Contactado,56961499339,1,30/10/2026 15:53,,Sin sitio web propio en Google Maps,A

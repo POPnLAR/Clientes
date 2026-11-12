@@ -1,0 +1,6 @@
+{
+  "linea": "clinicas",
+  "motivo": "fallos_envio_seguidos",
+  "detalle": "3 envíos seguidos fallaron con sesión reportada como 'open' (posible degradación/soft-ban).",
+  "timestamp": "12/11/2026 16:11"
+}

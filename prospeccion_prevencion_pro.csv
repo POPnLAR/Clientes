@@ -3,7 +3,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 2,29/10/2026,17:29,COCINERIA DONDE YOYO'S,Restaurante,La Florida,Finalizado,56973545215,2,10/11/2026 17:37,,Sin sitio web propio en Google Maps,B
 3,30/10/2026,10:37,Tortas Manu Rancagua,Pastelería,Rancagua,Finalizado,56999607505,2,03/11/2026 14:26,,Sin sitio web propio en Google Maps,B
 4,30/10/2026,10:37,La Uslera Rancagua,Pastelería,Rancagua,Contactado,56998107999,1,09/11/2026 09:09,,Sin sitio web propio en Google Maps,B
-5,30/10/2026,10:37,Golden Cake,Pastelería,Rancagua,Contactado,56954299804,1,06/11/2026 15:30,,Sin sitio web propio en Google Maps,A
+5,30/10/2026,10:37,Golden Cake,Pastelería,Rancagua,Finalizado,56954299804,2,13/11/2026 15:55,,Sin sitio web propio en Google Maps,A
 6,30/10/2026,10:37,Kei Pastelería y Café,Pastelería,Rancagua,Finalizado,56994402082,2,10/11/2026 17:37,,Sin sitio web propio en Google Maps,B
 7,30/10/2026,10:37,Cake Boutique por Andrea Escobar,Pastelería,Rancagua,Contactado,56956357969,1,04/11/2026 15:53,,Sin sitio web propio en Google Maps,A
 8,30/10/2026,10:37,Pasteleria la Queta,Pastelería,Rancagua,Finalizado,56973776672,2,02/11/2026 15:19,,Sin sitio web propio en Google Maps,A
@@ -19,12 +19,12 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 18,30/10/2026,10:37,Tortas Manu Alameda,Pastelería,Rancagua,Finalizado,56956499750,2,09/11/2026 09:09,,Sin sitio web propio en Google Maps,B
 19,30/10/2026,10:37,Muriel pastelería,Pastelería,Rancagua,Contactado,56996238228,1,30/10/2026 10:37,,Sin sitio web propio en Google Maps,B
 20,30/10/2026,10:37,Amapola la fabrica,Pastelería,Rancagua,Finalizado,56967468444,2,10/11/2026 10:00,,Sin sitio web propio en Google Maps,B
-21,30/10/2026,10:37,Panaderia San Francisco spa,Pastelería,Rancagua,Contactado,56973116707,1,03/11/2026 15:04,,Sin sitio web propio en Google Maps,A
+21,30/10/2026,10:37,Panaderia San Francisco spa,Pastelería,Rancagua,Finalizado,56973116707,2,13/11/2026 15:55,,Sin sitio web propio en Google Maps,A
 22,30/10/2026,10:37,Pasteleria Mercurio,Pastelería,Rancagua,Contactado,56981216346,1,11/11/2026 13:37,,Sin sitio web propio en Google Maps,B
 23,30/10/2026,10:37,Distribuidora La Repostera,Pastelería,Rancagua,Finalizado,56954553721,2,11/11/2026 13:37,,Sin sitio web propio en Google Maps,B
 24,30/10/2026,10:37,La Repugsteria,Pastelería,Rancagua,Finalizado,56961499339,2,04/11/2026 15:53,,Sin sitio web propio en Google Maps,A
 25,30/10/2026,10:37,Elisa Pasteleria Saludable,Pastelería,Rancagua,Nuevo,56950923104,0,,,Sin sitio web propio en Google Maps,
 26,30/10/2026,10:37,Esencia Repostera,Pastelería,Rancagua,Finalizado,56944589767,2,12/11/2026 10:18,,Sin sitio web propio en Google Maps,B
 27,30/10/2026,10:37,Pasteleria Caroca's,Pastelería,Rancagua,Contactado,56985205483,1,10/11/2026 10:00,,Sin sitio web propio en Google Maps,A
-28,30/10/2026,10:37,Panadería Los Tilos,Pastelería,Rancagua,Nuevo,56949165151,0,,,Sin sitio web propio en Google Maps,
+28,30/10/2026,10:37,Panadería Los Tilos,Pastelería,Rancagua,Contactado,56949165151,1,13/11/2026 15:55,,Sin sitio web propio en Google Maps,B
 29,30/10/2026,10:37,Postres gourmet rancagua,Pastelería,Rancagua,Contactado,56991319748,1,12/11/2026 10:18,,Sin sitio web propio en Google Maps,A

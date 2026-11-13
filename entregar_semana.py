@@ -17,7 +17,7 @@ que los workers automáticos dejen de escribirles. (Usa --cantidad-nunca 0 para 
 
 Por seguridad se consulta al agente (VPS) qué leads ya respondieron; sin esa consulta no se entrega
 nada, salvo que se indique --sin-agente (solo para pruebas). Las credenciales van en .env.entrega:
-    AGENT_SERVICE_URL=https://gestionvitalpro.cl/agente-api
+    AGENT_SERVICE_URL=https://www.gestionvitalpro.cl/agente-api
     AGENT_SERVICE_TOKEN=...
 """
 import argparse

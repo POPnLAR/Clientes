@@ -7,7 +7,50 @@ import logging
 import random
 import time
 
+from urllib.parse import urljoin, urlparse
+
 import requests
+
+
+def _mismo_sitio(url_a, url_b):
+    """True si ambas URLs apuntan al mismo host, ignorando un 'www.' inicial."""
+    def host(u):
+        h = (urlparse(u).hostname or "").lower()
+        return h[4:] if h.startswith("www.") else h
+    return bool(host(url_a)) and host(url_a) == host(url_b)
+
+
+def post_sin_perder_metodo(url, max_saltos=3, **kwargs):
+    """
+    requests.post que sigue redirecciones SIN convertir el POST en GET.
+
+    Por defecto `requests` (como los navegadores) repite un 301/302 como GET y sin
+    cuerpo; contra Evolution eso termina en un 404 "Cannot GET /message/sendText/..."
+    que parece un problema de la API cuando en realidad es nginx redirigiendo el
+    dominio (p. ej. gestionvitalpro.cl -> www.gestionvitalpro.cl).
+
+    Solo se sigue la redirección si lleva al mismo sitio (mismo host, con o sin
+    'www.'), para no reenviar el token a un tercero. Si no, se devuelve la
+    respuesta 3xx tal cual y el llamador la reporta como error.
+    """
+    res = requests.post(url, allow_redirects=False, **kwargs)
+    saltos = 0
+    while res.status_code in (301, 302, 307, 308) and saltos < max_saltos:
+        destino = res.headers.get("Location")
+        if not destino:
+            break
+        destino = urljoin(url, destino)
+        if not _mismo_sitio(url, destino):
+            logging.error("Redirección a otro sitio ignorada: %s -> %s", url, destino)
+            break
+        logging.warning(
+            "La URL configurada redirige (HTTP %s): %s -> %s. Conviene actualizar la variable de entorno.",
+            res.status_code, url, destino,
+        )
+        url = destino
+        res = requests.post(url, allow_redirects=False, **kwargs)
+        saltos += 1
+    return res
 
 
 def normalizar_telefono_chile(raw):
@@ -103,7 +146,7 @@ def enviar_mensaje_texto(base_url, token, instance, numero, mensaje, simular_esc
     base = base_url.strip().rstrip("/")
     headers = {"Content-Type": "application/json", "apikey": token}
     try:
-        requests.post(
+        post_sin_perder_metodo(
             f"{base}/chat/sendPresence/{instance}",
             json={"number": numero, "presence": "composing", "delay": 1000},
             headers=headers,
@@ -114,7 +157,7 @@ def enviar_mensaje_texto(base_url, token, instance, numero, mensaje, simular_esc
             time.sleep(random.randint(15, 35))
 
         payload = {"number": numero, "text": mensaje, "delay": 2000}
-        res = requests.post(
+        res = post_sin_perder_metodo(
             f"{base}/message/sendText/{instance}", json=payload, headers=headers, timeout=20
         )
         if res.status_code not in (200, 201):
@@ -161,7 +204,7 @@ def verificar_whatsapp(base_url, token, instance, numeros, timeout=30):
     if not numeros or not base_url or not token or not instance:
         return {}
     try:
-        res = requests.post(
+        res = post_sin_perder_metodo(
             f"{base_url.strip().rstrip('/')}/chat/whatsappNumbers/{instance}",
             json={"numbers": numeros},
             headers={"Content-Type": "application/json", "apikey": token},

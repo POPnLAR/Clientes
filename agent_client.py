@@ -8,6 +8,8 @@ import os
 
 import requests
 
+from evo_client import post_sin_perder_metodo
+
 
 def clave_telefono(tel):
     """Últimos 9 dígitos: forma común para comparar teléfonos de distinto formato."""
@@ -32,7 +34,7 @@ def registrar_mensaje_enviado(telefono, texto, linea=None, timeout=5):
     if not url or _fallos_registro >= MAX_FALLOS_REGISTRO:
         return False
     try:
-        res = requests.post(
+        res = post_sin_perder_metodo(
             f"{url}/outbound-log",
             json={"telefono": str(telefono), "texto": texto, "linea": linea},
             headers={"x-agent-token": token} if token else {},

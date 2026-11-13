@@ -59,6 +59,7 @@ st.set_page_config(page_title="GestiónVital Pro Multi-SaaS", layout="wide", pag
 # Control de acceso: nada de lo que sigue (datos, secretos, acciones) se ejecuta sin una sesión
 # autorizada. Si el login no está configurado, la app se niega a mostrar contenido.
 import acceso
+from evo_client import post_sin_perder_metodo
 acceso.exigir_login()
 
 # --- UTILIDADES ---
@@ -190,7 +191,7 @@ def aprobar_borrador(draft_id, texto_final):
     lista de pendientes.
     """
     try:
-        res = requests.post(
+        res = post_sin_perder_metodo(
             f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/approve",
             json={"texto_final": texto_final},
             headers=_agent_headers(),
@@ -207,7 +208,7 @@ def aprobar_borrador(draft_id, texto_final):
 def marcar_como_bot(draft_id):
     """El mensaje del prospecto es de un bot: se descarta este borrador y se enseña al filtro."""
     try:
-        res = requests.post(
+        res = post_sin_perder_metodo(
             f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/mark-bot",
             headers=_agent_headers(),
             timeout=20,
@@ -238,7 +239,7 @@ def obtener_modo_automatico():
 
 def fijar_modo_automatico(linea, activo):
     try:
-        res = requests.post(
+        res = post_sin_perder_metodo(
             f"{AGENT_SERVICE_URL.rstrip('/')}/auto-mode",
             json={"linea": linea, "activo": activo},
             headers=_agent_headers(),
@@ -282,7 +283,7 @@ def quitar_bot_filtrado(bot_id):
 
 def regenerar_borrador(draft_id, instruccion):
     try:
-        res = requests.post(
+        res = post_sin_perder_metodo(
             f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/regenerate",
             json={"instruccion": instruccion or None},
             headers=_agent_headers(),
@@ -311,7 +312,7 @@ def _al_regenerar(draft_id):
 
 def rechazar_borrador(draft_id):
     try:
-        res = requests.post(
+        res = post_sin_perder_metodo(
             f"{AGENT_SERVICE_URL.rstrip('/')}/drafts/{draft_id}/reject",
             headers=_agent_headers(),
             timeout=10,

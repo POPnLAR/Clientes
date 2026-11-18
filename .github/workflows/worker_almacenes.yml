@@ -58,7 +58,7 @@ jobs:
       - name: Guardar y Sincronizar
         run: |
           for f in prospeccion_almacenes_pro.csv cobertura_almacenes.json presupuesto_serpapi_almacenes.json; do
-            [ -f "$f" ] && git add "$f"
+            { [ -f "$f" ] || git ls-files --error-unmatch "$f" >/dev/null 2>&1; } && git add -A -- "$f"
           done
           if [ -n "$(git status --porcelain)" ]; then
             git commit -m "Worker Almacenes: Actualización [Skip CI]"

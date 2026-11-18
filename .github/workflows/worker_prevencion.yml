@@ -51,7 +51,7 @@ jobs:
       - name: Guardar y Sincronizar
         run: |
           for f in prospeccion_prevencion_pro.csv cobertura_prevencion.json presupuesto_serpapi_prevencion.json; do
-            [ -f "$f" ] && git add "$f"
+            { [ -f "$f" ] || git ls-files --error-unmatch "$f" >/dev/null 2>&1; } && git add -A -- "$f"
           done
           if [ -n "$(git status --porcelain)" ]; then
             git commit -m "Worker Prevencion: Actualización [Skip CI]"

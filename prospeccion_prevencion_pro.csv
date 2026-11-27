@@ -28,10 +28,10 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 27,30/10/2026,10:37,Pasteleria Caroca's,Pastelería,Rancagua,Finalizado,56985205483,2,19/11/2026 09:10,,Sin sitio web propio en Google Maps,A
 28,30/10/2026,10:37,Panadería Los Tilos,Pastelería,Rancagua,Finalizado,56949165151,2,16/11/2026 09:04,,Sin sitio web propio en Google Maps,B
 29,30/10/2026,10:37,Postres gourmet rancagua,Pastelería,Rancagua,Contactado,56991319748,1,12/11/2026 10:18,,Sin sitio web propio en Google Maps,A
-30,20/11/2026,15:51,Mecánico Automotriz,Taller mecánico,Iquique,Contactado,56992145959,1,25/11/2026 17:12,,Sin sitio web propio en Google Maps,A
+30,20/11/2026,15:51,Mecánico Automotriz,Taller mecánico,Iquique,Finalizado,56992145959,2,27/11/2026 11:23,,Sin sitio web propio en Google Maps,A
 31,20/11/2026,15:51,TALLER MECANICA AUTOMOTRIZ C&F SPA.,Taller mecánico,Iquique,Nuevo,56977192923,0,,,Sin sitio web propio en Google Maps,
 32,20/11/2026,15:51,Multiservicios Max,Taller mecánico,Iquique,Nuevo,56997180752,0,,,Sin sitio web propio en Google Maps,
-33,20/11/2026,15:51,TALLER AUTOMOTRIZ HCD MOTOR,Taller mecánico,Iquique,Contactado,56990131279,1,24/11/2026 13:28,,Sin sitio web propio en Google Maps,B
+33,20/11/2026,15:51,TALLER AUTOMOTRIZ HCD MOTOR,Taller mecánico,Iquique,Finalizado,56990131279,2,27/11/2026 11:23,,Sin sitio web propio en Google Maps,B
 34,20/11/2026,15:51,ALG Motors,Taller mecánico,Iquique,Contactado,56967025120,1,23/11/2026 17:35,,Sin sitio web propio en Google Maps,A
 35,20/11/2026,15:51,Taller Mecanico JV,Taller mecánico,Iquique,Contactado,56949960803,1,20/11/2026 15:51,,Sin sitio web propio en Google Maps,A
 36,20/11/2026,15:51,Los Dragones Taller Automotriz,Taller mecánico,Iquique,Finalizado,56961410340,2,26/11/2026 10:12,,Sin sitio web propio en Google Maps,B
@@ -48,7 +48,7 @@ Id,Fecha,Hora,Evento,Ministerio,Ubicacion,Estado,Telefono,Dia_Secuencia,Fecha_Co
 47,20/11/2026,15:51,Servicio De Frenos El Kevin,Taller mecánico,Iquique,Contactado,56966243838,1,26/11/2026 10:12,,Sin sitio web propio en Google Maps,A
 48,20/11/2026,15:51,General Service North,Taller mecánico,Iquique,Nuevo,56968333731,0,,,Sin sitio web propio en Google Maps,
 49,20/11/2026,15:51,AGR AUTOMOTRIZ,Taller mecánico,Iquique,Finalizado,56957799491,2,23/11/2026 17:35,,Sin sitio web propio en Google Maps,B
-50,20/11/2026,15:51,Frenos Calderon,Taller mecánico,Iquique,Contactado,56998652093,1,20/11/2026 15:51,,Sin sitio web propio en Google Maps,A
+50,20/11/2026,15:51,Frenos Calderon,Taller mecánico,Iquique,Finalizado,56998652093,2,27/11/2026 11:23,,Sin sitio web propio en Google Maps,A
 51,20/11/2026,15:51,Reparación Inyectores Bombas Sistemas Common Rail Eco-Tech,Taller mecánico,Iquique,Nuevo,56963032154,0,,,Sin sitio web propio en Google Maps,
 52,20/11/2026,15:51,Motor's Service Ltda.,Taller mecánico,Iquique,Contactado,56996351064,1,23/11/2026 17:35,,Sin sitio web propio en Google Maps,B
 53,20/11/2026,15:51,Taller de motos cultura custom chile,Taller mecánico,Iquique,Nuevo,56940607000,0,,,Sin sitio web propio en Google Maps,
